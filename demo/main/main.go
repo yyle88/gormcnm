@@ -43,7 +43,7 @@ func main() {
 	var res Example
 	if err := db.Where(columnName.Eq("abc")).
 		Where(columnType.Eq("xyz")).
-		Where(columnRank.Eq(123)).
+		Where(columnRank.Gt(100)).Where(columnRank.Lt(200)).
 		First(&res).Error; err != nil {
 		panic(errors.WithMessage(err, "wrong"))
 	}
