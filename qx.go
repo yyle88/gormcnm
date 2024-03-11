@@ -3,7 +3,7 @@ package gormcnm
 import (
 	"database/sql/driver"
 
-	"github.com/yyle88/gormcnm/utilsyyle"
+	"github.com/yyle88/gormcnm/utilsgormcnm"
 )
 
 type QxType struct {
@@ -82,68 +82,68 @@ func (qx *QxType) Args() []interface{} {
 
 // Qx0 这块暂时没有什么好的方案，我只能这样罗列下来，很期望将来能够解决这个问题
 func (qx *QxType) Qx0() string {
-	utilsyyle.AssertEquals(len(qx.args), 0)
+	utilsgormcnm.AssertEquals(len(qx.args), 0)
 	return qx.Qs()
 }
 
 // Qx1 这块暂时没有什么好的方案，我只能这样罗列下来，很期望将来能够解决这个问题
 func (qx *QxType) Qx1() (string, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 1)
+	utilsgormcnm.AssertEquals(len(qx.args), 1)
 	return qx.Qs(), qx.args[0]
 }
 
 // Qx2 这块暂时没有什么好的方案，我只能这样罗列下来，很期望将来能够解决这个问题
 func (qx *QxType) Qx2() (string, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 2)
+	utilsgormcnm.AssertEquals(len(qx.args), 2)
 	return qx.Qs(), qx.args[0], qx.args[1]
 }
 
 func (qx *QxType) Qx3() (string, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 3)
+	utilsgormcnm.AssertEquals(len(qx.args), 3)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2]
 }
 
 func (qx *QxType) Qx4() (string, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 4)
+	utilsgormcnm.AssertEquals(len(qx.args), 4)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3]
 }
 
 func (qx *QxType) Qx5() (string, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 5)
+	utilsgormcnm.AssertEquals(len(qx.args), 5)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4]
 }
 
 func (qx *QxType) Qx6() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 6)
+	utilsgormcnm.AssertEquals(len(qx.args), 6)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5]
 }
 
 func (qx *QxType) Qx7() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 7)
+	utilsgormcnm.AssertEquals(len(qx.args), 7)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6]
 }
 
 func (qx *QxType) Qx8() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 8)
+	utilsgormcnm.AssertEquals(len(qx.args), 8)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7]
 }
 
 func (qx *QxType) Qx9() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 9)
+	utilsgormcnm.AssertEquals(len(qx.args), 9)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8]
 }
 
 func (qx *QxType) Qx10() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 10)
+	utilsgormcnm.AssertEquals(len(qx.args), 10)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9]
 }
 
 func (qx *QxType) Qx11() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 11)
+	utilsgormcnm.AssertEquals(len(qx.args), 11)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9], qx.args[10]
 }
 
 func (qx *QxType) Qx12() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utilsyyle.AssertEquals(len(qx.args), 12)
+	utilsgormcnm.AssertEquals(len(qx.args), 12)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9], qx.args[10], qx.args[11]
 }
