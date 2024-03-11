@@ -24,12 +24,12 @@ func TestMain(m *testing.M) {
 	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
-	utilsyyle.Done(err)
+	utilsyyle.AssertDone(err)
 	caseDB = db
 
-	utilsyyle.Done(db.AutoMigrate(&Example{}))
-	utilsyyle.Done(caseDB.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-	utilsyyle.Done(caseDB.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	utilsyyle.AssertDone(db.AutoMigrate(&Example{}))
+	utilsyyle.AssertDone(caseDB.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	utilsyyle.AssertDone(caseDB.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
 	m.Run()
 	os.Exit(0)
 }

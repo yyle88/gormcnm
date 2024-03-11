@@ -36,12 +36,12 @@ func initOnce() {
 		db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Info),
 		})
-		utilsyyle.Done(err)
+		utilsyyle.AssertDone(err)
 		caseDB = db
 
-		utilsyyle.Done(db.AutoMigrate(&ExampleOutPackage{}))
-		utilsyyle.Done(caseDB.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
-		utilsyyle.Done(caseDB.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+		utilsyyle.AssertDone(db.AutoMigrate(&ExampleOutPackage{}))
+		utilsyyle.AssertDone(caseDB.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
+		utilsyyle.AssertDone(caseDB.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 	})
 }
 
