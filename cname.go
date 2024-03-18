@@ -1,5 +1,10 @@
 package gormcnm
 
+import (
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+)
+
 type ColumnName[TYPE any] string
 
 func (s ColumnName[TYPE]) Qs(op string) string {
@@ -50,6 +55,10 @@ func (s ColumnName[TYPE]) NotLike(x TYPE) (string, TYPE) {
 	return string(s) + " NOT LIKE ?", x
 }
 
+func (s ColumnName[TYPE]) NotEq(x TYPE) (string, TYPE) {
+	return string(s) + "!=?", x
+}
+
 func (s ColumnName[TYPE]) IsNULL() string {
 	return string(s) + " IS NULL"
 }
@@ -68,6 +77,14 @@ func (s ColumnName[TYPE]) IsFALSE() string {
 
 func (s ColumnName[TYPE]) BetweenAND(arg1, arg2 TYPE) (string, TYPE, TYPE) {
 	return string(s) + " BETWEEN ? AND ?", arg1, arg2
+}
+
+func (s ColumnName[TYPE]) ExprAdd(v TYPE) clause.Expr {
+	return gorm.Expr(string(s)+" + ?", v)
+}
+
+func (s ColumnName[TYPE]) ExprSub(v TYPE) clause.Expr {
+	return gorm.Expr(string(s)+" - ?", v)
 }
 
 func (s ColumnName[TYPE]) Ob(direction string) ColumnOrderByAscDesc {
