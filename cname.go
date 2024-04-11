@@ -112,7 +112,17 @@ func (s ColumnName[TYPE]) Kv(x TYPE) (string, TYPE) {
 	return string(s), x
 }
 
-// Ke 是在Kv的基础上新增的，返回个 k,expression 的结果，能传给gorm的Update函数。这个函数预计使用率不高，因此就不实现Kw的对应的Kwe啦(Kwe命名含义不明确)，因为使用率会更低些(主要是不知道该起啥名)。
-func (s ColumnName[TYPE]) Ke(x clause.Expr) (string, clause.Expr) {
+// KeExp 是在Kv的基础上新增的，返回个 k,expression 的结果，能传给gorm的Update函数。这个函数预计使用率不高，因此就不实现Kw的对应的KwExp啦(KwExp命名含义不明确)，因为使用率会更低些(主要是不知道该起啥名)。
+func (s ColumnName[TYPE]) KeExp(x clause.Expr) (string, clause.Expr) {
 	return string(s), x
+}
+
+// KeAdd 在db.Update的时候，通常字段自增或者加某个值更新的情况多些(因为这个函数的出现，我把Ke函数名称改为KeExp，因为Ke略短不太适合用于这种使用频率过低的函数，而KExpr不太美观)。
+func (s ColumnName[TYPE]) KeAdd(x TYPE) (string, clause.Expr) {
+	return s.KeExp(s.ExprAdd(x))
+}
+
+// KeSub 在db.Update的时候，让某个字段减去某个值，返回的还是 k,expression 的结果
+func (s ColumnName[TYPE]) KeSub(x TYPE) (string, clause.Expr) {
+	return s.KeExp(s.ExprSub(x))
 }
