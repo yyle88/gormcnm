@@ -107,7 +107,12 @@ func (s ColumnName[TYPE]) Kw(x TYPE) KeywordArguments {
 	return KeywordArguments{string(s): x}
 }
 
-// Kv 只是简单返回个k+v的结果，因为用的是泛型，因此能避免类型错误
+// Kv 只是简单返回个 k,v 的结果，因为用的是泛型，因此能避免类型错误，而这个 k,v 的结果恰巧可以传给gorm的Update函数(完美)。Example: db.Where(k.Eq("a")).Update(k.Kv("b")).Error (非常完美)。
 func (s ColumnName[TYPE]) Kv(x TYPE) (string, TYPE) {
+	return string(s), x
+}
+
+// Ke 是在Kv的基础上新增的，返回个 k,expression 的结果，能传给gorm的Update函数。这个函数预计使用率不高，因此就不实现Kw的对应的Kwe啦(Kwe命名含义不明确)，因为使用率会更低些(主要是不知道该起啥名)。
+func (s ColumnName[TYPE]) Ke(x clause.Expr) (string, clause.Expr) {
 	return string(s), x
 }
