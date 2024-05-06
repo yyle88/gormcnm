@@ -76,7 +76,8 @@ func (c *ColumnBaseFuncClass) MergeNames(a ...nameInterface) string {
 	return strings.Join(names, ", ")
 }
 
-// Merge join some SQL statements with comma ", ". return a string. Use it when using db.Select() / db.Group(). thank you!
-func (c *ColumnBaseFuncClass) Merge(a ...string) string {
+// MergeStmts join some SQL statements with comma ", ". return a string. Use it when using db.Select() / db.Group(). thank you!
+// 理论上函数名叫 Merge 就行，但假如别人定义的 model 里也有 Merge 呢，就有可能冲突（也可能不冲突，毕竟列名通常建议使用名词），因此把函数名写长些，避免发生冲突。
+func (c *ColumnBaseFuncClass) MergeStmts(a ...string) string {
 	return strings.Join(a, ", ")
 }
