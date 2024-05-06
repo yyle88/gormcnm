@@ -79,6 +79,21 @@ func (s ColumnName[TYPE]) BetweenAND(arg1, arg2 TYPE) (string, TYPE, TYPE) {
 	return string(s) + " BETWEEN ? AND ?", arg1, arg2
 }
 
+// Name Get column name. Column Name is abbreviated as cnm. return raw string.
+// 因为偶尔需要 db.Select("name").Find(&one) 这样的操作，使用 string(cls.Name) 也行，但使用次数多了发现还是得封装个 Name 方法更方便
+func (s ColumnName[TYPE]) Name() string {
+	return string(s)
+}
+
+// Safe returns a safe column name by enclosing it in backticks. Example: column name "type" -> "`type`" is safe.
+// Use it when using db.Select("`type`").Find(&one) as an example.
+// 就是当列名和数据库SQL关键字冲突时，需要用特殊手段使其不冲突，在gorm里就是添加反引号把字段引起来。
+// 这样范型设计，代码就会变得很简单，比如当需要使用 Type 字段的时候，就可以使用 cls.Type.Safe().Eq("value") 就能解决问题啦，能够完美贴合已有的所有逻辑。
+// 至于自动化识别关键字的操作，我懒得做，因为实际使用场景也是很少的(Less is more)，当然主要是最初设计的时候忽略了这个情况，假如遇事不决都加引号也会比较繁琐。
+func (s ColumnName[TYPE]) Safe() ColumnName[TYPE] {
+	return ColumnName[TYPE]("`" + string(s) + "`")
+}
+
 func (s ColumnName[TYPE]) ExprAdd(v TYPE) clause.Expr {
 	return gorm.Expr(string(s)+" + ?", v)
 }
