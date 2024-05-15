@@ -166,18 +166,18 @@ func (s ColumnName[TYPE]) CoalesceStmt(sfn string, dfv string, alias string) str
 	return stmt
 }
 
-func (s ColumnName[TYPE]) CoalesceSumStmt(dfv string, alias string) string {
-	return s.CoalesceStmt("SUM", dfv, alias)
+func (s ColumnName[TYPE]) CoalesceSumStmt(alias string) string {
+	return s.CoalesceStmt("SUM", "0", alias)
 }
 
-func (s ColumnName[TYPE]) CoalesceMaxStmt(dfv string, alias string) string {
-	return s.CoalesceStmt("MAX", dfv, alias)
+func (s ColumnName[TYPE]) CoalesceMaxStmt(alias string) string {
+	return s.CoalesceStmt("MAX", "0", alias)
 }
 
-func (s ColumnName[TYPE]) CoalesceMinStmt(dfv string, alias string) string {
-	return s.CoalesceStmt("MIN", dfv, alias)
+func (s ColumnName[TYPE]) CoalesceMinStmt(alias string) string {
+	return s.CoalesceStmt("MIN", "0", alias)
 }
 
-func (s ColumnName[TYPE]) CoalesceAvgStmt(dfv string, alias string) string {
-	return s.CoalesceStmt("AVG", dfv, alias)
+func (s ColumnName[TYPE]) CoalesceAvgStmt(alias string) string {
+	return s.CoalesceStmt("AVG", "0", alias)
 }
