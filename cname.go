@@ -141,3 +141,43 @@ func (s ColumnName[TYPE]) KeAdd(x TYPE) (string, clause.Expr) {
 func (s ColumnName[TYPE]) KeSub(x TYPE) (string, clause.Expr) {
 	return s.KeExp(s.ExprSub(x))
 }
+
+func (s ColumnName[TYPE]) MyIfNullStmt(sfn string, dfv string, alias string) string {
+	if dfv == "" {
+		dfv = "0"
+	}
+	//IFNULL 是 MySQL 特定的函数，在其他数据库系统中可能不支持
+	stmt := "IFNULL(" + sfn + "(" + string(s) + "), " + dfv + ")"
+	if alias != "" {
+		stmt += " as " + alias
+	}
+	return stmt
+}
+
+func (s ColumnName[TYPE]) CoalesceStmt(sfn string, dfv string, alias string) string {
+	if dfv == "" {
+		dfv = "0"
+	}
+	//COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
+	stmt := "COALESCE(" + sfn + "(" + string(s) + "), " + dfv + ")"
+	if alias != "" {
+		stmt += " as " + alias
+	}
+	return stmt
+}
+
+func (s ColumnName[TYPE]) CoalesceSumStmt(dfv string, alias string) string {
+	return s.CoalesceStmt("SUM", dfv, alias)
+}
+
+func (s ColumnName[TYPE]) CoalesceMaxStmt(dfv string, alias string) string {
+	return s.CoalesceStmt("MAX", dfv, alias)
+}
+
+func (s ColumnName[TYPE]) CoalesceMinStmt(dfv string, alias string) string {
+	return s.CoalesceStmt("MIN", dfv, alias)
+}
+
+func (s ColumnName[TYPE]) CoalesceAvgStmt(dfv string, alias string) string {
+	return s.CoalesceStmt("AVG", dfv, alias)
+}

@@ -81,7 +81,7 @@ func TestFunctionOutPackage(t *testing.T) {
 	{
 		stmt := caseDB.Model(&ExampleOutPackage{})
 		stmt = c.Where(stmt, c.Qx(columnName.Eq("abc")).OR(c.Qx(columnName.Eq("aaa"))))
-		stmt = c.Order(stmt, columnRank.Ob("asc"))
+		stmt = c.OrderByColumns(stmt, columnRank.Ob("asc"))
 
 		var examples []*ExampleOutPackage
 		result := stmt.Find(&examples)

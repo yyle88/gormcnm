@@ -111,3 +111,53 @@ func TestColumnName_Op3(t *testing.T) {
 		t.Log(utilsgormcnm.SoftNeatString(one))
 	}
 }
+
+func TestColumnName_CoalesceStmt(t *testing.T) {
+	type ExampleCoalesceStmtValue struct {
+		Name string `gorm:"primary_key;type:varchar(100);"`
+		Rank int    `gorm:"column:rank;"`
+	}
+
+	require.NoError(t, caseDB.AutoMigrate(&ExampleCoalesceStmtValue{}))
+	require.NoError(t, caseDB.Save(&ExampleCoalesceStmtValue{
+		Name: "aaa",
+		Rank: 123,
+	}).Error)
+	require.NoError(t, caseDB.Save(&ExampleCoalesceStmtValue{
+		Name: "bbb",
+		Rank: 456,
+	}).Error)
+
+	columnRank := ColumnName[int]("rank")
+
+	{
+		var value int
+		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceMaxStmt("0", "")).First(&value).Error
+		require.NoError(t, err)
+		require.Equal(t, 456, value)
+	}
+	{
+		type resType struct {
+			Value int
+		}
+		var res resType
+		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceMinStmt("-1", "value")).First(&res).Error
+		require.NoError(t, err)
+		require.Equal(t, 123, res.Value)
+	}
+	{
+		type resType struct {
+			Value int
+		}
+		var res resType
+		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceSumStmt("0", "value")).First(&res).Error
+		require.NoError(t, err)
+		require.Equal(t, 579, res.Value)
+	}
+	{
+		var value float64
+		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceAvgStmt("", "alias")).First(&value).Error
+		require.NoError(t, err)
+		require.Equal(t, 289.5, value)
+	}
+}
