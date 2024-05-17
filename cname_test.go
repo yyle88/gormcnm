@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/yyle88/gormcnm/utilsgormcnm"
+	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -24,12 +24,12 @@ func TestMain(m *testing.M) {
 	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
-	utilsgormcnm.AssertDone(err)
+	utils.AssertDone(err)
 	caseDB = db
 
-	utilsgormcnm.AssertDone(db.AutoMigrate(&Example{}))
-	utilsgormcnm.AssertDone(caseDB.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-	utilsgormcnm.AssertDone(caseDB.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	utils.AssertDone(db.AutoMigrate(&Example{}))
+	utils.AssertDone(caseDB.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	utils.AssertDone(caseDB.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
 	m.Run()
 	os.Exit(0)
 }
@@ -41,38 +41,38 @@ func TestColumnName_Op(t *testing.T) {
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Op("=?", "abc")).First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Eq("abc")).First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.BetweenAND("aba", "abd")).First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 	{
 		var one Example
 		require.ErrorIs(t, gorm.ErrRecordNotFound, caseDB.Where(columnName.IsNULL()).First(&one).Error)
 		require.Equal(t, "", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.IsNotNULL()).First(&one).Error)
 		require.Contains(t, []string{"abc", "aaa"}, one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 	{
 		var res []*Example
 		require.NoError(t, caseDB.Where(columnName.In([]string{"abc", "aaa"})).Find(&res).Error)
 		require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
 		require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
-		t.Log(utilsgormcnm.SoftNeatString(res))
+		t.Log(utils.SoftNeatString(res))
 	}
 	{
 		var res []*Example
@@ -81,7 +81,7 @@ func TestColumnName_Op(t *testing.T) {
 			require.NotEqual(t, "aaa", v.Name)
 			require.NotEqual(t, "bbb", v.Name)
 		}
-		t.Log(utilsgormcnm.SoftNeatString(res))
+		t.Log(utils.SoftNeatString(res))
 	}
 }
 
@@ -92,7 +92,7 @@ func TestColumnName_Op2(t *testing.T) {
 	var one Example
 	require.NoError(t, caseDB.Where(columnName.Qs("=?")+" AND "+columnType.Qs("=?"), "abc", "xyz").First(&one).Error)
 	require.Equal(t, "abc", one.Name)
-	t.Log(utilsgormcnm.SoftNeatString(one))
+	t.Log(utils.SoftNeatString(one))
 }
 
 func TestColumnName_Op3(t *testing.T) {
@@ -102,13 +102,13 @@ func TestColumnName_Op3(t *testing.T) {
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Like("%b%")).First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.NotLike("%b%")).First(&one).Error)
 		require.Equal(t, "aaa", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 }
 
@@ -132,7 +132,7 @@ func TestColumnName_CoalesceStmt(t *testing.T) {
 
 	{
 		var value int
-		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceMaxStmt("0", "")).First(&value).Error
+		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceMaxStmt("")).First(&value).Error
 		require.NoError(t, err)
 		require.Equal(t, 456, value)
 	}
@@ -141,7 +141,7 @@ func TestColumnName_CoalesceStmt(t *testing.T) {
 			Value int
 		}
 		var res resType
-		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceMinStmt("-1", "value")).First(&res).Error
+		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceMinStmt("value")).First(&res).Error
 		require.NoError(t, err)
 		require.Equal(t, 123, res.Value)
 	}
@@ -150,13 +150,13 @@ func TestColumnName_CoalesceStmt(t *testing.T) {
 			Value int
 		}
 		var res resType
-		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceSumStmt("0", "value")).First(&res).Error
+		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceSumStmt("value")).First(&res).Error
 		require.NoError(t, err)
 		require.Equal(t, 579, res.Value)
 	}
 	{
 		var value float64
-		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceAvgStmt("", "alias")).First(&value).Error
+		err := caseDB.Model(&ExampleCoalesceStmtValue{}).Select(columnRank.CoalesceAvgStmt("alias")).First(&value).Error
 		require.NoError(t, err)
 		require.Equal(t, 289.5, value)
 	}

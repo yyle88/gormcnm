@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/yyle88/gormcnm"
-	"github.com/yyle88/gormcnm/utilsgormcnm"
+	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -47,5 +47,5 @@ func main() {
 		First(&res).Error; err != nil {
 		panic(errors.WithMessage(err, "wrong"))
 	}
-	fmt.Println(utilsgormcnm.SoftNeatString(res))
+	fmt.Println(utils.SoftNeatString(res))
 }

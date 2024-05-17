@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/yyle88/gormcnm/utilsgormcnm"
+	"github.com/yyle88/gormcnm/internal/utils"
 )
 
 func TestObColumnAscDesc_Ob(t *testing.T) {
@@ -20,7 +20,7 @@ func TestObColumnAscDesc_Ob(t *testing.T) {
 			Find(&res).Error)
 		require.Equal(t, "aaa", res[0].Name)
 		require.Equal(t, "abc", res[1].Name)
-		t.Log(utilsgormcnm.SoftNeatString(res))
+		t.Log(utils.SoftNeatString(res))
 	}
 	{
 		var res []*Example
@@ -31,6 +31,6 @@ func TestObColumnAscDesc_Ob(t *testing.T) {
 			Find(&res).Error)
 		require.Equal(t, "abc", res[0].Name)
 		require.Equal(t, "aaa", res[1].Name)
-		t.Log(utilsgormcnm.SoftNeatString(res))
+		t.Log(utils.SoftNeatString(res))
 	}
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/gormcnm"
-	"github.com/yyle88/gormcnm/utilsgormcnm"
+	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -36,12 +36,12 @@ func initOnce() {
 		db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Info),
 		})
-		utilsgormcnm.AssertDone(err)
+		utils.AssertDone(err)
 		caseDB = db
 
-		utilsgormcnm.AssertDone(db.AutoMigrate(&ExampleOutPackage{}))
-		utilsgormcnm.AssertDone(caseDB.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
-		utilsgormcnm.AssertDone(caseDB.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+		utils.AssertDone(db.AutoMigrate(&ExampleOutPackage{}))
+		utils.AssertDone(caseDB.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
+		utils.AssertDone(caseDB.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 	})
 }
 
@@ -89,6 +89,6 @@ func TestFunctionOutPackage(t *testing.T) {
 		require.Equal(t, 2, len(examples))
 		require.Equal(t, 100, examples[0].Rank)
 		require.Equal(t, 200, examples[1].Rank)
-		t.Log(utilsgormcnm.SoftNeatString(examples))
+		t.Log(utils.SoftNeatString(examples))
 	}
 }

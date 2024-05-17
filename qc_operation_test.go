@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/yyle88/gormcnm/utilsgormcnm"
+	"github.com/yyle88/gormcnm/internal/utils"
 )
 
 func TestColumnQcOperation_AND(t *testing.T) {
@@ -15,7 +15,7 @@ func TestColumnQcOperation_AND(t *testing.T) {
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Qc("=?").AND(columnType.Qc("=?")).Qs(), "abc", "xyz").First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 	{
 		var res []*Example
@@ -31,13 +31,13 @@ func TestColumnQcOperation_AND(t *testing.T) {
 				).Qs(), "abc", "aaa", "bbb").Find(&res).Error)
 		require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
 		require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
-		t.Log(utilsgormcnm.SoftNeatString(res))
+		t.Log(utils.SoftNeatString(res))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Qc("=?").NOT().Qs(), "abc").First(&one).Error)
 		require.NotEqual(t, "abc", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 }
 
@@ -49,6 +49,6 @@ func TestColumnQcOperation_AND_2(t *testing.T) {
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Qc("=?").AND(columnType.Qc("=?")).Qs(), "abc", "xyz").First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utilsgormcnm.SoftNeatString(one))
+		t.Log(utils.SoftNeatString(one))
 	}
 }

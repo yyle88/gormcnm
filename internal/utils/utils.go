@@ -1,4 +1,4 @@
-package utilsgormcnm
+package utils
 
 import (
 	"encoding/json"
