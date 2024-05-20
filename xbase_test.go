@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/driver/sqlite"
@@ -31,24 +32,24 @@ var onceIt sync.Once
 // 当你运行这个测试文件时，你会发现另一个 TestMain 里的逻辑也被执行
 // 当你测试整个包的时候，在另一个包的 TestMain 确实只会被运行一次，而不是两次
 // 这个问题是无关痛痒的，因此也没必要给go官方提问题
-func initOnce() {
+func onceInitialize() {
 	onceIt.Do(func() {
-		db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+		db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Info),
-		})
-		utils.AssertDone(err)
-		caseDB = db
+		})).Nice()
 
-		utils.AssertDone(db.AutoMigrate(&ExampleOutPackage{}))
-		utils.AssertDone(caseDB.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
-		utils.AssertDone(caseDB.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+		done.Done(db.AutoMigrate(&ExampleOutPackage{}))
+		done.Done(db.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
+		done.Done(db.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+
+		caseDB = db
 	})
 }
 
-func TestFunctionOutPackage(t *testing.T) {
-	initOnce()
+func TestFunctionOutOfCnmPackage(t *testing.T) {
+	onceInitialize()
 
-	c := &gormcnm.ColumnBaseFuncClass{}
+	c := &gormcnm.ColumnOperationClass{}
 	columnName := gormcnm.ColumnName[string]("name")
 	columnType := gormcnm.ColumnName[string]("type")
 	columnRank := gormcnm.ColumnName[int]("rank")

@@ -2,10 +2,10 @@ package gormcnm
 
 import (
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -21,17 +21,19 @@ type Example struct {
 
 func TestMain(m *testing.M) {
 	fmt.Println("run_test_main")
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+	db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
-	})
-	utils.AssertDone(err)
-	caseDB = db
+	})).Nice()
+	defer func() {
+		done.Done(done.VCE(db.DB()).Nice().Close())
+	}()
 
-	utils.AssertDone(db.AutoMigrate(&Example{}))
-	utils.AssertDone(caseDB.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-	utils.AssertDone(caseDB.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	done.Done(db.AutoMigrate(&Example{}))
+	done.Done(db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	done.Done(db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+
+	caseDB = db
 	m.Run()
-	os.Exit(0)
 }
 
 func TestColumnName_Op(t *testing.T) {

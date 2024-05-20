@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
-	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -19,7 +19,7 @@ type Example struct {
 }
 
 // Now define the fields enum vars(name, type rank)
-var (
+const (
 	columnName = gormcnm.ColumnName[string]("name")
 	columnType = gormcnm.ColumnName[string]("type")
 	columnRank = gormcnm.ColumnName[int]("rank")
@@ -27,25 +27,30 @@ var (
 
 func main() {
 	//new db connection
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+	db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
-	})
-	if err != nil {
-		panic(errors.WithMessage(err, "wrong"))
-	}
+	})).Nice()
 
 	//create example data
 	_ = db.AutoMigrate(&Example{})
 	_ = db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error
 	_ = db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error
 
-	//select an example data
-	var res Example
-	if err := db.Where(columnName.Eq("abc")).
-		Where(columnType.Eq("xyz")).
-		Where(columnRank.Gt(100)).Where(columnRank.Lt(200)).
-		First(&res).Error; err != nil {
-		panic(errors.WithMessage(err, "wrong"))
+	{
+		var res Example
+		err := db.Where("name=?", "abc").First(&res).Error
+		done.Done(err)
+		fmt.Println(res)
 	}
-	fmt.Println(utils.SoftNeatString(res))
+	{ //select an example data
+		var res Example
+		if err := db.Where(columnName.Eq("abc")).
+			Where(columnType.Eq("xyz")).
+			Where(columnRank.Gt(100)).
+			Where(columnRank.Lt(200)).
+			First(&res).Error; err != nil {
+			panic(errors.WithMessage(err, "wrong"))
+		}
+		fmt.Println(res)
+	}
 }
