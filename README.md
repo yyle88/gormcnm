@@ -81,8 +81,4 @@ go get github.com/yyle88/gormcnm
 import "github.com/yyle88/gormcnm"
 ```
 
-## 其它
-这个项目其实是致敬 `gorm` 的，但 `gormcnm` 或许有些不雅观，假如觉得不适也可以看这里 [gormcls](https://github.com/yyle88/gormcls)
-我偶尔也会认为这个名字 `gormcls` 其实更好些，但很显然这个项目解决的是“跟列名字段名有关的操作”，因此 `gorm column name` 缩写为 `gormcnm` 简直不能再合适啦，响亮而文雅。
-
 Give me stars. Thank you!!!
