@@ -93,3 +93,44 @@ func TestFunctionOutOfCnmPackage(t *testing.T) {
 		t.Log(utils.SoftNeatString(examples))
 	}
 }
+
+func TestColumnOperationClass_MergeStmts(t *testing.T) {
+	onceInitialize()
+
+	c := &gormcnm.ColumnOperationClass{}
+	columnName := gormcnm.ColumnName[string]("name")
+
+	type resType struct {
+		Who string
+		Cnt int64
+	}
+
+	var results []resType
+	require.NoError(t, caseDB.Model(&ExampleOutPackage{}).
+		Group(columnName.Name()).
+		Select(c.MergeStmts(
+			columnName.AsAlias("who"),
+			c.CountStmt("cnt"),
+		)).
+		Find(&results).Error)
+	require.Equal(t, 2, len(results))
+	for _, one := range results {
+		t.Log(one.Who, one.Cnt)
+		require.NotEmpty(t, one.Who)
+		require.Positive(t, one.Cnt)
+	}
+}
+
+func TestColumnOperationClass_CountStmt(t *testing.T) {
+	onceInitialize()
+
+	c := &gormcnm.ColumnOperationClass{}
+
+	type resType struct {
+		Cnt int64
+	}
+
+	var res resType
+	require.NoError(t, caseDB.Model(&ExampleOutPackage{}).Select(c.CountStmt("cnt")).Find(&res).Error)
+	require.Equal(t, int64(2), res.Cnt)
+}

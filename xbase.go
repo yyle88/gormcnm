@@ -81,3 +81,7 @@ func (c *ColumnOperationClass) MergeNames(a ...nameInterface) string {
 func (c *ColumnOperationClass) MergeStmts(a ...string) string {
 	return strings.Join(a, ", ")
 }
+
+func (c *ColumnOperationClass) CountStmt(alias string) string {
+	return stmtAsAlias("COUNT(*)", alias)
+}

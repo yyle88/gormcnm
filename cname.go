@@ -85,6 +85,12 @@ func (s ColumnName[TYPE]) Name() string {
 	return string(s)
 }
 
+// AsAlias Return a raw string: "column_name as alias"
+// 因为查询时偶尔要取别名，以适配结果，比如当自定义 resType 收集返回结果时，其字段就很有可能 和 models 里的字段是不同名的
+func (s ColumnName[TYPE]) AsAlias(alias string) string {
+	return stmtAsAlias(s.Name(), alias)
+}
+
 // Safe returns a safe column name by enclosing it in backticks. Example: column name "type" -> "`type`" is safe.
 // Use it when using db.Select("`type`").Find(&one) as an example.
 // 就是当列名和数据库SQL关键字冲突时，需要用特殊手段使其不冲突，在gorm里就是添加反引号把字段引起来。
@@ -142,16 +148,14 @@ func (s ColumnName[TYPE]) KeSub(x TYPE) (string, clause.Expr) {
 	return s.KeExp(s.ExprSub(x))
 }
 
-func (s ColumnName[TYPE]) MyIfNullStmt(sfn string, dfv string, alias string) string {
+func (s ColumnName[TYPE]) IFNULLFnStmt(sfn string, dfv string, alias string) string {
 	if dfv == "" {
 		dfv = "0"
 	}
 	//IFNULL 是 MySQL 特定的函数，在其他数据库系统中可能不支持
 	stmt := "IFNULL(" + sfn + "(" + string(s) + "), " + dfv + ")"
-	if alias != "" {
-		stmt += " as " + alias
-	}
-	return stmt
+	//when alias is not none return "stmt as alias"
+	return stmtAsAlias(stmt, alias)
 }
 
 func (s ColumnName[TYPE]) CoalesceStmt(sfn string, dfv string, alias string) string {
@@ -160,10 +164,7 @@ func (s ColumnName[TYPE]) CoalesceStmt(sfn string, dfv string, alias string) str
 	}
 	//COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
 	stmt := "COALESCE(" + sfn + "(" + string(s) + "), " + dfv + ")"
-	if alias != "" {
-		stmt += " as " + alias
-	}
-	return stmt
+	return stmtAsAlias(stmt, alias)
 }
 
 func (s ColumnName[TYPE]) CoalesceSumStmt(alias string) string {
