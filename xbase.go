@@ -22,6 +22,14 @@ func (c *ColumnOperationClass) Qx(qs string, args ...interface{}) *QxType {
 	return NewQx(qs, args...)
 }
 
+func (c *ColumnOperationClass) NewSx(qs string, args ...interface{}) *SxType {
+	return NewSx(qs, args...)
+}
+
+func (c *ColumnOperationClass) Sx(qs string, args ...interface{}) *SxType {
+	return NewSx(qs, args...)
+}
+
 func (c *ColumnOperationClass) NewKw() KeywordArguments {
 	return NewKw()
 }
@@ -82,6 +90,31 @@ func (c *ColumnOperationClass) MergeStmts(a ...string) string {
 	return strings.Join(a, ", ")
 }
 
+// CountStmt 统计表中行的数量 count(*) 和 count(1) 两者是等价的，这里使用 count(*) 因为这个更加常用
 func (c *ColumnOperationClass) CountStmt(alias string) string {
 	return stmtAsAlias("COUNT(*)", alias)
+}
+
+// CountCaseWhenStmt COUNT(CASE WHEN condition THEN 1 END): 根据条件统计符合条件的行数
+// 这个比较不常用
+func (c *ColumnOperationClass) CountCaseWhenStmt(condition string, alias string) string {
+	return stmtAsAlias("COUNT(CASE WHEN ("+condition+") THEN 1 END)", alias)
+}
+
+func (c *ColumnOperationClass) CountCaseWhenQxSx(qx *QxType, alias string) *SxType {
+	return NewSx(
+		stmtAsAlias("COUNT(CASE WHEN ("+qx.Qs()+") THEN 1 END)", alias),
+		qx.Args()...,
+	)
+}
+
+func (c *ColumnOperationClass) CombineSxs(cs ...SxType) *SxType {
+	var qsVs []string
+	var args []any
+	for _, c := range cs {
+		qsVs = append(qsVs, c.Qs())
+		args = append(args, c.Args()...)
+	}
+	var stmt = strings.Join(qsVs, ", ")
+	return NewSx(stmt, args...)
 }

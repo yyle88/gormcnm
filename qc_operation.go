@@ -49,8 +49,6 @@ func (qc QsCondition) Qs() string {
 }
 
 func (qc QsCondition) Qx() *QxType {
-	return &QxType{
-		qc:   qc,
-		args: []interface{}{},
-	}
+	var args = make([]interface{}, 0) //就这样吧，避免忘记
+	return NewQx(string(qc), args...)
 }

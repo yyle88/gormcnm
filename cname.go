@@ -117,10 +117,9 @@ func (s ColumnName[TYPE]) Qc(op string) QsCondition {
 }
 
 func (s ColumnName[TYPE]) Qx(op string, x TYPE) *QxType {
-	return &QxType{
-		qc:   s.Qc(op),
-		args: []interface{}{x},
-	}
+	qs := string(s.Qc(op))
+	args := []interface{}{x}
+	return NewQx(qs, args...)
 }
 
 // Kw 得到只有1个元素的kw的map，这样能继续去增加元素
@@ -181,4 +180,17 @@ func (s ColumnName[TYPE]) CoalesceMinStmt(alias string) string {
 
 func (s ColumnName[TYPE]) CoalesceAvgStmt(alias string) string {
 	return s.CoalesceStmt("AVG", "0", alias)
+}
+
+// Count COUNT(column_name) will only count rows where the given column is NOT NULL value
+// 这个和表级别的 count(*) 还是有区别的
+func (s ColumnName[TYPE]) Count(alias string) string {
+	stmt := "COUNT(" + string(s) + ")"
+	return stmtAsAlias(stmt, alias)
+}
+
+// CountDistinct COUNT(DISTINCT column_name) 在遇到 NULL 值时,会自动跳过,不将 NULL 计入统计结果
+func (s ColumnName[TYPE]) CountDistinct(alias string) string {
+	stmt := "COUNT(DISTINCT(" + string(s) + "))"
+	return stmtAsAlias(stmt, alias)
 }

@@ -114,6 +114,25 @@ func TestColumnName_Op3(t *testing.T) {
 	}
 }
 
+func TestColumnName_Count(t *testing.T) {
+	columnName := ColumnName[string]("name")
+	{
+		var value int
+		err := caseDB.Model(&Example{}).Select(columnName.Count("cnt")).First(&value).Error
+		require.NoError(t, err)
+		require.Equal(t, 2, value)
+	}
+	{
+		type resType struct {
+			Cnt int64
+		}
+		var res resType
+		err := caseDB.Model(&Example{}).Select(columnName.CountDistinct("cnt")).First(&res).Error
+		require.NoError(t, err)
+		require.Equal(t, int64(2), res.Cnt)
+	}
+}
+
 func TestColumnName_CoalesceStmt(t *testing.T) {
 	type ExampleCoalesceStmtValue struct {
 		Name string `gorm:"primary_key;type:varchar(100);"`
