@@ -123,8 +123,8 @@ func (s ColumnName[TYPE]) Qx(op string, x TYPE) *QxType {
 }
 
 // Kw 得到只有1个元素的kw的map，这样能继续去增加元素
-func (s ColumnName[TYPE]) Kw(x TYPE) KeywordArguments {
-	return KeywordArguments{string(s): x}
+func (s ColumnName[TYPE]) Kw(x TYPE) ColumnValueMap {
+	return ColumnValueMap{string(s): x}
 }
 
 // Kv 只是简单返回个 k,v 的结果，因为用的是泛型，因此能避免类型错误，而这个 k,v 的结果恰巧可以传给gorm的Update函数(完美)。Example: db.Where(k.Eq("a")).Update(k.Kv("b")).Error (非常完美)。

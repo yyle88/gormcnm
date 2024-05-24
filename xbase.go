@@ -30,11 +30,11 @@ func (c *ColumnOperationClass) Sx(qs string, args ...interface{}) *SxType {
 	return NewSx(qs, args...)
 }
 
-func (c *ColumnOperationClass) NewKw() KeywordArguments {
+func (c *ColumnOperationClass) NewKw() ColumnValueMap {
 	return NewKw()
 }
 
-func (c *ColumnOperationClass) Kw(columnName string, value interface{}) KeywordArguments {
+func (c *ColumnOperationClass) Kw(columnName string, value interface{}) ColumnValueMap {
 	return Kw(columnName, value)
 }
 
@@ -60,7 +60,7 @@ func (c *ColumnOperationClass) OrderByColumns(db *gorm.DB, obs ...ColumnOrderByA
 
 // UpdateColumns 根据字典更新数据
 // 很明显这样做会破坏gorm链式操作的写法，但这样也是可行的，也能简化些代码
-func (c *ColumnOperationClass) UpdateColumns(db *gorm.DB, kws ...KeywordArguments) *gorm.DB {
+func (c *ColumnOperationClass) UpdateColumns(db *gorm.DB, kws ...ColumnValueMap) *gorm.DB {
 	mp := map[string]interface{}{}
 	for _, kw := range kws {
 		for k, v := range kw.AsMap() {
