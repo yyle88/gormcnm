@@ -6,34 +6,36 @@ import (
 	"strings"
 )
 
-type QsCondition string
+// QsConjunction means gorm query statement conjunction. example: OR AND NOT
+// 就是表示 "或" "且" "非" 的连接词
+// 在语法学中，conjunction（连词）是一种词类，用来连接词、短语、语句
+type QsConjunction string
 
-func (qc QsCondition) AND(qcs ...QsCondition) QsCondition {
+func (qc QsConjunction) AND(qcs ...QsConjunction) QsConjunction {
 	var qss = make([]string, 0, 1+len(qcs)) //新空间-确保线程安全
 	qss = append(qss, "("+qc.Qs()+")")
 	for _, c := range qcs {
 		qss = append(qss, "("+c.Qs()+")") //把能加括号的地方都加上以免出问题
 	}
-	return "(" + QsCondition(strings.Join(qss, " AND ")) + ")"
+	return "(" + QsConjunction(strings.Join(qss, " AND ")) + ")"
 }
 
-func (qc QsCondition) OR(qcs ...QsCondition) QsCondition {
+func (qc QsConjunction) OR(qcs ...QsConjunction) QsConjunction {
 	var qss = make([]string, 0, 1+len(qcs)) //新空间-确保线程安全
 	qss = append(qss, "("+qc.Qs()+")")
 	for _, c := range qcs {
 		qss = append(qss, "("+c.Qs()+")") //把能加括号的地方都加上以免出问题
 	}
-	return "(" + QsCondition(strings.Join(qss, " OR ")) + ")"
+	return "(" + QsConjunction(strings.Join(qss, " OR ")) + ")"
 }
 
-func (qc QsCondition) NOT() QsCondition {
-	return QsCondition(fmt.Sprintf("NOT(%s)", qc))
+func (qc QsConjunction) NOT() QsConjunction {
+	return QsConjunction(fmt.Sprintf("NOT(%s)", qc))
 }
 
 // Value 这块非常重要，要避免gorm直接使用这个结构，因此要在这里panic
-func (qc QsCondition) Value() (driver.Value, error) {
-	//当你在调用时报这个错时，说明你where条件的第一个参数不是字符串类型，而是直接使用的本类型，这是不对的，请修改调用侧代码
-	panic("column.value() function is not callable") //当报这个错时，需要修改调用侧代码
+func (qc QsConjunction) Value() (driver.Value, error) {
+	panic(erxFunctionIsNotExecutable) //当报这个错时，需要修改调用侧代码，请看这个错误码的注释
 }
 
 // Qs 查询语句
@@ -44,11 +46,11 @@ func (qc QsCondition) Value() (driver.Value, error) {
 // 因此:
 // 假如你不把结果再转换为string，就会在where条件中触发value异常
 // 这也正是我在前面，实现一个错误的value函数的原因
-func (qc QsCondition) Qs() string {
+func (qc QsConjunction) Qs() string {
 	return string(qc)
 }
 
-func (qc QsCondition) Qx() *QxType {
+func (qc QsConjunction) Qx() *QxType {
 	var args = make([]interface{}, 0) //就这样吧，避免忘记
 	return NewQx(string(qc), args...)
 }

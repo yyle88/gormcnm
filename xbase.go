@@ -14,20 +14,20 @@ func (c *ColumnOperationClass) OK() bool {
 	return true //这个函数有奇效，让你把变量的创建放在if{}代码块里
 }
 
-func (c *ColumnOperationClass) NewQx(qs string, args ...interface{}) *QxType {
-	return NewQx(qs, args...)
+func (c *ColumnOperationClass) NewQx(stmt string, args ...interface{}) *QxType {
+	return NewQx(stmt, args...)
 }
 
-func (c *ColumnOperationClass) Qx(qs string, args ...interface{}) *QxType {
-	return NewQx(qs, args...)
+func (c *ColumnOperationClass) Qx(stmt string, args ...interface{}) *QxType {
+	return NewQx(stmt, args...)
 }
 
-func (c *ColumnOperationClass) NewSx(qs string, args ...interface{}) *SxType {
-	return NewSx(qs, args...)
+func (c *ColumnOperationClass) NewSx(stmt string, args ...interface{}) *SxType {
+	return NewSx(stmt, args...)
 }
 
-func (c *ColumnOperationClass) Sx(qs string, args ...interface{}) *SxType {
-	return NewSx(qs, args...)
+func (c *ColumnOperationClass) Sx(stmt string, args ...interface{}) *SxType {
+	return NewSx(stmt, args...)
 }
 
 func (c *ColumnOperationClass) NewKw() ColumnValueMap {
@@ -39,7 +39,7 @@ func (c *ColumnOperationClass) Kw(columnName string, value interface{}) ColumnVa
 }
 
 // Where 设置查询条件
-// 很明显这样做会破坏gorm链式操作的写法，但这样也是可行的，也能简化些代码
+// 很明显这样做会破坏gorm链式操作的【链式调用语句】，但这样也是可行的，也能简化些代码
 func (c *ColumnOperationClass) Where(db *gorm.DB, qxs ...*QxType) *gorm.DB {
 	stmt := db
 	for _, qx := range qxs {
@@ -49,7 +49,7 @@ func (c *ColumnOperationClass) Where(db *gorm.DB, qxs ...*QxType) *gorm.DB {
 }
 
 // OrderByColumns 设置排序方向
-// 很明显这样做会破坏gorm链式操作的写法，但这样也是可行的，也能简化些代码
+// 很明显这样做会破坏gorm链式操作的【链式调用语句】，但这样也是可行的，也能简化些代码
 func (c *ColumnOperationClass) OrderByColumns(db *gorm.DB, obs ...ColumnOrderByAscDesc) *gorm.DB {
 	stmt := db
 	for _, ob := range obs {
@@ -59,7 +59,7 @@ func (c *ColumnOperationClass) OrderByColumns(db *gorm.DB, obs ...ColumnOrderByA
 }
 
 // UpdateColumns 根据字典更新数据
-// 很明显这样做会破坏gorm链式操作的写法，但这样也是可行的，也能简化些代码
+// 很明显这样做会破坏gorm链式操作的【链式调用语句】，但这样也是可行的，也能简化些代码
 func (c *ColumnOperationClass) UpdateColumns(db *gorm.DB, kws ...ColumnValueMap) *gorm.DB {
 	mp := map[string]interface{}{}
 	for _, kw := range kws {
@@ -117,4 +117,14 @@ func (c *ColumnOperationClass) CombineSxs(cs ...SxType) *SxType {
 	}
 	var stmt = strings.Join(qsVs, ", ")
 	return NewSx(stmt, args...)
+}
+
+// Select 选择列和筛选数据
+// 和前面 Where OrderByColumns UpdateColumns 类似的，这也会破坏gorm的【链式调用语句】，这里阐释 sx 这个类型的定义目的和使用场景
+func (c *ColumnOperationClass) Select(db *gorm.DB, qxs ...*SxType) *gorm.DB {
+	stmt := db
+	for _, qx := range qxs {
+		stmt = stmt.Select(qx.Qs(), qx.args...)
+	}
+	return stmt
 }

@@ -112,14 +112,14 @@ func (s ColumnName[TYPE]) Ob(direction string) ColumnOrderByAscDesc {
 	return ColumnOrderByAscDesc("`" + string(s) + "`" + " " + direction)
 }
 
-func (s ColumnName[TYPE]) Qc(op string) QsCondition {
-	return QsCondition(string(s) + " " + op)
+func (s ColumnName[TYPE]) Qc(op string) QsConjunction {
+	return QsConjunction(string(s) + " " + op)
 }
 
 func (s ColumnName[TYPE]) Qx(op string, x TYPE) *QxType {
-	qs := string(s.Qc(op))
+	stmt := string(s.Qc(op))
 	args := []interface{}{x}
-	return NewQx(qs, args...)
+	return NewQx(stmt, args...)
 }
 
 // Kw 得到只有1个元素的kw的map，这样能继续去增加元素

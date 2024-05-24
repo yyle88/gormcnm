@@ -40,15 +40,15 @@ func onceNewGorm() *gorm.DB {
 func TestFunctionOutOfCnmPackage(t *testing.T) {
 	db := onceNewGorm()
 
-	type ExampleOutPackage struct {
+	type Example000 struct {
 		Name string `gorm:"primary_key;type:varchar(100);"`
 		Type string `gorm:"column:type;"`
 		Rank int    `gorm:"column:rank;"`
 	}
 
-	done.Done(db.AutoMigrate(&ExampleOutPackage{}))
-	done.Done(db.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
-	done.Done(db.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	done.Done(db.AutoMigrate(&Example000{}))
+	done.Done(db.Save(&Example000{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example000{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
 	c := &gormcnm.ColumnOperationClass{}
 	columnName := gormcnm.ColumnName[string]("name")
@@ -56,7 +56,7 @@ func TestFunctionOutOfCnmPackage(t *testing.T) {
 	columnRank := gormcnm.ColumnName[int]("rank")
 
 	{
-		result := db.Model(&ExampleOutPackage{}).Where(
+		result := db.Model(&Example000{}).Where(
 			c.NewQx(
 				columnName.Eq("abc"),
 			).AND1(
@@ -69,7 +69,7 @@ func TestFunctionOutOfCnmPackage(t *testing.T) {
 		require.Equal(t, int64(1), result.RowsAffected)
 	}
 	{
-		stmt := db.Model(&ExampleOutPackage{})
+		stmt := db.Model(&Example000{})
 		stmt = c.Where(stmt, c.Qx(columnName.Eq("aaa")).
 			AND(
 				c.Qx(columnType.Eq("xxx")),
@@ -81,11 +81,11 @@ func TestFunctionOutOfCnmPackage(t *testing.T) {
 		require.Equal(t, int64(1), result.RowsAffected)
 	}
 	{
-		stmt := db.Model(&ExampleOutPackage{})
+		stmt := db.Model(&Example000{})
 		stmt = c.Where(stmt, c.Qx(columnName.Eq("abc")).OR(c.Qx(columnName.Eq("aaa"))))
 		stmt = c.OrderByColumns(stmt, columnRank.Ob("asc"))
 
-		var examples []*ExampleOutPackage
+		var examples []*Example000
 		result := stmt.Find(&examples)
 		require.NoError(t, result.Error)
 		require.Equal(t, 2, len(examples))
@@ -98,15 +98,15 @@ func TestFunctionOutOfCnmPackage(t *testing.T) {
 func TestColumnOperationClass_MergeStmts(t *testing.T) {
 	db := onceNewGorm()
 
-	type ExampleOutPackage struct {
+	type Example001 struct {
 		Name string `gorm:"primary_key;type:varchar(100);"`
 		Type string `gorm:"column:type;"`
 		Rank int    `gorm:"column:rank;"`
 	}
 
-	done.Done(db.AutoMigrate(&ExampleOutPackage{}))
-	done.Done(db.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
-	done.Done(db.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	done.Done(db.AutoMigrate(&Example001{}))
+	done.Done(db.Save(&Example001{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example001{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
 	c := &gormcnm.ColumnOperationClass{}
 	columnName := gormcnm.ColumnName[string]("name")
@@ -118,7 +118,7 @@ func TestColumnOperationClass_MergeStmts(t *testing.T) {
 
 	{
 		var results []resType
-		require.NoError(t, db.Model(&ExampleOutPackage{}).
+		require.NoError(t, db.Model(&Example001{}).
 			Group(columnName.Name()).
 			Select(c.MergeStmts(
 				columnName.AsAlias("who"),
@@ -134,7 +134,7 @@ func TestColumnOperationClass_MergeStmts(t *testing.T) {
 	}
 	{
 		var results []resType
-		require.NoError(t, db.Model(&ExampleOutPackage{}).
+		require.NoError(t, db.Model(&Example001{}).
 			Group(columnName.Name()).
 			Select(c.MergeStmts(
 				columnName.AsAlias("who"),
@@ -150,7 +150,7 @@ func TestColumnOperationClass_MergeStmts(t *testing.T) {
 	}
 	{
 		var results []resType
-		require.NoError(t, db.Model(&ExampleOutPackage{}).
+		require.NoError(t, db.Model(&Example001{}).
 			Group(columnName.Name()).
 			Select(c.MergeStmts(
 				columnName.AsAlias("who"),
@@ -169,15 +169,15 @@ func TestColumnOperationClass_MergeStmts(t *testing.T) {
 func TestColumnOperationClass_CountStmt(t *testing.T) {
 	db := onceNewGorm()
 
-	type ExampleOutPackage struct {
+	type Example002 struct {
 		Name string `gorm:"primary_key;type:varchar(100);"`
 		Type string `gorm:"column:type;"`
 		Rank int    `gorm:"column:rank;"`
 	}
 
-	done.Done(db.AutoMigrate(&ExampleOutPackage{}))
-	done.Done(db.Save(&ExampleOutPackage{Name: "abc", Type: "xyz", Rank: 123}).Error)
-	done.Done(db.Save(&ExampleOutPackage{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	done.Done(db.AutoMigrate(&Example002{}))
+	done.Done(db.Save(&Example002{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example002{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
 	c := &gormcnm.ColumnOperationClass{}
 
@@ -186,22 +186,22 @@ func TestColumnOperationClass_CountStmt(t *testing.T) {
 	}
 
 	var res resType
-	require.NoError(t, db.Model(&ExampleOutPackage{}).Select(c.CountStmt("cnt")).Find(&res).Error)
+	require.NoError(t, db.Model(&Example002{}).Select(c.CountStmt("cnt")).Find(&res).Error)
 	require.Equal(t, int64(2), res.Cnt)
 }
 
 func TestColumnOperationClass_CountCaseWhenStmt(t *testing.T) {
 	db := onceNewGorm()
 
-	type ExampleOutPackageCnt struct {
+	type Example003 struct {
 		Name string `gorm:"primary_key;type:varchar(100);"`
 		Type string `gorm:"column:type;"`
 		Rank int    `gorm:"column:rank;"`
 	}
 
-	done.Done(db.AutoMigrate(&ExampleOutPackageCnt{}))
-	done.Done(db.Save(&ExampleOutPackageCnt{Name: "abc", Type: "xyz", Rank: 123}).Error)
-	done.Done(db.Save(&ExampleOutPackageCnt{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	done.Done(db.AutoMigrate(&Example003{}))
+	done.Done(db.Save(&Example003{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example003{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
 	c := &gormcnm.ColumnOperationClass{}
 	columnName := gormcnm.ColumnName[string]("name")
@@ -215,7 +215,7 @@ func TestColumnOperationClass_CountCaseWhenStmt(t *testing.T) {
 		var res resType
 		stmt := c.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'", "cnt")
 		t.Log(stmt)
-		require.NoError(t, db.Model(&ExampleOutPackageCnt{}).Select(stmt).Find(&res).Error)
+		require.NoError(t, db.Model(&Example003{}).Select(stmt).Find(&res).Error)
 		require.Equal(t, int64(1), res.Cnt)
 	}
 
@@ -223,15 +223,15 @@ func TestColumnOperationClass_CountCaseWhenStmt(t *testing.T) {
 		var res resType
 		stmt := c.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'"+" AND "+columnType.Name()+"="+"'xxx'", "cnt")
 		t.Log(stmt)
-		require.NoError(t, db.Model(&ExampleOutPackageCnt{}).Select(stmt).Find(&res).Error)
+		require.NoError(t, db.Model(&Example003{}).Select(stmt).Find(&res).Error)
 		require.Equal(t, int64(1), res.Cnt)
 	}
 
 	{
-		var results []*ExampleOutPackageCnt
+		var results []*Example003
 		var qx = c.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
 		t.Log(qx.Qs())
-		require.NoError(t, db.Model(&ExampleOutPackageCnt{}).Where(qx.Qx2()).Find(&results).Error)
+		require.NoError(t, db.Model(&Example003{}).Where(qx.Qx2()).Find(&results).Error)
 		t.Log(len(results))
 	}
 
@@ -241,7 +241,19 @@ func TestColumnOperationClass_CountCaseWhenStmt(t *testing.T) {
 		t.Log(qx.Qs())
 		var sx *gormcnm.SxType = c.CountCaseWhenQxSx(qx, "cnt")
 		t.Log(sx.Qs())
-		require.NoError(t, db.Model(&ExampleOutPackageCnt{}).Select(sx.Qx2()).Find(&res).Error)
+		require.NoError(t, db.Model(&Example003{}).Select(sx.Qx2()).Find(&res).Error)
+		require.Equal(t, int64(1), res.Cnt)
+	}
+
+	{
+		var res resType
+		var qx *gormcnm.QxType = c.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+		t.Log(qx.Qs())
+		var sx *gormcnm.SxType = c.CountCaseWhenQxSx(qx, "cnt")
+		t.Log(sx.Qs())
+		db = db.Model(&Example003{})
+		db = c.Select(db, sx)
+		require.NoError(t, db.Find(&res).Error)
 		require.Equal(t, int64(1), res.Cnt)
 	}
 }
