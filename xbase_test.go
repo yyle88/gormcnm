@@ -37,7 +37,7 @@ func onceNewGorm() *gorm.DB {
 	return caseDB2
 }
 
-func TestFunctionOutOfCnmPackage(t *testing.T) {
+func TestExample000(t *testing.T) {
 	db := onceNewGorm()
 
 	type Example000 struct {
@@ -74,6 +74,19 @@ func TestFunctionOutOfCnmPackage(t *testing.T) {
 			AND(
 				c.Qx(columnType.Eq("xxx")),
 				c.Qx(columnRank.Eq(456)),
+			).
+			OR1(columnName.Eq("abc")),
+		)
+		var results []*Example000
+		require.NoError(t, stmt.Find(&results).Error)
+		t.Log(utils.SoftNeatString(results))
+	}
+	{
+		stmt := db.Model(&Example000{})
+		stmt = c.Where(stmt, c.Qx(columnName.Eq("aaa")).
+			AND(
+				c.Qx(columnType.Eq("xxx")),
+				c.Qx(columnRank.Eq(456)),
 			),
 		)
 		result := c.UpdateColumns(stmt, c.NewKw().Kw(columnRank.Kv(100)).Kw(columnType.Kv("uvw")))
@@ -95,7 +108,7 @@ func TestFunctionOutOfCnmPackage(t *testing.T) {
 	}
 }
 
-func TestColumnOperationClass_MergeStmts(t *testing.T) {
+func TestExample001(t *testing.T) {
 	db := onceNewGorm()
 
 	type Example001 struct {
@@ -166,7 +179,7 @@ func TestColumnOperationClass_MergeStmts(t *testing.T) {
 	}
 }
 
-func TestColumnOperationClass_CountStmt(t *testing.T) {
+func TestExample002(t *testing.T) {
 	db := onceNewGorm()
 
 	type Example002 struct {
@@ -190,7 +203,7 @@ func TestColumnOperationClass_CountStmt(t *testing.T) {
 	require.Equal(t, int64(2), res.Cnt)
 }
 
-func TestColumnOperationClass_CountCaseWhenStmt(t *testing.T) {
+func TestExample003(t *testing.T) {
 	db := onceNewGorm()
 
 	type Example003 struct {

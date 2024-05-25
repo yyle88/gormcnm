@@ -76,6 +76,7 @@ type nameInterface interface {
 }
 
 // MergeNames join column names with comma ", ". return a string. Use it when using db.Select() / db.Group(). thank you!
+// 因为恰好有这个函数 func (s ColumnName[TYPE]) Name() string 因此这个函数可以直接接受自定义的列名，再以逗号拼接，相当于是简化逻辑
 func (c *ColumnOperationClass) MergeNames(a ...nameInterface) string {
 	var names = make([]string, 0, len(a))
 	for _, x := range a {

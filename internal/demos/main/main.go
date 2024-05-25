@@ -37,12 +37,14 @@ func main() {
 	_ = db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error
 
 	{
+		//SELECT * FROM `examples` WHERE name="abc" ORDER BY `examples`.`name` LIMIT 1
 		var res Example
 		err := db.Where("name=?", "abc").First(&res).Error
 		done.Done(err)
 		fmt.Println(res)
 	}
-	{ //select an example data
+	{
+		//SELECT * FROM `examples` WHERE name="abc" AND type="xyz" AND rank>100 AND rank<200 ORDER BY `examples`.`name` LIMIT 1
 		var res Example
 		if err := db.Where(columnName.Eq("abc")).
 			Where(columnType.Eq("xyz")).
