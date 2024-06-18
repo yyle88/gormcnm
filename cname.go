@@ -96,6 +96,7 @@ func (s ColumnName[TYPE]) AsAlias(alias string) string {
 // 就是当列名和数据库SQL关键字冲突时，需要用特殊手段使其不冲突，在gorm里就是添加反引号把字段引起来。
 // 这样范型设计，代码就会变得很简单，比如当需要使用 Type 字段的时候，就可以使用 cls.Type.Safe().Eq("value") 就能解决问题啦，能够完美贴合已有的所有逻辑。
 // 至于自动化识别关键字的操作，我懒得做，因为实际使用场景也是很少的(Less is more)，当然主要是最初设计的时候忽略了这个情况，假如遇事不决都加引号也会比较繁琐。
+// 注意：这个反引号 (`) 通常是用于 MySQL 数据库系统中，而在 Postgres 中应该使用双引号 (") 来引用列名。
 func (s ColumnName[TYPE]) Safe() ColumnName[TYPE] {
 	return ColumnName[TYPE]("`" + string(s) + "`")
 }
@@ -109,7 +110,7 @@ func (s ColumnName[TYPE]) ExprSub(v TYPE) clause.Expr {
 }
 
 func (s ColumnName[TYPE]) Ob(direction string) ColumnOrderByAscDesc {
-	return ColumnOrderByAscDesc("`" + string(s) + "`" + " " + direction)
+	return ColumnOrderByAscDesc(string(s) + " " + direction)
 }
 
 func (s ColumnName[TYPE]) Qc(op string) QsConjunction {
