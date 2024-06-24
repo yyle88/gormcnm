@@ -91,14 +91,24 @@ func (s ColumnName[TYPE]) AsAlias(alias string) string {
 	return stmtAsAlias(s.Name(), alias)
 }
 
-// Safe returns a safe column name by enclosing it in backticks. Example: column name "type" -> "`type`" is safe.
+// SafeCnm returns a safe column name by enclosing it in backticks. Example: column name "type" -> "`type`" is safe.
+// 比如你的列名就叫 create 的时候，就会和 SQL 的 create 冲突，就得使用引号把它引起来，否则不能执行。
 // Use it when using db.Select("`type`").Find(&one) as an example.
 // 就是当列名和数据库SQL关键字冲突时，需要用特殊手段使其不冲突，在gorm里就是添加反引号把字段引起来。
-// 这样范型设计，代码就会变得很简单，比如当需要使用 Type 字段的时候，就可以使用 cls.Type.Safe().Eq("value") 就能解决问题啦，能够完美贴合已有的所有逻辑。
+// 这样范型设计，代码就会变得很简单，比如当需要使用 Type 字段的时候，就可以使用 cls.Type.SafeCnm("“").Eq("value") 就能解决问题啦，能够完美贴合已有的所有逻辑。
 // 至于自动化识别关键字的操作，我懒得做，因为实际使用场景也是很少的(Less is more)，当然主要是最初设计的时候忽略了这个情况，假如遇事不决都加引号也会比较繁琐。
 // 注意：这个反引号 (`) 通常是用于 MySQL 数据库系统中，而在 Postgres 中应该使用双引号 (") 来引用列名。
-func (s ColumnName[TYPE]) Safe() ColumnName[TYPE] {
-	return ColumnName[TYPE]("`" + string(s) + "`")
+func (s ColumnName[TYPE]) SafeCnm(quote string) ColumnName[TYPE] {
+	switch len(quote) {
+	case 0: //认为这种情况应该是误用或者是默认情况，就简单的两边增加空格就行
+		return ColumnName[TYPE](" " + string(s) + " ")
+	case 1: //比如参数是 quote := "\"" 或者 quote := "`" 的时候
+		return ColumnName[TYPE](quote + string(s) + quote)
+	case 2: //比如参数是 quote := "\"\"" 或者 quote := "``" 或者 "[]" 的时候
+		return ColumnName[TYPE](quote[:1] + string(s) + quote[1:])
+	default: //这里就不报错啦，而是取两端的字符，当gorm执行报错时，使用者自然能够找到原因
+		return ColumnName[TYPE](quote[:1] + string(s) + quote[len(quote)-1:])
+	}
 }
 
 func (s ColumnName[TYPE]) ExprAdd(v TYPE) clause.Expr {

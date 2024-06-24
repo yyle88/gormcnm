@@ -133,6 +133,54 @@ func TestColumnName_Count(t *testing.T) {
 	}
 }
 
+func TestColumnName_SafeCnm(t *testing.T) {
+	type ExampleSafeCnm struct {
+		Name   string `gorm:"primary_key;type:varchar(100);"`
+		Create string `gorm:"column:create"`
+	}
+
+	require.NoError(t, caseDB.AutoMigrate(&ExampleSafeCnm{}))
+	require.NoError(t, caseDB.Save(&ExampleSafeCnm{
+		Name:   "aaa",
+		Create: "abc",
+	}).Error)
+	require.NoError(t, caseDB.Save(&ExampleSafeCnm{
+		Name:   "xxx",
+		Create: "xyz",
+	}).Error)
+	require.NoError(t, caseDB.Save(&ExampleSafeCnm{
+		Name:   "uuu",
+		Create: "uvw",
+	}).Error)
+
+	columnCreate := ColumnName[string]("create")
+
+	{
+		var one ExampleSafeCnm
+		require.NoError(t, caseDB.Where(columnCreate.SafeCnm("\"\"").Eq("abc")).First(&one).Error)
+		require.Equal(t, "aaa", one.Name)
+		t.Log(utils.SoftNeatString(one))
+	}
+	{
+		var one ExampleSafeCnm
+		require.NoError(t, caseDB.Where(columnCreate.SafeCnm("`").Eq("xyz")).First(&one).Error)
+		require.Equal(t, "xxx", one.Name)
+		t.Log(utils.SoftNeatString(one))
+	}
+	{
+		var one ExampleSafeCnm
+		require.NoError(t, caseDB.Where(columnCreate.SafeCnm("[]").Eq("uvw")).First(&one).Error)
+		require.Equal(t, "uuu", one.Name)
+		t.Log(utils.SoftNeatString(one))
+	}
+	{
+		var one ExampleSafeCnm
+		require.NoError(t, caseDB.Where(columnCreate.SafeCnm("[-quote-]").Eq("uvw")).First(&one).Error)
+		require.Equal(t, "uuu", one.Name)
+		t.Log(utils.SoftNeatString(one))
+	}
+}
+
 func TestColumnName_CoalesceStmt(t *testing.T) {
 	type ExampleCoalesceStmtValue struct {
 		Name string `gorm:"primary_key;type:varchar(100);"`
