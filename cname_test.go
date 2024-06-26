@@ -157,7 +157,7 @@ func TestColumnName_SafeCnm(t *testing.T) {
 
 	{
 		var one ExampleSafeCnm
-		require.NoError(t, caseDB.Where(columnCreate.SafeCnm("\"\"").Eq("abc")).First(&one).Error)
+		require.NoError(t, caseDB.Where(columnCreate.SafeCnm(`""`).Eq("abc")).First(&one).Error)
 		require.Equal(t, "aaa", one.Name)
 		t.Log(utils.SoftNeatString(one))
 	}
