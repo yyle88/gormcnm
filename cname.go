@@ -158,41 +158,6 @@ func (s ColumnName[TYPE]) KeSub(x TYPE) (string, clause.Expr) {
 	return s.KeExp(s.ExprSub(x))
 }
 
-func (s ColumnName[TYPE]) IFNULLFnStmt(sfn string, dfv string, alias string) string {
-	if dfv == "" {
-		dfv = "0"
-	}
-	//IFNULL 是 MySQL 特定的函数，在其他数据库系统中可能不支持
-	stmt := "IFNULL(" + sfn + "(" + string(s) + "), " + dfv + ")"
-	//when alias is not none return "stmt as alias"
-	return stmtAsAlias(stmt, alias)
-}
-
-func (s ColumnName[TYPE]) CoalesceStmt(sfn string, dfv string, alias string) string {
-	if dfv == "" {
-		dfv = "0"
-	}
-	//COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
-	stmt := "COALESCE(" + sfn + "(" + string(s) + "), " + dfv + ")"
-	return stmtAsAlias(stmt, alias)
-}
-
-func (s ColumnName[TYPE]) CoalesceSumStmt(alias string) string {
-	return s.CoalesceStmt("SUM", "0", alias)
-}
-
-func (s ColumnName[TYPE]) CoalesceMaxStmt(alias string) string {
-	return s.CoalesceStmt("MAX", "0", alias)
-}
-
-func (s ColumnName[TYPE]) CoalesceMinStmt(alias string) string {
-	return s.CoalesceStmt("MIN", "0", alias)
-}
-
-func (s ColumnName[TYPE]) CoalesceAvgStmt(alias string) string {
-	return s.CoalesceStmt("AVG", "0", alias)
-}
-
 // Count COUNT(column_name) will only count rows where the given column is NOT NULL value
 // 这个和表级别的 count(*) 还是有区别的
 func (s ColumnName[TYPE]) Count(alias string) string {
