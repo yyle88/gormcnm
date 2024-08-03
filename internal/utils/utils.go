@@ -12,7 +12,7 @@ func AssertEquals[T comparable](a, b T) {
 	}
 }
 
-func SoftNeatString(v interface{}) string {
+func Neat(v interface{}) string {
 	data, err := NeatBytes(v)
 	if err != nil {
 		return "" //when the result is empty string, means wrong

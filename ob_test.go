@@ -20,7 +20,7 @@ func TestObColumnAscDesc_Ob(t *testing.T) {
 			Find(&res).Error)
 		require.Equal(t, "aaa", res[0].Name)
 		require.Equal(t, "abc", res[1].Name)
-		t.Log(utils.SoftNeatString(res))
+		t.Log(utils.Neat(res))
 	}
 	{
 		var res []*Example
@@ -31,6 +31,6 @@ func TestObColumnAscDesc_Ob(t *testing.T) {
 			Find(&res).Error)
 		require.Equal(t, "abc", res[0].Name)
 		require.Equal(t, "aaa", res[1].Name)
-		t.Log(utils.SoftNeatString(res))
+		t.Log(utils.Neat(res))
 	}
 }

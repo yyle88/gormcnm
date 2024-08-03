@@ -79,7 +79,7 @@ func TestExample000(t *testing.T) {
 		)
 		var results []*Example000
 		require.NoError(t, stmt.Find(&results).Error)
-		t.Log(utils.SoftNeatString(results))
+		t.Log(utils.Neat(results))
 	}
 	{
 		stmt := db.Model(&Example000{})
@@ -104,7 +104,7 @@ func TestExample000(t *testing.T) {
 		require.Equal(t, 2, len(examples))
 		require.Equal(t, 100, examples[0].Rank)
 		require.Equal(t, 200, examples[1].Rank)
-		t.Log(utils.SoftNeatString(examples))
+		t.Log(utils.Neat(examples))
 	}
 }
 
