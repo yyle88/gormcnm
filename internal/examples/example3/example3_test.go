@@ -54,7 +54,7 @@ func TestColumnName_TcAlias(t *testing.T) {
 	//这里配个用于演示效果
 	const columnOrderID = gormcnm.ColumnName[string]("order_id")
 
-	var expectedResult string
+	var expected string
 	{ //这是比较常规的逻辑
 		var results []*UserOrder
 		require.NoError(t, caseDB.Table("users").
@@ -63,8 +63,8 @@ func TestColumnName_TcAlias(t *testing.T) {
 			Order("users.id asc, orders.id asc").
 			Scan(&results).Error)
 
-		expectedResult = utils.Neat(results)
-		t.Log(expectedResult)
+		expected = utils.Neat(results)
+		t.Log(expected)
 	}
 	{ //这是使用名称的逻辑
 		var results []*UserOrder
@@ -84,6 +84,6 @@ func TestColumnName_TcAlias(t *testing.T) {
 			Order(columnID.TC(u).Ob("asc").Ob(columnID.TC(o).Ob("asc")).Ox()).
 			Scan(&results).Error)
 
-		require.Equal(t, expectedResult, utils.Neat(results))
+		require.Equal(t, expected, utils.Neat(results))
 	}
 }
