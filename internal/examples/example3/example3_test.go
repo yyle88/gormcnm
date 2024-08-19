@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/neatjson"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -63,7 +63,7 @@ func TestColumnName_TcAlias(t *testing.T) {
 			Order("users.id asc, orders.id asc").
 			Scan(&results).Error)
 
-		expected = utils.Neat(results)
+		expected = neatjson.TAB.Soft().S(results)
 		t.Log(expected)
 	}
 	{ //这是使用名称的逻辑
@@ -84,6 +84,6 @@ func TestColumnName_TcAlias(t *testing.T) {
 			Order(columnID.TC(u).Ob("asc").Ob(columnID.TC(o).Ob("asc")).Ox()).
 			Scan(&results).Error)
 
-		require.Equal(t, expected, utils.Neat(results))
+		require.Equal(t, expected, neatjson.TAB.Soft().S(results))
 	}
 }

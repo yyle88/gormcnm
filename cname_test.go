@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/neatjson"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -43,38 +43,38 @@ func TestColumnName_Op(t *testing.T) {
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Op("=?", "abc")).First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Eq("abc")).First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.BetweenAND("aba", "abd")).First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var one Example
 		require.ErrorIs(t, gorm.ErrRecordNotFound, caseDB.Where(columnName.IsNULL()).First(&one).Error)
 		require.Equal(t, "", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.IsNotNULL()).First(&one).Error)
 		require.Contains(t, []string{"abc", "aaa"}, one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var res []*Example
 		require.NoError(t, caseDB.Where(columnName.In([]string{"abc", "aaa"})).Find(&res).Error)
 		require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
 		require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
-		t.Log(utils.Neat(res))
+		t.Log(neatjson.TAB.Soft().S(res))
 	}
 	{
 		var res []*Example
@@ -83,7 +83,7 @@ func TestColumnName_Op(t *testing.T) {
 			require.NotEqual(t, "aaa", v.Name)
 			require.NotEqual(t, "bbb", v.Name)
 		}
-		t.Log(utils.Neat(res))
+		t.Log(neatjson.TAB.Soft().S(res))
 	}
 }
 
@@ -94,7 +94,7 @@ func TestColumnName_Op2(t *testing.T) {
 	var one Example
 	require.NoError(t, caseDB.Where(columnName.Qs("=?")+" AND "+columnType.Qs("=?"), "abc", "xyz").First(&one).Error)
 	require.Equal(t, "abc", one.Name)
-	t.Log(utils.Neat(one))
+	t.Log(neatjson.TAB.Soft().S(one))
 }
 
 func TestColumnName_Op3(t *testing.T) {
@@ -104,13 +104,13 @@ func TestColumnName_Op3(t *testing.T) {
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.Like("%b%")).First(&one).Error)
 		require.Equal(t, "abc", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var one Example
 		require.NoError(t, caseDB.Where(columnName.NotLike("%b%")).First(&one).Error)
 		require.Equal(t, "aaa", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 }
 
@@ -159,24 +159,24 @@ func TestColumnName_SafeCnm(t *testing.T) {
 		var one ExampleSafeCnm
 		require.NoError(t, caseDB.Where(columnCreate.SafeCnm(`""`).Eq("abc")).First(&one).Error)
 		require.Equal(t, "aaa", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var one ExampleSafeCnm
 		require.NoError(t, caseDB.Where(columnCreate.SafeCnm("`").Eq("xyz")).First(&one).Error)
 		require.Equal(t, "xxx", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var one ExampleSafeCnm
 		require.NoError(t, caseDB.Where(columnCreate.SafeCnm("[]").Eq("uvw")).First(&one).Error)
 		require.Equal(t, "uuu", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 	{
 		var one ExampleSafeCnm
 		require.NoError(t, caseDB.Where(columnCreate.SafeCnm("[-quote-]").Eq("uvw")).First(&one).Error)
 		require.Equal(t, "uuu", one.Name)
-		t.Log(utils.Neat(one))
+		t.Log(neatjson.TAB.Soft().S(one))
 	}
 }
