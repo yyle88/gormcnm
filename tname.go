@@ -51,7 +51,7 @@ func (tc *ColumnInTableOperationClass[TYPE]) Cnm() ColumnName[TYPE] {
 }
 
 // Ob 还是排序相关的，增加个语法糖，避免老在外面使用 Cnm 函数，这样不太优雅
-func (tc *ColumnInTableOperationClass[TYPE]) Ob(direction string) ColumnOrderByAscDesc {
+func (tc *ColumnInTableOperationClass[TYPE]) Ob(direction string) OrderByBottle {
 	return tc.Cnm().Ob(direction)
 }
 

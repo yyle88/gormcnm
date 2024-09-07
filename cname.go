@@ -119,8 +119,8 @@ func (s ColumnName[TYPE]) ExprSub(v TYPE) clause.Expr {
 	return gorm.Expr(string(s)+" - ?", v)
 }
 
-func (s ColumnName[TYPE]) Ob(direction string) ColumnOrderByAscDesc {
-	return ColumnOrderByAscDesc(string(s) + " " + direction)
+func (s ColumnName[TYPE]) Ob(direction string) OrderByBottle {
+	return OrderByBottle(string(s) + " " + direction)
 }
 
 func (s ColumnName[TYPE]) Qc(op string) QsConjunction {

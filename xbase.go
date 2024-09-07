@@ -50,7 +50,7 @@ func (c *ColumnOperationClass) Where(db *gorm.DB, qxs ...*QxType) *gorm.DB {
 
 // OrderByColumns 设置排序方向
 // 很明显这样做会破坏gorm链式操作的【链式调用语句】，但这样也是可行的，也能简化些代码
-func (c *ColumnOperationClass) OrderByColumns(db *gorm.DB, obs ...ColumnOrderByAscDesc) *gorm.DB {
+func (c *ColumnOperationClass) OrderByColumns(db *gorm.DB, obs ...OrderByBottle) *gorm.DB {
 	stmt := db
 	for _, ob := range obs {
 		stmt = stmt.Order(ob.Ox())
