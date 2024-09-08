@@ -13,15 +13,16 @@ func TestClauseType_Column(t *testing.T) {
 	clause := name.Clause()
 	column := clause.Column()
 	t.Log(neatjsons.S(column))
-	require.Equal(t, column.Name, name.Name())
+	require.Equal(t, name.Name(), column.Name)
 }
 
 func TestClauseType_Assignment(t *testing.T) {
 	const rank = ColumnName[int]("rank")
 
-	clauseType := rank.Clause()
+	clauseType := rank.ClauseWithTable("students")
 	assignment := clauseType.Assignment(888)
 	t.Log(neatjsons.S(assignment))
 	require.Equal(t, assignment.Column.Name, rank.Name())
-	require.Equal(t, assignment.Value, 888)
+	require.Equal(t, 888, assignment.Value)
+	require.Equal(t, "students", assignment.Column.Table)
 }
