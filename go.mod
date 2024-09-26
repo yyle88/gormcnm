@@ -6,6 +6,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
 	github.com/yyle88/done v1.0.10
+	github.com/yyle88/must v0.0.2
 	github.com/yyle88/neatjson v0.0.6
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.12

@@ -4,7 +4,7 @@ import (
 	"database/sql/driver"
 
 	"github.com/pkg/errors"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/must"
 )
 
 // 当你在调用时报这个错时，说明你 where 条件的第一个参数不是字符串类型，而是直接使用的该项目中自定义的类型，而gorm不是能自动识别它们，因此我主动增加 panic 以提醒您出现错误
@@ -68,68 +68,68 @@ func (qx *stmtArgsTuple) Args() []interface{} {
 
 // Qx0 这块暂时没有什么好的方案，我只能这样罗列下来，很期望将来能够解决这个问题
 func (qx *stmtArgsTuple) Qx0() string {
-	utils.AssertEquals(len(qx.args), 0)
+	must.Len(qx.args, 0)
 	return qx.Qs()
 }
 
 // Qx1 这块暂时没有什么好的方案，我只能这样罗列下来，很期望将来能够解决这个问题
 func (qx *stmtArgsTuple) Qx1() (string, interface{}) {
-	utils.AssertEquals(len(qx.args), 1)
+	must.Len(qx.args, 1)
 	return qx.Qs(), qx.args[0]
 }
 
 // Qx2 这块暂时没有什么好的方案，我只能这样罗列下来，很期望将来能够解决这个问题
 func (qx *stmtArgsTuple) Qx2() (string, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 2)
+	must.Len(qx.args, 2)
 	return qx.Qs(), qx.args[0], qx.args[1]
 }
 
 func (qx *stmtArgsTuple) Qx3() (string, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 3)
+	must.Len(qx.args, 3)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2]
 }
 
 func (qx *stmtArgsTuple) Qx4() (string, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 4)
+	must.Len(qx.args, 4)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3]
 }
 
 func (qx *stmtArgsTuple) Qx5() (string, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 5)
+	must.Len(qx.args, 5)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4]
 }
 
 func (qx *stmtArgsTuple) Qx6() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 6)
+	must.Len(qx.args, 6)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5]
 }
 
 func (qx *stmtArgsTuple) Qx7() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 7)
+	must.Len(qx.args, 7)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6]
 }
 
 func (qx *stmtArgsTuple) Qx8() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 8)
+	must.Len(qx.args, 8)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7]
 }
 
 func (qx *stmtArgsTuple) Qx9() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 9)
+	must.Len(qx.args, 9)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8]
 }
 
 func (qx *stmtArgsTuple) Qx10() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 10)
+	must.Len(qx.args, 10)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9]
 }
 
 func (qx *stmtArgsTuple) Qx11() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 11)
+	must.Len(qx.args, 11)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9], qx.args[10]
 }
 
 func (qx *stmtArgsTuple) Qx12() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
-	utils.AssertEquals(len(qx.args), 12)
+	must.Len(qx.args, 12)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9], qx.args[10], qx.args[11]
 }
