@@ -1,5 +1,7 @@
 package gormcnm
 
+import "github.com/yyle88/tern/zerotern"
+
 // COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
 func (s ColumnName[TYPE]) COALESCE() *coalesceQs {
 	return newCoalesceQs("COALESCE", string(s))
@@ -24,13 +26,10 @@ func newCoalesceQs(ident string, cname string) *coalesceQs {
 }
 
 func (qs *coalesceQs) Stmt(sfn string, dfv string, alias string) string {
-	if dfv == "" {
-		dfv = "0"
-	}
 	// COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
 	// IFNULL 是 MySQL 特定的函数，在其他数据库系统中可能不支持
-	stmt := qs.ident + "(" + sfn + "(" + string(qs.cname) + "), " + dfv + ")"
-	return stmtAsAlias(stmt, alias) // when alias is not none return "stmt as alias"
+	// 设置别名 when alias is not none return "stmt as alias"
+	return stmtAsAlias(qs.ident+"("+sfn+"("+string(qs.cname)+"), "+zerotern.VV(dfv, "0")+")", alias)
 }
 
 func (qs *coalesceQs) SumStmt(alias string) string {
