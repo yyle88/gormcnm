@@ -88,18 +88,18 @@ func (c *ColumnOperationClass) MergeStmts(a ...string) string {
 
 // CountStmt 统计表中行的数量 count(*) 和 count(1) 两者是等价的，这里使用 count(*) 因为这个更加常用
 func (c *ColumnOperationClass) CountStmt(alias string) string {
-	return stmtAsAlias("COUNT(*)", alias)
+	return applyAliasToColumn("COUNT(*)", alias)
 }
 
 // CountCaseWhenStmt COUNT(CASE WHEN condition THEN 1 END): 根据条件统计符合条件的行数
 // 这个比较不常用
 func (c *ColumnOperationClass) CountCaseWhenStmt(condition string, alias string) string {
-	return stmtAsAlias("COUNT(CASE WHEN ("+condition+") THEN 1 END)", alias)
+	return applyAliasToColumn("COUNT(CASE WHEN ("+condition+") THEN 1 END)", alias)
 }
 
 func (c *ColumnOperationClass) CountCaseWhenQxSx(qx *QxType, alias string) *SxType {
 	return NewSx(
-		stmtAsAlias("COUNT(CASE WHEN ("+qx.Qs()+") THEN 1 END)", alias),
+		applyAliasToColumn("COUNT(CASE WHEN ("+qx.Qs()+") THEN 1 END)", alias),
 		qx.Args()...,
 	)
 }

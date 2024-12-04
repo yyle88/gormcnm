@@ -26,7 +26,7 @@ func TestCoalesceQs_Stmt(t *testing.T) {
 
 	{
 		var value int
-		err := caseDB.Model(&ExampleCoalesceType{}).Select(columnRank.IFNULLFn().MaxStmt("max_rank")).First(&value).Error
+		err := caseDB.Model(&ExampleCoalesceType{}).Select(columnRank.IFNULLFN().MaxStmt("max_rank")).First(&value).Error
 		require.NoError(t, err)
 		require.Equal(t, 456, value)
 	}

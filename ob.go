@@ -1,16 +1,23 @@
 package gormcnm
 
-type OrderByBottle string //我还是更喜欢用 Bottle 这个单词，以维持名称在材料学方面的重心平衡
+// OrderByBottle represents a sort statement builder, designed with a unique naming style that reflects a materials science focus.
+// OrderByBottle 代表排序语句构建器，使用了与材料学相关的命名风格。
+type OrderByBottle string
 
+// Ob concatenates the current OrderByBottle with the next one, forming a combined ordering string.
+// Ob 将当前的 OrderByBottle 与下一个 OrderByBottle 连接，形成一个组合的排序字符串。
 func (ob OrderByBottle) Ob(next OrderByBottle) OrderByBottle {
 	return ob + " , " + next
 }
 
-// Ox 这块暂时也是没有什么办法的，就是假如不是特定的类型，就会被gorm的逻辑忽略
-// 即使我在这里增加转换也不行，我觉得使用者还是会忘记的，只能说这里随缘吧，因为除非使用有限的几种，任何包一层的管理器，都不能被gorm的Order逻辑识别
-// 目前暂无优雅的解决方案
-// 我自己用应该是没问题的
-// 记得最后调用把这个转化为字符串再传给gorm的Order函数
+// Ox converts the OrderByBottle to a string. Note that if the type is not specific, it may be ignored by GORM's logic.
+// Ox 将 OrderByBottle 转换为字符串。请注意，如果类型不明确，它可能会被 GORM 的逻辑忽略。
+// This is an unavoidable limitation due to GORM's handling of the Order field logic.
+// 这是由于 GORM 对 Order 字段逻辑的处理所造成的无法避免的限制。
+// Users may forget to convert this to a string before passing it to GORM, so it is important to remember this step.
+// 用户可能会忘记在传递给 GORM 之前将其转换为字符串，因此需要记住这一点。
+// There is currently no elegant solution to this limitation, but it should work fine for personal use.
+// 目前没有优雅的解决方案，但对于个人使用来说应该没有问题。
 func (ob OrderByBottle) Ox() string {
 	return string(ob)
 }

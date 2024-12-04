@@ -58,7 +58,7 @@ func (tc *ColumnInTableOperationClass[TYPE]) Ob(direction string) OrderByBottle 
 // AsAlias Return a raw string: "table.column_name as alias"
 // 当你需要使用join查询时，就需要指定表名，比如需要 Select("users.id as user_id, orders.amount as order_amount") 这样的语句
 func (tc *ColumnInTableOperationClass[TYPE]) AsAlias(alias string) string {
-	return stmtAsAlias(tc.Name(), alias)
+	return applyAliasToColumn(tc.Name(), alias)
 }
 
 // AsName Return a raw string: "table.column_name as alias"
@@ -66,5 +66,5 @@ func (tc *ColumnInTableOperationClass[TYPE]) AsAlias(alias string) string {
 // 但是假如当 user_id 也是另一个表的 column_name 的时候，你就可以直接传这个类型，而不是 raw string
 // 当然这种使用场景是很少的
 func (tc *ColumnInTableOperationClass[TYPE]) AsName(newColumnName nameInterface) string {
-	return stmtAsAlias(tc.Name(), newColumnName.Name())
+	return applyAliasToColumn(tc.Name(), newColumnName.Name())
 }
