@@ -7,51 +7,50 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
+	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/gormcnm/internal/utils"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
-var caseDB *gorm.DB
-
-func TestMain(m *testing.M) {
-	//new db connection
-	db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})).Nice()
-	defer func() {
-		done.Done(done.VCE(db.DB()).Nice().Close())
-	}()
-
-	//create example data
-	_ = db.AutoMigrate(&Example{})
-	_ = db.Save(&Example{Name: "abc", Type: utils.PtrX("xyz"), Rank: utils.PtrX(123)}).Error
-	_ = db.Save(&Example{Name: "aaa", Type: utils.PtrX("xxx"), Rank: utils.PtrX(456)}).Error
-
-	caseDB = db
-	m.Run()
-}
-
 func TestExample(t *testing.T) {
-	db := caseDB
-	{
-		var res Example
-		err := db.Where("name=?", "abc").First(&res).Error
-		done.Done(err)
-		fmt.Println(res)
-		require.Equal(t, 123, utils.VOr0(res.Rank))
+	// Example is a gorm model define 3 fields(name, type, rank)
+	type Example struct {
+		Name string  `gorm:"primary_key;type:varchar(100);"`
+		Type *string `gorm:"column:type;"` //通常不建议把字段定义为指针类型，但不建议不表示不能，因此要试试这种场景
+		Rank *int    `gorm:"column:rank;"` //通常不建议把字段定义为指针类型，但不建议不表示不能，因此要试试这种场景
 	}
-	{ //select an example data
-		var res Example
-		if err := db.Where(columnName.Eq("abc")).
-			Where(columnType.Eq(utils.PtrX("xyz"))).
-			Where(columnRank.Gt(utils.PtrX(100))).
-			Where(columnRank.Lt(utils.PtrX(200))).
-			First(&res).Error; err != nil {
-			panic(errors.WithMessage(err, "wrong"))
+
+	// Now define the fields enum vars(name, type rank)
+	const (
+		columnName = gormcnm.ColumnName[string]("name")
+		columnType = gormcnm.ColumnName[*string]("type")
+		columnRank = gormcnm.ColumnName[*int]("rank")
+	)
+
+	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+		//create example data
+		done.Done(db.AutoMigrate(&Example{}))
+		done.Done(db.Save(&Example{Name: "abc", Type: utils.PtrX("xyz"), Rank: utils.PtrX(123)}).Error)
+		done.Done(db.Save(&Example{Name: "aaa", Type: utils.PtrX("xxx"), Rank: utils.PtrX(456)}).Error)
+
+		{
+			var res Example
+			err := db.Where("name=?", "abc").First(&res).Error
+			done.Done(err)
+			fmt.Println(res)
+			require.Equal(t, 123, utils.VOr0(res.Rank))
 		}
-		fmt.Println(res)
-		require.Equal(t, 123, utils.VOr0(res.Rank))
-	}
+		{ //select an example data
+			var res Example
+			if err := db.Where(columnName.Eq("abc")).
+				Where(columnType.Eq(utils.PtrX("xyz"))).
+				Where(columnRank.Gt(utils.PtrX(100))).
+				Where(columnRank.Lt(utils.PtrX(200))).
+				First(&res).Error; err != nil {
+				panic(errors.WithMessage(err, "wrong"))
+			}
+			fmt.Println(res)
+			require.Equal(t, 123, utils.VOr0(res.Rank))
+		}
+	})
 }

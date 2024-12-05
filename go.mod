@@ -8,6 +8,7 @@ require (
 	github.com/yyle88/done v1.0.18
 	github.com/yyle88/must v0.0.9
 	github.com/yyle88/neatjson v0.0.10
+	github.com/yyle88/rese v0.0.1
 	github.com/yyle88/tern v0.0.3
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.12

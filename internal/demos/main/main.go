@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
+	"github.com/yyle88/rese"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -27,14 +28,17 @@ const (
 
 func main() {
 	//new db connection
-	db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+	db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=private"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})).Nice()
+	defer func() {
+		done.Done(rese.P1(db.DB()).Close())
+	}()
 
 	//create example data
-	_ = db.AutoMigrate(&Example{})
-	_ = db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error
-	_ = db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error
+	done.Done(db.AutoMigrate(&Example{}))
+	done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
 	{
 		//SELECT * FROM `examples` WHERE name="abc" ORDER BY `examples`.`name` LIMIT 1
