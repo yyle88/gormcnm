@@ -1,6 +1,9 @@
 package gormcnm
 
-import "github.com/yyle88/tern/zerotern"
+import (
+	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/tern/zerotern"
+)
 
 func (s ColumnName[TYPE]) COALESCE() *CoalesceNonNullGuardian {
 	return NewCoalesceNonNullGuardian("COALESCE", string(s)) // COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
@@ -25,7 +28,7 @@ func NewCoalesceNonNullGuardian(methodName string, columnName string) *CoalesceN
 // Stmt generates a SQL statement for the COALESCE or IFNULL function with the given function and default value.
 // Stmt 生成一个 SQL 语句，包含 COALESCE 或 IFNULL 函数，并指定默认值。
 func (qs *CoalesceNonNullGuardian) Stmt(sfn string, dfv string, alias string) string {
-	return applyAliasToColumn(qs.method+"("+sfn+"("+string(qs.column)+"), "+zerotern.VV(dfv, "0")+")", alias)
+	return utils.ApplyAliasToColumn(qs.method+"("+sfn+"("+string(qs.column)+"), "+zerotern.VV(dfv, "0")+")", alias)
 }
 
 // SumStmt generates a SQL statement to calculate the sum of the column, using 0 as the default value.

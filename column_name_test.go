@@ -9,37 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestColumnName_Count(t *testing.T) {
-	type Example struct {
-		Name string `gorm:"primary_key;type:varchar(100);"`
-		Type string `gorm:"column:type;"`
-	}
-
-	const columnName = ColumnName[string]("name")
-
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
-
-		{
-			var value int
-			err := db.Model(&Example{}).Select(columnName.Count("cnt")).First(&value).Error
-			require.NoError(t, err)
-			require.Equal(t, 2, value)
-		}
-		{
-			type resType struct {
-				Cnt int64
-			}
-			var res resType
-			err := db.Model(&Example{}).Select(columnName.CountDistinct("cnt")).First(&res).Error
-			require.NoError(t, err)
-			require.Equal(t, int64(2), res.Cnt)
-		}
-	})
-}
-
 func TestColumnName_SafeCnm(t *testing.T) {
 	type Example struct {
 		Name   string `gorm:"primary_key;type:varchar(100);"`
@@ -48,7 +17,7 @@ func TestColumnName_SafeCnm(t *testing.T) {
 
 	const columnCreate = ColumnName[string]("create")
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name:   "aaa",
@@ -86,6 +55,37 @@ func TestColumnName_SafeCnm(t *testing.T) {
 			require.NoError(t, db.Where(columnCreate.SafeCnm("[-quote-]").Eq("uvw")).First(&one).Error)
 			require.Equal(t, "uuu", one.Name)
 			t.Log(neatjsons.S(one))
+		}
+	})
+}
+
+func TestColumnName_Count(t *testing.T) {
+	type Example struct {
+		Name string `gorm:"primary_key;type:varchar(100);"`
+		Type string `gorm:"column:type;"`
+	}
+
+	const columnName = ColumnName[string]("name")
+
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
+		require.NoError(t, db.AutoMigrate(&Example{}))
+		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+
+		{
+			var value int
+			err := db.Model(&Example{}).Select(columnName.Count("cnt")).First(&value).Error
+			require.NoError(t, err)
+			require.Equal(t, 2, value)
+		}
+		{
+			type resType struct {
+				Cnt int64
+			}
+			var res resType
+			err := db.Model(&Example{}).Select(columnName.CountDistinct("cnt")).First(&res).Error
+			require.NoError(t, err)
+			require.Equal(t, int64(2), res.Cnt)
 		}
 	})
 }

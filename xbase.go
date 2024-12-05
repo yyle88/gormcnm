@@ -3,6 +3,7 @@ package gormcnm
 import (
 	"strings"
 
+	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -14,20 +15,20 @@ func (c *ColumnOperationClass) OK() bool {
 	return true //这个函数有奇效，让你把变量的创建放在if{}代码块里
 }
 
-func (c *ColumnOperationClass) NewQx(stmt string, args ...interface{}) *QxType {
-	return NewQx(stmt, args...)
+func (c *ColumnOperationClass) NewQx(stmt string, args ...interface{}) *QxConjunction {
+	return NewQxConjunction(stmt, args...)
 }
 
-func (c *ColumnOperationClass) Qx(stmt string, args ...interface{}) *QxType {
-	return NewQx(stmt, args...)
+func (c *ColumnOperationClass) Qx(stmt string, args ...interface{}) *QxConjunction {
+	return NewQxConjunction(stmt, args...)
 }
 
-func (c *ColumnOperationClass) NewSx(stmt string, args ...interface{}) *SxType {
-	return NewSx(stmt, args...)
+func (c *ColumnOperationClass) NewSx(stmt string, args ...interface{}) *SelectStatement {
+	return NewSelectStatement(stmt, args...)
 }
 
-func (c *ColumnOperationClass) Sx(stmt string, args ...interface{}) *SxType {
-	return NewSx(stmt, args...)
+func (c *ColumnOperationClass) Sx(stmt string, args ...interface{}) *SelectStatement {
+	return NewSelectStatement(stmt, args...)
 }
 
 func (c *ColumnOperationClass) NewKw() ColumnValueMap {
@@ -40,7 +41,7 @@ func (c *ColumnOperationClass) Kw(columnName string, value interface{}) ColumnVa
 
 // Where 设置查询条件
 // 很明显这样做会破坏gorm链式操作的【链式调用语句】，但这样也是可行的，也能简化些代码
-func (c *ColumnOperationClass) Where(db *gorm.DB, qxs ...*QxType) *gorm.DB {
+func (c *ColumnOperationClass) Where(db *gorm.DB, qxs ...*QxConjunction) *gorm.DB {
 	stmt := db
 	for _, qx := range qxs {
 		stmt = stmt.Where(qx.Qs(), qx.args...)
@@ -72,7 +73,7 @@ func (c *ColumnOperationClass) UpdateColumns(db *gorm.DB, kws ...ColumnValueMap)
 
 // MergeNames join column names with comma ", ". return a string. Use it when using db.Select() / db.Group(). thank you!
 // 因为恰好有这个函数 func (s ColumnName[TYPE]) Name() string 因此这个函数可以直接接受自定义的列名，再以逗号拼接，相当于是简化逻辑
-func (c *ColumnOperationClass) MergeNames(a ...nameInterface) string {
+func (c *ColumnOperationClass) MergeNames(a ...utils.ColumnNameInterface) string {
 	var names = make([]string, 0, len(a))
 	for _, x := range a {
 		names = append(names, x.Name())
@@ -88,23 +89,23 @@ func (c *ColumnOperationClass) MergeStmts(a ...string) string {
 
 // CountStmt 统计表中行的数量 count(*) 和 count(1) 两者是等价的，这里使用 count(*) 因为这个更加常用
 func (c *ColumnOperationClass) CountStmt(alias string) string {
-	return applyAliasToColumn("COUNT(*)", alias)
+	return utils.ApplyAliasToColumn("COUNT(*)", alias)
 }
 
 // CountCaseWhenStmt COUNT(CASE WHEN condition THEN 1 END): 根据条件统计符合条件的行数
 // 这个比较不常用
 func (c *ColumnOperationClass) CountCaseWhenStmt(condition string, alias string) string {
-	return applyAliasToColumn("COUNT(CASE WHEN ("+condition+") THEN 1 END)", alias)
+	return utils.ApplyAliasToColumn("COUNT(CASE WHEN ("+condition+") THEN 1 END)", alias)
 }
 
-func (c *ColumnOperationClass) CountCaseWhenQxSx(qx *QxType, alias string) *SxType {
-	return NewSx(
-		applyAliasToColumn("COUNT(CASE WHEN ("+qx.Qs()+") THEN 1 END)", alias),
+func (c *ColumnOperationClass) CountCaseWhenQxSx(qx *QxConjunction, alias string) *SelectStatement {
+	return NewSelectStatement(
+		utils.ApplyAliasToColumn("COUNT(CASE WHEN ("+qx.Qs()+") THEN 1 END)", alias),
 		qx.Args()...,
 	)
 }
 
-func (c *ColumnOperationClass) CombineSxs(cs ...SxType) *SxType {
+func (c *ColumnOperationClass) CombineSxs(cs ...SelectStatement) *SelectStatement {
 	var qsVs []string
 	var args []any
 	for _, c := range cs {
@@ -112,12 +113,12 @@ func (c *ColumnOperationClass) CombineSxs(cs ...SxType) *SxType {
 		args = append(args, c.Args()...)
 	}
 	var stmt = strings.Join(qsVs, ", ")
-	return NewSx(stmt, args...)
+	return NewSelectStatement(stmt, args...)
 }
 
 // Select 选择列和筛选数据
 // 和前面 Where OrderByColumns UpdateColumns 类似的，这也会破坏gorm的【链式调用语句】，这里阐释 sx 这个类型的定义目的和使用场景
-func (c *ColumnOperationClass) Select(db *gorm.DB, qxs ...*SxType) *gorm.DB {
+func (c *ColumnOperationClass) Select(db *gorm.DB, qxs ...*SelectStatement) *gorm.DB {
 	stmt := db
 	for _, qx := range qxs {
 		stmt = stmt.Select(qx.Qs(), qx.args...)

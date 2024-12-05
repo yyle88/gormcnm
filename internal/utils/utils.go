@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/yyle88/done"
+	"github.com/yyle88/tern"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -22,7 +23,7 @@ func VOr0[T any](v *T) T {
 	}
 }
 
-func CaseRunInPrivateDB(run func(db *gorm.DB)) {
+func CaseRunInMemDB(run func(db *gorm.DB)) {
 	db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=private"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})).Nice()
@@ -30,4 +31,9 @@ func CaseRunInPrivateDB(run func(db *gorm.DB)) {
 		done.Done(done.VCE(db.DB()).Nice().Close())
 	}()
 	run(db)
+}
+
+// ApplyAliasToColumn 设置别名，返回类似 COUNT(*) as cnt 这样的
+func ApplyAliasToColumn(stmt string, alias string) string {
+	return tern.BVV(alias != "", stmt+" as "+alias, stmt)
 }

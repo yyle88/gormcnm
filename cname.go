@@ -1,5 +1,7 @@
 package gormcnm
 
+import "github.com/yyle88/gormcnm/internal/utils"
+
 /*
 Defines a reusable `ColumnName` type designed to simplify and optimize SQL query construction.
 It supports a wide range of SQL operations, including comparisons, equality checks, range queries,
@@ -173,5 +175,5 @@ func (s ColumnName[TYPE]) RawName() string {
 // AsAlias returns the column name with an alias applied.
 // AsAlias 返回带有别名的列名。
 func (s ColumnName[TYPE]) AsAlias(alias string) string {
-	return applyAliasToColumn(s.Name(), alias)
+	return utils.ApplyAliasToColumn(s.Name(), alias)
 }

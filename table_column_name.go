@@ -1,6 +1,8 @@
 package gormcnm
 
-func (s ColumnName[TYPE]) TC(tab tableNameFace) *ColumnInTableOperationClass[TYPE] {
+import "github.com/yyle88/gormcnm/internal/utils"
+
+func (s ColumnName[TYPE]) TC(tab utils.GormTableNameFace) *ColumnInTableOperationClass[TYPE] {
 	return &ColumnInTableOperationClass[TYPE]{
 		tab: tab,
 		cnm: s,
@@ -9,7 +11,7 @@ func (s ColumnName[TYPE]) TC(tab tableNameFace) *ColumnInTableOperationClass[TYP
 
 func (s ColumnName[TYPE]) TN(tableName string) *ColumnInTableOperationClass[TYPE] {
 	return &ColumnInTableOperationClass[TYPE]{
-		tab: &classImplementsTableName{tableName: tableName}, //把名称转换为接口要不然同样的代码得写两遍
+		tab: utils.NewClassImpTableName(tableName), //把名称转换为接口要不然同样的代码得写两遍
 		cnm: s,
 	}
 }
@@ -17,7 +19,7 @@ func (s ColumnName[TYPE]) TN(tableName string) *ColumnInTableOperationClass[TYPE
 // ColumnInTableOperationClass 就是表名和列名的二元组
 // 我们这个包是以列名为中心设计的，但依然有部分操作需要用到表名，特别是在join的时候，因此还是增加了这个类型的
 type ColumnInTableOperationClass[TYPE any] struct {
-	tab tableNameFace
+	tab utils.GormTableNameFace
 	cnm ColumnName[TYPE]
 }
 
@@ -58,13 +60,13 @@ func (tc *ColumnInTableOperationClass[TYPE]) Ob(direction string) OrderByBottle 
 // AsAlias Return a raw string: "table.column_name as alias"
 // 当你需要使用join查询时，就需要指定表名，比如需要 Select("users.id as user_id, orders.amount as order_amount") 这样的语句
 func (tc *ColumnInTableOperationClass[TYPE]) AsAlias(alias string) string {
-	return applyAliasToColumn(tc.Name(), alias)
+	return utils.ApplyAliasToColumn(tc.Name(), alias)
 }
 
 // AsName Return a raw string: "table.column_name as alias"
 // 当你需要使用join查询时，就需要指定表名，比如需要 Select("users.id as user_id, orders.amount as order_amount") 这样的语句
 // 但是假如当 user_id 也是另一个表的 column_name 的时候，你就可以直接传这个类型，而不是 raw string
-// 当然这种使用场景是很少的
-func (tc *ColumnInTableOperationClass[TYPE]) AsName(newColumnName nameInterface) string {
-	return applyAliasToColumn(tc.Name(), newColumnName.Name())
+// 当然这种使用场景是很少的，因为中间类型往往是个临时类型，或者局部类型
+func (tc *ColumnInTableOperationClass[TYPE]) AsName(newColumnName ColumnName[TYPE]) string {
+	return utils.ApplyAliasToColumn(tc.Name(), newColumnName.Name())
 }

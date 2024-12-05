@@ -1,6 +1,7 @@
 package gormcnm
 
 import (
+	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -22,9 +23,9 @@ func (s ColumnName[TYPE]) SafeCnm(quote string) ColumnName[TYPE] {
 	case 2: // If the quote is two characters like `""`, "``", "[]"
 		// 如果引号是两个字符（例如 `""`、 "``"、 "[]")
 		return ColumnName[TYPE](quote[:1] + string(s) + quote[1:])
-	default: // Not recommended
-		// 这里不推荐这样做
-		return ColumnName[TYPE](quote[:1] + string(s) + quote[len(quote)-1:])
+	default: // Not recommended but not panic, use default quote
+		// 不推荐这样做，但也不抛异常，给个默认的结果
+		return ColumnName[TYPE](`"` + string(s) + `"`)
 	}
 }
 
@@ -66,18 +67,18 @@ func (s ColumnName[TYPE]) ColumnCondition(op string) QsConjunction {
 
 // Qx creates a condition with an operator and a value for the column, useful for building complex queries.
 // Qx: 创建带有运算符和值的条件，用于构建复杂的查询。
-func (s ColumnName[TYPE]) Qx(op string, x TYPE) *QxType {
+func (s ColumnName[TYPE]) Qx(op string, x TYPE) *QxConjunction {
 	stmt := string(s.Qc(op))
 	args := []interface{}{x}
-	return NewQx(stmt, args...)
+	return NewQxConjunction(stmt, args...)
 }
 
 // ColumnConditionWithValue creates a condition with an operator and a value for the column, useful for building complex queries.
 // ColumnConditionWithValue: 创建带有运算符和值的列条件，用于构建复杂的查询。
-func (s ColumnName[TYPE]) ColumnConditionWithValue(op string, x TYPE) *QxType {
+func (s ColumnName[TYPE]) ColumnConditionWithValue(op string, x TYPE) *QxConjunction {
 	stmt := string(s.ColumnCondition(op))
 	args := []interface{}{x}
-	return NewQx(stmt, args...)
+	return NewQxConjunction(stmt, args...)
 }
 
 // Kw creates a map with a single key-value.
@@ -125,11 +126,11 @@ func (s ColumnName[TYPE]) KeSub(x TYPE) (string, clause.Expr) {
 // Count creates a COUNT query for the column, excluding NULL values.
 // Count: 创建一个COUNT查询，只统计非NULL值的列。
 func (s ColumnName[TYPE]) Count(alias string) string {
-	return applyAliasToColumn("COUNT("+string(s)+")", alias)
+	return utils.ApplyAliasToColumn("COUNT("+string(s)+")", alias)
 }
 
 // CountDistinct creates a COUNT DISTINCT query for the given column, skipping NULL values in the count.
 // CountDistinct: 创建一个COUNT DISTINCT查询，用于给定列，跳过NULL值。
 func (s ColumnName[TYPE]) CountDistinct(alias string) string {
-	return applyAliasToColumn("COUNT(DISTINCT("+string(s)+"))", alias)
+	return utils.ApplyAliasToColumn("COUNT(DISTINCT("+string(s)+"))", alias)
 }

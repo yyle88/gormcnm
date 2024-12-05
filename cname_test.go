@@ -1,7 +1,6 @@
 package gormcnm
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -9,11 +8,6 @@ import (
 	"github.com/yyle88/neatjson/neatjsons"
 	"gorm.io/gorm"
 )
-
-func TestMain(m *testing.M) {
-	fmt.Println("CASE_RUN_IN_PRIVATE_MEMORY_DATABASE")
-	m.Run()
-}
 
 func TestColumnName_Op(t *testing.T) {
 	type Example struct {
@@ -23,7 +17,7 @@ func TestColumnName_Op(t *testing.T) {
 
 	const columnName = ColumnName[string]("name")
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -88,7 +82,7 @@ func TestColumnName_Op2(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -108,7 +102,7 @@ func TestColumnName_Op3(t *testing.T) {
 
 	const columnName = ColumnName[string]("name")
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)

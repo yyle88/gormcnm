@@ -26,7 +26,7 @@ func TestExample000(t *testing.T) {
 
 	opc := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -96,7 +96,7 @@ func TestExample001(t *testing.T) {
 
 	opc := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -166,7 +166,7 @@ func TestExample002(t *testing.T) {
 
 	opc := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -195,7 +195,7 @@ func TestExample003(t *testing.T) {
 
 	opc := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -230,9 +230,9 @@ func TestExample003(t *testing.T) {
 
 		{
 			var res resType
-			var qx *gormcnm.QxType = opc.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+			var qx *gormcnm.QxConjunction = opc.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
 			t.Log(qx.Qs())
-			var sx *gormcnm.SxType = opc.CountCaseWhenQxSx(qx, "cnt")
+			var sx *gormcnm.SelectStatement = opc.CountCaseWhenQxSx(qx, "cnt")
 			t.Log(sx.Qs())
 			require.NoError(t, db.Model(&Example{}).Select(sx.Qx2()).Find(&res).Error)
 			require.Equal(t, int64(1), res.Cnt)
@@ -240,9 +240,9 @@ func TestExample003(t *testing.T) {
 
 		{
 			var res resType
-			var qx *gormcnm.QxType = opc.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+			var qx *gormcnm.QxConjunction = opc.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
 			t.Log(qx.Qs())
-			var sx *gormcnm.SxType = opc.CountCaseWhenQxSx(qx, "cnt")
+			var sx *gormcnm.SelectStatement = opc.CountCaseWhenQxSx(qx, "cnt")
 			t.Log(sx.Qs())
 			db = db.Model(&Example{})
 			db = opc.Select(db, sx)

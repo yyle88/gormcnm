@@ -16,7 +16,7 @@ func TestCoalesceStmt(t *testing.T) {
 
 	const columnRank = ColumnName[int]("rank")
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name: "aaa",

@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestObColumnAscDesc_Ob(t *testing.T) {
+func TestOrderByBottle_Ob(t *testing.T) {
 	type Example struct {
 		Name string `gorm:"primary_key;type:varchar(100);"`
 		Type string `gorm:"column:type;"`
@@ -20,7 +20,7 @@ func TestObColumnAscDesc_Ob(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInPrivateDB(func(db *gorm.DB) {
+	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
