@@ -7,7 +7,7 @@ import (
 	"github.com/yyle88/neatjson/neatjsons"
 )
 
-func TestClauseType_Column(t *testing.T) {
+func TestClauseColumn_Column(t *testing.T) {
 	const columnName = ColumnName[string]("name")
 
 	clause := columnName.Clause()
@@ -16,7 +16,7 @@ func TestClauseType_Column(t *testing.T) {
 	require.Equal(t, columnName.Name(), column.Name)
 }
 
-func TestClauseType_Assignment(t *testing.T) {
+func TestClauseColumn_Assignment(t *testing.T) {
 	const columnRank = ColumnName[int]("rank")
 
 	clauseType := columnRank.ClauseWithTable("students")

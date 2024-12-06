@@ -2,27 +2,27 @@ package gormcnm
 
 import "github.com/yyle88/gormcnm/internal/utils"
 
-func (s ColumnName[TYPE]) TB(tab utils.GormTableNameFace) *TableColumn[TYPE] {
-	return s.WithTable(tab)
+func (columnName ColumnName[TYPE]) TB(tab utils.GormTableNameFace) *TableColumn[TYPE] {
+	return columnName.WithTable(tab)
 }
 
-func (s ColumnName[TYPE]) TC(tab utils.GormTableNameFace) *TableColumn[TYPE] {
-	return s.WithTable(tab)
+func (columnName ColumnName[TYPE]) TC(tab utils.GormTableNameFace) *TableColumn[TYPE] {
+	return columnName.WithTable(tab)
 }
 
-func (s ColumnName[TYPE]) TN(tableName string) *TableColumn[TYPE] {
-	return s.WithTable(utils.NewTableNameImp(tableName))
+func (columnName ColumnName[TYPE]) TN(tableName string) *TableColumn[TYPE] {
+	return columnName.WithTable(utils.NewTableNameImp(tableName))
 }
 
-func (s ColumnName[TYPE]) WithTable(tab utils.GormTableNameFace) *TableColumn[TYPE] {
+func (columnName ColumnName[TYPE]) WithTable(tab utils.GormTableNameFace) *TableColumn[TYPE] {
 	return &TableColumn[TYPE]{
 		tab: tab,
-		cnm: s,
+		cnm: columnName,
 	}
 }
 
-func (s ColumnName[TYPE]) WithTableName(tableName string) *TableColumn[TYPE] {
-	return s.WithTable(utils.NewTableNameImp(tableName))
+func (columnName ColumnName[TYPE]) WithTableName(tableName string) *TableColumn[TYPE] {
+	return columnName.WithTable(utils.NewTableNameImp(tableName))
 }
 
 // TableColumn represents a combination of a table and a column.

@@ -35,18 +35,18 @@ func TestValuesMap_SetValue(t *testing.T) {
 		}).Error)
 
 		{
-			rst := db.Model(&Example{}).Where(
+			result := db.Model(&Example{}).Where(
 				Qx(columnName.Eq("aaa")).
 					AND(
 						Qx(columnType.Eq("xxx")),
 						Qx(columnRank.Eq(123)),
 					).Qx3(),
 			).UpdateColumns(columnRank.Kw(100).Kw(columnType.Kv("zzz")).Kws())
-			require.NoError(t, rst.Error)
-			require.Equal(t, int64(1), rst.RowsAffected)
+			require.NoError(t, result.Error)
+			require.Equal(t, int64(1), result.RowsAffected)
 		}
 		{
-			rst := db.Model(&Example{}).Where(
+			result := db.Model(&Example{}).Where(
 				Qx(
 					columnName.Eq("bbb"),
 				).AND1(
@@ -55,8 +55,8 @@ func TestValuesMap_SetValue(t *testing.T) {
 					columnRank.Eq(456),
 				).Qx3(),
 			).UpdateColumns(columnRank.Kw(200).Kw(columnType.Kv("www")).Map())
-			require.NoError(t, rst.Error)
-			require.Equal(t, int64(1), rst.RowsAffected)
+			require.NoError(t, result.Error)
+			require.Equal(t, int64(1), result.RowsAffected)
 		}
 	})
 }

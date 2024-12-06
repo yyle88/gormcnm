@@ -16,15 +16,11 @@ err := db.Where("name=?", "abc").First(&res).Error
 由于 `name` 是个硬编码的字段，因此我们期望的时在 `Example` 里这个字段是稳定的，随着业务变化也不会被修改的（比如删除或者换类型）
 由此就会让我们形成开发习惯，即定义models的时候需要慎重，因为它是一切逻辑的基石。
 
-但是“确保models不常修改”，这其实是一种奢望。[想要解决这种奢望的创作背景](/internal/docs/CREATION_IDEAS.md) 这个文档只是创作背景和意图，不看也罢，接下来说明如何使用：
+但是“确保models不常修改”，这其实是一种奢望。[想要解决这种奢望的创作背景](./CREATION_IDEAS.zh.md) 这个文档只是创作背景和意图，不看也罢，接下来说明如何使用：
 
 简单demo:
 
-[简单demo](/internal/demos/main/main.go)
-
-[测试case](/cname_test.go)
-
-[测试case](/qx_test.go)
+[简单demo](../demos/main/main.go)
 
 这些都是最简单的，但实际上也只是demo级别的
 
@@ -77,7 +73,7 @@ db.Where("name=?","abc).UpdateColumns(map[string]any{"rank":"xyz"}) //也会报�
 
 假如不想手写各个类名的常数列表，还可以使用配套的自动化生成工具，自动化生成自定义的所有 models 的列名。
 
-调用工具将生成常量配置的代码。这是工具项目 [自动生成 gormcnm 字段定义的工具 gormcngen](https://github.com/yyle88/gormcngen) 只看README就行。
+调用工具将生成常量配置的代码。这是工具项目 [自动生成 gormcnm 字段定义的工具包 gormcngen](https://github.com/yyle88/gormcngen) 只看README就行。
 
 自动化生成的列名定义是这样的（这里为了防止各个模型都有相同的字段，比如 id created_at updated_at deleted_at，就使用了个自定义的类将它们装起来）：
 ```
@@ -122,7 +118,7 @@ import "github.com/yyle88/gormcnm"
 ```
 
 ## 优势
-有诸多优势，有的写在了开发思路文档里 [开发思路](/internal/docs/CREATION_IDEAS.md)
+有诸多优势，有的写在了开发思路文档里 [开发思路](./CREATION_IDEAS.zh.md)
 这里补充些显而易见的优势
 1. 能够让你的代码重构变得安全，特别是重命名字段/修改字段类型/删除字段时，它能让你能在静态检查阶段发现问题。
 2. 能够让你的重构变得便捷，比如当想修改 `Name` -> `Username` 的时候，就直接通过IDE的重命名(比如使用GOLAND的shift+F6快捷键)，把模型里的 `Name` 改为 `Username` 再把 `ExampleColumns . Name` 重命名，把 `Name: "name"` 修改为 `Username: "username"` 就行，这就能保证你不会改到别的表，非常便捷。

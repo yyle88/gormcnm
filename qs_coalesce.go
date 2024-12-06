@@ -5,12 +5,12 @@ import (
 	"github.com/yyle88/tern/zerotern"
 )
 
-func (s ColumnName[TYPE]) COALESCE() *CoalesceNonNullGuardian {
-	return NewCoalesceNonNullGuardian("COALESCE", string(s)) // COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
+func (columnName ColumnName[TYPE]) COALESCE() *CoalesceNonNullGuardian {
+	return NewCoalesceNonNullGuardian("COALESCE", string(columnName)) // COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
 }
 
-func (s ColumnName[TYPE]) IFNULLFN() *CoalesceNonNullGuardian {
-	return NewCoalesceNonNullGuardian("IFNULL", string(s)) // IFNULL 是 MySQL 特定的函数，在其他数据库系统中可能不支持
+func (columnName ColumnName[TYPE]) IFNULLFN() *CoalesceNonNullGuardian {
+	return NewCoalesceNonNullGuardian("IFNULL", string(columnName)) // IFNULL 是 MySQL 特定的函数，在其他数据库系统中可能不支持
 }
 
 type CoalesceNonNullGuardian struct {

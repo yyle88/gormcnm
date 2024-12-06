@@ -188,7 +188,9 @@ func TestColumnQx_AND_5(t *testing.T) {
 
 		{
 			var one Example
-			require.NoError(t, db.Where(Qx(columnName.BetweenAND("aba", "abd")).AND(Qx(columnType.IsNotNULL())).Qx2()).First(&one).Error)
+			require.NoError(t, db.Where(Qx(columnName.BetweenAND("aba", "abd")).
+				AND(Qx(columnType.IsNotNULL())).Qx2()).
+				First(&one).Error)
 			require.Equal(t, "abc", one.Name)
 			t.Log(neatjsons.S(one))
 		}

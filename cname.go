@@ -24,156 +24,156 @@ type ColumnName[TYPE any] string
 
 // Qs creates a SQL statement with a given operator.
 // Qs 创建一个带有指定操作符的 SQL 语句。
-func (s ColumnName[TYPE]) Qs(op string) string {
-	return string(s) + " " + op
+func (columnName ColumnName[TYPE]) Qs(op string) string {
+	return string(columnName) + " " + op
 }
 
 // Op creates a SQL statement with an operator and a parameter.
 // Op 创建一个带有操作符和参数的 SQL 语句。
-func (s ColumnName[TYPE]) Op(op string, x TYPE) (string, TYPE) {
-	return string(s) + " " + op, x
+func (columnName ColumnName[TYPE]) Op(op string, x TYPE) (string, TYPE) {
+	return string(columnName) + " " + op, x
 }
 
 // Eq creates a SQL statement to check if the column is equal to a given value.
 // Eq 创建一个 SQL 语句来判断列是否等于给定的值。
-func (s ColumnName[TYPE]) Eq(x TYPE) (string, TYPE) {
-	return string(s) + "=?", x
+func (columnName ColumnName[TYPE]) Eq(x TYPE) (string, TYPE) {
+	return string(columnName) + "=?", x
 }
 
 // Gt creates a SQL statement to check if the column is greater than a given value.
 // Gt 创建一个 SQL 语句来判断列是否大于给定的值。
-func (s ColumnName[TYPE]) Gt(x TYPE) (string, TYPE) {
-	return string(s) + ">?", x
+func (columnName ColumnName[TYPE]) Gt(x TYPE) (string, TYPE) {
+	return string(columnName) + ">?", x
 }
 
 // Lt creates a SQL statement to check if the column is less than a given value.
 // Lt 创建一个 SQL 语句来判断列是否小于给定的值。
-func (s ColumnName[TYPE]) Lt(x TYPE) (string, TYPE) {
-	return string(s) + "<?", x
+func (columnName ColumnName[TYPE]) Lt(x TYPE) (string, TYPE) {
+	return string(columnName) + "<?", x
 }
 
 // Gte creates a SQL statement to check if the column is greater than or equal to a given value.
 // Gte 创建一个 SQL 语句来判断列是否大于等于给定的值。
-func (s ColumnName[TYPE]) Gte(x TYPE) (string, TYPE) {
-	return string(s) + ">=?", x
+func (columnName ColumnName[TYPE]) Gte(x TYPE) (string, TYPE) {
+	return string(columnName) + ">=?", x
 }
 
 // Lte creates a SQL statement to check if the column is less than or equal to a given value.
 // Lte 创建一个 SQL 语句来判断列是否小于等于给定的值。
-func (s ColumnName[TYPE]) Lte(x TYPE) (string, TYPE) {
-	return string(s) + "<=?", x
+func (columnName ColumnName[TYPE]) Lte(x TYPE) (string, TYPE) {
+	return string(columnName) + "<=?", x
 }
 
 // Ne creates a SQL statement to check if the column is not equal to a given value.
 // Ne 创建一个 SQL 语句来判断列是否不等于给定的值。
-func (s ColumnName[TYPE]) Ne(x TYPE) (string, TYPE) {
-	return string(s) + "!=?", x
+func (columnName ColumnName[TYPE]) Ne(x TYPE) (string, TYPE) {
+	return string(columnName) + "!=?", x
 }
 
 // In creates a SQL statement to check if the column's value is in a given list of values.
 // In 创建一个 SQL 语句来判断列的值是否在给定的值列表中。
-func (s ColumnName[TYPE]) In(x []TYPE) (string, []TYPE) {
-	return string(s) + " IN(?)", x
+func (columnName ColumnName[TYPE]) In(x []TYPE) (string, []TYPE) {
+	return string(columnName) + " IN(?)", x
 }
 
 // NotIn creates a SQL statement to check if the column's value is not in a given list of values.
 // NotIn 创建一个 SQL 语句来判断列的值是否不在给定的值列表中。
-func (s ColumnName[TYPE]) NotIn(x []TYPE) (string, []TYPE) {
-	return string(s) + " NOT IN(?)", x
+func (columnName ColumnName[TYPE]) NotIn(x []TYPE) (string, []TYPE) {
+	return string(columnName) + " NOT IN(?)", x
 }
 
 // Like creates a SQL statement to check if the column's value matches a given pattern.
 // Like 创建一个 SQL 语句来判断列的值是否匹配给定的模式。
-func (s ColumnName[TYPE]) Like(x TYPE) (string, TYPE) {
-	return string(s) + " LIKE ?", x
+func (columnName ColumnName[TYPE]) Like(x TYPE) (string, TYPE) {
+	return string(columnName) + " LIKE ?", x
 }
 
 // NotLike creates a SQL statement to check if the column's value does not match a given pattern.
 // NotLike 创建一个 SQL 语句来判断列的值是否不匹配给定的模式。
-func (s ColumnName[TYPE]) NotLike(x TYPE) (string, TYPE) {
-	return string(s) + " NOT LIKE ?", x
+func (columnName ColumnName[TYPE]) NotLike(x TYPE) (string, TYPE) {
+	return string(columnName) + " NOT LIKE ?", x
 }
 
 // NotEq creates a SQL statement to check if the column is not equal to a given value.
 // NotEq 创建一个 SQL 语句来判断列是否不等于给定的值。
-func (s ColumnName[TYPE]) NotEq(x TYPE) (string, TYPE) {
-	return string(s) + "!=?", x
+func (columnName ColumnName[TYPE]) NotEq(x TYPE) (string, TYPE) {
+	return string(columnName) + "!=?", x
 }
 
 // IsNULL creates a SQL statement to check if the column is NULL.
 // IsNULL 创建一个 SQL 语句来判断列是否为 NULL。
-func (s ColumnName[TYPE]) IsNULL() string {
-	return string(s) + " IS NULL"
+func (columnName ColumnName[TYPE]) IsNULL() string {
+	return string(columnName) + " IS NULL"
 }
 
 // IsNull creates a SQL statement to check if the column is NULL.
 // IsNull 创建一个 SQL 语句来判断列是否为 NULL。
-func (s ColumnName[TYPE]) IsNull() string {
-	return string(s) + " IS NULL"
+func (columnName ColumnName[TYPE]) IsNull() string {
+	return string(columnName) + " IS NULL"
 }
 
 // IsNotNULL creates a SQL statement to check if the column is not NULL.
 // IsNotNULL 创建一个 SQL 语句来判断列是否不为 NULL。
-func (s ColumnName[TYPE]) IsNotNULL() string {
-	return string(s) + " IS NOT NULL"
+func (columnName ColumnName[TYPE]) IsNotNULL() string {
+	return string(columnName) + " IS NOT NULL"
 }
 
 // IsNotNull creates a SQL statement to check if the column is not NULL.
 // IsNotNull 创建一个 SQL 语句来判断列是否不为 NULL。
-func (s ColumnName[TYPE]) IsNotNull() string {
-	return string(s) + " IS NOT NULL"
+func (columnName ColumnName[TYPE]) IsNotNull() string {
+	return string(columnName) + " IS NOT NULL"
 }
 
 // IsTRUE creates a SQL statement to check if the column's value is TRUE.
 // IsTRUE 创建一个 SQL 语句来判断列的值是否为 TRUE。
-func (s ColumnName[TYPE]) IsTRUE() string {
-	return string(s) + " IS TRUE"
+func (columnName ColumnName[TYPE]) IsTRUE() string {
+	return string(columnName) + " IS TRUE"
 }
 
 // IsTrue creates a SQL statement to check if the column's value is TRUE.
 // IsTrue 创建一个 SQL 语句来判断列的值是否为 TRUE。
-func (s ColumnName[TYPE]) IsTrue() string {
-	return string(s) + " IS TRUE"
+func (columnName ColumnName[TYPE]) IsTrue() string {
+	return string(columnName) + " IS TRUE"
 }
 
 // IsFALSE creates a SQL statement to check if the column's value is FALSE.
 // IsFALSE 创建一个 SQL 语句来判断列的值是否为 FALSE。
-func (s ColumnName[TYPE]) IsFALSE() string {
-	return string(s) + " IS FALSE"
+func (columnName ColumnName[TYPE]) IsFALSE() string {
+	return string(columnName) + " IS FALSE"
 }
 
 // IsFalse creates a SQL statement to check if the column's value is FALSE.
 // IsFalse 创建一个 SQL 语句来判断列的值是否为 FALSE。
-func (s ColumnName[TYPE]) IsFalse() string {
-	return string(s) + " IS FALSE"
+func (columnName ColumnName[TYPE]) IsFalse() string {
+	return string(columnName) + " IS FALSE"
 }
 
 // BetweenAND creates a SQL statement to check if the column's value is between two given values.
 // BetweenAND 创建一个 SQL 语句来判断列的值是否介于两个给定的值之间。
-func (s ColumnName[TYPE]) BetweenAND(arg1, arg2 TYPE) (string, TYPE, TYPE) {
-	return string(s) + " BETWEEN ? AND ?", arg1, arg2
+func (columnName ColumnName[TYPE]) BetweenAND(arg1, arg2 TYPE) (string, TYPE, TYPE) {
+	return string(columnName) + " BETWEEN ? AND ?", arg1, arg2
 }
 
 // BetweenAnd creates a SQL statement to check if the column's value is between two given values.
 // BetweenAnd 创建一个 SQL 语句来判断列的值是否介于两个给定的值之间。
-func (s ColumnName[TYPE]) BetweenAnd(arg1, arg2 TYPE) (string, TYPE, TYPE) {
-	return string(s) + " BETWEEN ? AND ?", arg1, arg2
+func (columnName ColumnName[TYPE]) BetweenAnd(arg1, arg2 TYPE) (string, TYPE, TYPE) {
+	return string(columnName) + " BETWEEN ? AND ?", arg1, arg2
 }
 
 // Name returns the raw column name.
 // Name 返回原始的列名。
-func (s ColumnName[TYPE]) Name() string {
-	return string(s)
+func (columnName ColumnName[TYPE]) Name() string {
+	return string(columnName)
 }
 
 // RawName returns the raw column name.
 // RawName 返回原始的列名。
-func (s ColumnName[TYPE]) RawName() string {
-	return string(s)
+func (columnName ColumnName[TYPE]) RawName() string {
+	return string(columnName)
 }
 
 // AsAlias returns the column name with an alias applied.
 // AsAlias 返回带有别名的列名。
-func (s ColumnName[TYPE]) AsAlias(alias string) string {
-	return utils.ApplyAliasToColumn(s.Name(), alias)
+func (columnName ColumnName[TYPE]) AsAlias(alias string) string {
+	return utils.ApplyAliasToColumn(columnName.Name(), alias)
 }

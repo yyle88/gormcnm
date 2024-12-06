@@ -1,4 +1,4 @@
-# 创作背景-我想过的其它方案
+# 创作思路
 
 ## 问题
 遇到的问题是，在频繁修改 models 的时候，gorm的 `db.Where("name=?", req.Name)` 的逻辑有可能会因为 `name` 被删除/改名/修改类型，而在运行时报错。
@@ -170,7 +170,7 @@ err := db.Where(cls.Name.Eq("abc")).
 ```
 go get github.com/yyle88/gormcngen
 ```
-至于这个生成工具的用法就请移步到对应的项目里查看他的文档吧。[自动生成 gormcnm 字段定义的工具 gormcngen](https://github.com/yyle88/gormcngen)
+至于这个生成工具的用法就请移步到对应的项目里查看他的文档吧。[自动生成 gormcnm 模型字段的工具 gormcngen](https://github.com/yyle88/gormcngen)
 
 ## 其它
 这个项目其实是致敬 `gorm` 的，但 `gormcnm` 或许有些不雅观，假如觉得不适也可以看这里 [gormcls](https://github.com/yyle88/gormcls)
@@ -179,3 +179,5 @@ go get github.com/yyle88/gormcngen
 
 ## 完结
 这个创作背景和使用方法介绍，完。
+
+Give me stars. Thank you!!!
