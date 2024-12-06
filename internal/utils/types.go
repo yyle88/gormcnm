@@ -8,14 +8,14 @@ type GormTableNameFace interface {
 	TableName() string
 }
 
-type ClassImpTableName struct {
+type TableNameImp struct {
 	tableName string
 }
 
-func NewClassImpTableName(tableName string) *ClassImpTableName {
-	return &ClassImpTableName{tableName: tableName}
+func NewTableNameImp(tableName string) *TableNameImp {
+	return &TableNameImp{tableName: tableName}
 }
 
-func (X *ClassImpTableName) TableName() string {
+func (X *TableNameImp) TableName() string {
 	return X.tableName
 }
