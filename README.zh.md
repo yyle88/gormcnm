@@ -4,6 +4,10 @@
 
 `gormcnm` 是一个前沿的 **泛型包**，旨在彻底改变您在 Go 中使用 GORM 的方式。通过充分利用 Go 泛型的强大功能，它提供了一种 **类型安全**、**高效** 和 **高度生产力** 的方式来引用模型中的数据库列。能消除硬编码列名带来的风险，增强 **重构安全性**、**可维护性**，通过减少错误提高您的开发效率。
 
+`gormcnm` 类似于 Java 生态中的 `MyBatis Plus`，允许开发者使用像 `Example::getName` 这样的表达式动态检索列名。类似地，`gormcnm` 为 Go 带来 **类型安全** 的列引用。通过使用 `gormcnm`，开发者可以轻松执行数据库查询，具备 **编译时验证**，并避免在查询中硬编码字符串。
+
+`gormcnm` 类似于 Python 生态系统中的 `SQLAlchemy`，开发者可以像引用 `Example.name` 这样的模型属性来动态访问列名，实现 **类型安全** 的列引用。`gormcnm` 也在 Go 中提供 **类型安全** 的动态列引用，能像 `cls.Name.Eq("abc")` 这样使用。
+
 `gormcnm` 保证您的列引用一致且类型安全，确保代码更加简洁、稳健且易于维护。使用 `gormcnm` 后，模型定义中的任何更改都会轻松地反映在应用程序中而不破坏查询，使其成为您与数据库交互的 **安全网**。
 
 通过 `gormcnm`，您可以充分发挥 Go 泛型的潜力，轻松实现类型安全、无重构问题且开发者友好的数据库交互。告别脆弱的硬编码字符串或运行时错误——`gormcnm` 作为您的最终安全网，确保数据库查询保持一致、可扩展，并且在应用程序发展时易于重构。
@@ -25,6 +29,8 @@ go get github.com/yyle88/gormcnm
 - **基于泛型的类型安全**：利用 Go 的泛型创建类型安全的列名，确保列引用在编译时进行验证。
 - **无缝重构**：更改模型字段名或类型时，自动更新所有引用，减少错误，使重构变得轻松。
 - **渐进式采用**：设计上可逐步集成，允许开发者根据需要逐步采用其特性，不会干扰现有工作流程。
+- **像 `MyBatis Plus` 的列引用**：`gormcnm` 提供 `cls.Name.Eq("abc")` 的功能。
+- **类似 `SQLAlchemy` 的操作**: 在 Go 中提供 **类型安全** 的动态列引用，使查询更简洁。
 - **编译时验证**：通过强大的编译时验证，避免因列名错误或类型不匹配而导致的运行时错误。
 - **改进的开发者体验**：享受 IDE 完整支持，包括自动补全、代码检查和针对泛型的重构工具。
 - **减少人为错误**：使用定义良好的常量替代硬编码的魔法字符串，避免打字错误。
@@ -42,6 +48,37 @@ type Example struct {
     Rank int    `gorm:"column:rank;"`
 }
 ```
+
+在 **Java** 中，`MyBatis Plus` 工具可以通过 `Example::getName` 获得列名，组装查询语句，查询出结果后，再使用 `result.getName()` 获取字段的值：
+
+```java
+@Autowired
+private ExampleMapper exampleMapper;
+
+public void test() {
+    Example result = exampleMapper.selectOne(
+        new LambdaQueryWrapper<Example>().eq(Example::getName, "abc")
+    );
+
+    if (result != null) {
+        System.out.println(result.getName());
+        System.out.println(result.getRank());
+    }
+}
+```
+
+在 **Python** 中，`SQLAlchemy` 工具可以通过 `Example.name` 获得列名，组装查询语句，查询出结果后，再使用 `result.name` 获取字段的值：
+
+```python
+def test():
+    result = session.query(Example).filter(Example.name == "abc").first()
+
+    if result:
+        print(result.name)
+        print(result.rank)
+```
+
+但是在 Go 中目前还没有 `Example::Name` 的功能，而 example.Name 则是取的字段的值，因此在Go中目前还总是需要使用 硬编码 查询。
 
 ### 使用硬编码字段名的传统查询
 
@@ -94,6 +131,8 @@ fmt.Println(res)
 - **渐进式集成**：可以在代码库中的特定部分开始使用 `gormcnm`，随着需求的增加逐步扩展使用，确保平滑且无缝的过渡。
 - **更简洁的代码**：用常量替代魔法字符串，使查询更加可读、可维护和易于理解。
 - **更快的开发速度**：IDE 特性如自动补全和重构工具加快了编程速度，减少了人为错误的机会。
+- **像 `MyBatis Plus` 的列引用**：`gormcnm` 使用类似于 Java 中 `MyBatis Plus` 的列引用功能。
+- **类似 `SQLAlchemy` 的功能**: `gormcnm` 在 Go 中提供 **类型安全** 的动态列引用。
 - **自文档化的查询**：类型安全的列引用使您的查询更加清晰和具有描述性，有助于协作和未来的维护。
 - **减少调试工作**：由于所有引用都使用了定义良好的常量，定位与列相关的错误变得更容易。
 - **最小化人为错误**：通过集中定义列，避免打字错误和硬编码值导致的运行时错误。
@@ -136,6 +175,8 @@ func (*Example) Columns() *ExampleColumns {
     }
 }
 ```
+
+现在，您可以像 `MyBatis Plus` 中的 `Example::getName` 一样获取列名，通过 `cls = res.Columns()` 获取列名类的对象，然后使用 `cls.Name.Eq("abc")` 进行查询。
 
 ### 使用生成的列进行查询
 
