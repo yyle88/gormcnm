@@ -11,6 +11,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type UserOrder struct {
+	UserID      uint
+	UserName    string
+	OrderID     uint
+	OrderAmount float64
+}
+
 func TestColumnName_AsAlias(t *testing.T) {
 	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&User{}, &Order{}))
@@ -32,14 +39,9 @@ func TestColumnName_AsAlias(t *testing.T) {
 		require.Equal(t, expectedText, neatjsons.S(selectFunc1(t, db)))
 		//使用第二种方案，确保两者结果相同
 		require.Equal(t, expectedText, neatjsons.S(selectFunc2(t, db)))
+		//使用第三种方案，确保两者结果相同
+		require.Equal(t, expectedText, neatjsons.S(selectFunc3(t, db)))
 	})
-}
-
-type UserOrder struct {
-	UserID      uint
-	UserName    string
-	OrderID     uint
-	OrderAmount float64
 }
 
 // 这是比较常规的逻辑
@@ -60,18 +62,17 @@ func selectFunc1(t *testing.T, db *gorm.DB) []*UserOrder {
 	userColumns := user.Columns()
 	order := &Order{}
 	orderColumns := order.Columns()
-	operation := &gormcnm.ColumnOperationClass{}
 
 	var results []*UserOrder
 	require.NoError(t, db.Table(user.TableName()).
-		Select(operation.MergeStmts(
-			userColumns.ID.TC(user).AsAlias("user_id"),
-			userColumns.Name.TC(user).AsAlias("user_name"),
-			orderColumns.ID.TC(order).AsAlias("order_id"),
-			orderColumns.Amount.TC(order).AsAlias("order_amount"),
+		Select(userColumns.ColumnOperationClass.MergeStmts(
+			userColumns.ID.TB(user).AsAlias("user_id"),
+			userColumns.Name.TB(user).AsAlias("user_name"),
+			orderColumns.ID.TB(order).AsAlias("order_id"),
+			orderColumns.Amount.TB(order).AsAlias("order_amount"),
 		)).
-		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.TC(order).Eq(userColumns.ID.TC(user)))).
-		Order(userColumns.ID.TC(user).Ob("asc").Ob(orderColumns.ID.TC(order).Ob("asc")).Ox()).
+		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.TB(order).Eq(userColumns.ID.TB(user)))).
+		Order(userColumns.ID.TB(user).Ob("asc").Ob(orderColumns.ID.TB(order).Ob("asc")).Ox()).
 		Scan(&results).Error)
 	t.Log(neatjsons.S(results))
 	return results
@@ -83,7 +84,6 @@ func selectFunc2(t *testing.T, db *gorm.DB) []*UserOrder {
 	userColumns := user.Columns()
 	order := &Order{}
 	orderColumns := order.Columns()
-	operation := &gormcnm.ColumnOperationClass{}
 
 	const (
 		columnUserID      = gormcnm.ColumnName[uint]("user_id")
@@ -95,7 +95,36 @@ func selectFunc2(t *testing.T, db *gorm.DB) []*UserOrder {
 	//这是使用名称的逻辑
 	var results []*UserOrder
 	require.NoError(t, db.Table(user.TableName()).
-		Select(operation.MergeStmts(
+		Select(userColumns.ColumnOperationClass.MergeStmts(
+			userColumns.ID.WithTable(user).AsName(columnUserID),
+			userColumns.Name.WithTable(user).AsName(columnUserName),
+			orderColumns.ID.WithTable(order).AsName(columnOrderID),
+			orderColumns.Amount.WithTable(order).AsName(columnOrderAmount),
+		)).
+		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.WithTable(order).Eq(userColumns.ID.WithTable(user)))).
+		Order(userColumns.ID.WithTable(user).Ob("asc").Ob(orderColumns.ID.WithTable(order).Ob("asc")).Ox()).
+		Scan(&results).Error)
+	t.Log(neatjsons.S(results))
+	return results
+}
+
+func selectFunc3(t *testing.T, db *gorm.DB) []*UserOrder {
+	user := &User{}
+	userColumns := user.Columns()
+	order := &Order{}
+	orderColumns := order.Columns()
+
+	const (
+		columnUserID      = gormcnm.ColumnName[uint]("user_id")
+		columnUserName    = gormcnm.ColumnName[string]("user_name")
+		columnOrderID     = gormcnm.ColumnName[uint]("order_id")
+		columnOrderAmount = gormcnm.ColumnName[float64]("order_amount")
+	)
+
+	//这是使用名称的逻辑
+	var results []*UserOrder
+	require.NoError(t, db.Table(user.TableName()).
+		Select(userColumns.ColumnOperationClass.MergeStmts(
 			userColumns.ID.TC(user).AsName(columnUserID),
 			userColumns.Name.TC(user).AsName(columnUserName),
 			orderColumns.ID.TC(order).AsName(columnOrderID),

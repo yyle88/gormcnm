@@ -94,7 +94,7 @@ func TestExample001(t *testing.T) {
 
 	const columnName = gormcnm.ColumnName[string]("name")
 
-	opc := &gormcnm.ColumnOperationClass{}
+	operation := &gormcnm.ColumnOperationClass{}
 
 	utils.CaseRunInMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
@@ -110,9 +110,9 @@ func TestExample001(t *testing.T) {
 			var results []resType
 			require.NoError(t, db.Model(&Example{}).
 				Group(columnName.Name()).
-				Select(opc.MergeStmts(
+				Select(operation.MergeStmts(
 					columnName.AsAlias("who"),
-					opc.CountStmt("cnt"),
+					operation.CountStmt("cnt"),
 				)).
 				Find(&results).Error)
 			require.Equal(t, 2, len(results))
@@ -126,7 +126,7 @@ func TestExample001(t *testing.T) {
 			var results []resType
 			require.NoError(t, db.Model(&Example{}).
 				Group(columnName.Name()).
-				Select(opc.MergeStmts(
+				Select(operation.MergeStmts(
 					columnName.AsAlias("who"),
 					columnName.Count("cnt"),
 				)).
@@ -142,7 +142,7 @@ func TestExample001(t *testing.T) {
 			var results []resType
 			require.NoError(t, db.Model(&Example{}).
 				Group(columnName.Name()).
-				Select(opc.MergeStmts(
+				Select(operation.MergeStmts(
 					columnName.AsAlias("who"),
 					columnName.CountDistinct("cnt"),
 				)).
