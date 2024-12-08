@@ -85,21 +85,14 @@ func selectFunc2(t *testing.T, db *gorm.DB) []*UserOrder {
 	order := &Order{}
 	orderColumns := order.Columns()
 
-	const (
-		columnUserID      = gormcnm.ColumnName[uint]("user_id")
-		columnUserName    = gormcnm.ColumnName[string]("user_name")
-		columnOrderID     = gormcnm.ColumnName[uint]("order_id")
-		columnOrderAmount = gormcnm.ColumnName[float64]("order_amount")
-	)
-
 	//这是使用名称的逻辑
 	var results []*UserOrder
 	require.NoError(t, db.Table(user.TableName()).
 		Select(userColumns.ColumnOperationClass.MergeStmts(
-			userColumns.ID.WithTable(user).AsName(columnUserID),
-			userColumns.Name.WithTable(user).AsName(columnUserName),
-			orderColumns.ID.WithTable(order).AsName(columnOrderID),
-			orderColumns.Amount.WithTable(order).AsName(columnOrderAmount),
+			userColumns.ID.WithTable(user).AsName(gormcnm.ColumnName[uint]("user_id")),
+			userColumns.Name.WithTable(user).AsName("user_name"),
+			orderColumns.ID.WithTable(order).AsName(gormcnm.New[uint]("order_id")),
+			orderColumns.Amount.WithTable(order).AsName("order_amount"),
 		)).
 		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.WithTable(order).Eq(userColumns.ID.WithTable(user)))).
 		Order(userColumns.ID.WithTable(user).Ob("asc").Ob(orderColumns.ID.WithTable(order).Ob("asc")).Ox()).
@@ -114,21 +107,16 @@ func selectFunc3(t *testing.T, db *gorm.DB) []*UserOrder {
 	order := &Order{}
 	orderColumns := order.Columns()
 
-	const (
-		columnUserID      = gormcnm.ColumnName[uint]("user_id")
-		columnUserName    = gormcnm.ColumnName[string]("user_name")
-		columnOrderID     = gormcnm.ColumnName[uint]("order_id")
-		columnOrderAmount = gormcnm.ColumnName[float64]("order_amount")
-	)
+	userOrder := &UserOrder{}
 
 	//这是使用名称的逻辑
 	var results []*UserOrder
 	require.NoError(t, db.Table(user.TableName()).
 		Select(userColumns.ColumnOperationClass.MergeStmts(
-			userColumns.ID.TC(user).AsName(columnUserID),
-			userColumns.Name.TC(user).AsName(columnUserName),
-			orderColumns.ID.TC(order).AsName(columnOrderID),
-			orderColumns.Amount.TC(order).AsName(columnOrderAmount),
+			userColumns.ID.TC(user).AsName(gormcnm.Cnm(userOrder.UserID, "user_id")),
+			userColumns.Name.TC(user).AsName(gormcnm.Cnm(userOrder.UserName, "user_name")),
+			orderColumns.ID.TC(order).AsName(gormcnm.Cnm(userOrder.OrderID, "order_id")),
+			orderColumns.Amount.TC(order).AsName(gormcnm.Cnm(userOrder.OrderAmount, "order_amount")),
 		)).
 		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.TC(order).Eq(userColumns.ID.TC(user)))).
 		Order(userColumns.ID.TC(user).Ob("asc").Ob(orderColumns.ID.TC(order).Ob("asc")).Ox()).
