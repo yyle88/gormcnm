@@ -27,11 +27,11 @@ func TestExample(t *testing.T) {
 		columnRank = gormcnm.ColumnName[*int]("rank")
 	)
 
-	utils.CaseRunInMemDB(func(db *gorm.DB) {
+	utils.CaseInMemDBRun(func(db *gorm.DB) {
 		//create example data
 		done.Done(db.AutoMigrate(&Example{}))
-		done.Done(db.Save(&Example{Name: "abc", Type: utils.PtrX("xyz"), Rank: utils.PtrX(123)}).Error)
-		done.Done(db.Save(&Example{Name: "aaa", Type: utils.PtrX("xxx"), Rank: utils.PtrX(456)}).Error)
+		done.Done(db.Save(&Example{Name: "abc", Type: utils.GetPointer("xyz"), Rank: utils.GetPointer(123)}).Error)
+		done.Done(db.Save(&Example{Name: "aaa", Type: utils.GetPointer("xxx"), Rank: utils.GetPointer(456)}).Error)
 
 		{
 			var res Example
@@ -43,9 +43,9 @@ func TestExample(t *testing.T) {
 		{ //select an example data
 			var res Example
 			if err := db.Where(columnName.Eq("abc")).
-				Where(columnType.Eq(utils.PtrX("xyz"))).
-				Where(columnRank.Gt(utils.PtrX(100))).
-				Where(columnRank.Lt(utils.PtrX(200))).
+				Where(columnType.Eq(utils.GetPointer("xyz"))).
+				Where(columnRank.Gt(utils.GetPointer(100))).
+				Where(columnRank.Lt(utils.GetPointer(200))).
 				First(&res).Error; err != nil {
 				panic(errors.WithMessage(err, "wrong"))
 			}

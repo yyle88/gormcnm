@@ -27,7 +27,7 @@ func TestExample(t *testing.T) {
 		columnRank = gormcnm.ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInMemDB(func(db *gorm.DB) {
+	utils.CaseInMemDBRun(func(db *gorm.DB) {
 		//create example data
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)

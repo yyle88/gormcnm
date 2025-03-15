@@ -21,7 +21,7 @@ func TestValuesMap_SetValue(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInMemDB(func(db *gorm.DB) {
+	utils.CaseInMemDBRun(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name: "aaa",

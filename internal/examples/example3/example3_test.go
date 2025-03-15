@@ -19,7 +19,7 @@ type UserOrder struct {
 }
 
 func TestColumnName_AsAlias(t *testing.T) {
-	utils.CaseRunInMemDB(func(db *gorm.DB) {
+	utils.CaseInMemDBRun(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&User{}, &Order{}))
 
 		users := []User{

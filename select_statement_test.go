@@ -20,7 +20,7 @@ func TestSelectStatement_Combine(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInMemDB(func(db *gorm.DB) {
+	utils.CaseInMemDBRun(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Rank: 100}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Rank: 101}).Error)
