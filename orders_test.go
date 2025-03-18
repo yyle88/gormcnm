@@ -28,7 +28,7 @@ func TestOrderByBottle_Ob(t *testing.T) {
 		{
 			var res []*Example
 			require.NoError(t, db.Where(columnName.In([]string{"abc", "aaa"})).
-				Order(columnName.Ob("asc").
+				Order(columnName.OrderByBottle("asc").
 					Ob(columnType.Ob("desc")).
 					Ox()).
 				Find(&res).Error)
@@ -40,8 +40,8 @@ func TestOrderByBottle_Ob(t *testing.T) {
 			var res []*Example
 			require.NoError(t, db.Where(columnName.In([]string{"abc", "aaa"})).
 				Order(columnName.Ob("desc").
-					Ob(columnType.Ob("asc")).
-					Ox()).
+					OrderByBottle(columnType.Ob("asc")).
+					Orders()).
 				Find(&res).Error)
 			require.Equal(t, "abc", res[0].Name)
 			require.Equal(t, "aaa", res[1].Name)

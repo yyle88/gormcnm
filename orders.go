@@ -10,6 +10,12 @@ func (ob OrderByBottle) Ob(next OrderByBottle) OrderByBottle {
 	return ob + " , " + next
 }
 
+// OrderByBottle concatenates the current OrderByBottle with the next one, forming a combined ordering string.
+// OrderByBottle 将当前的 OrderByBottle 与下一个 OrderByBottle 连接，形成一个组合的排序字符串。
+func (ob OrderByBottle) OrderByBottle(next OrderByBottle) OrderByBottle {
+	return ob + " , " + next
+}
+
 // Ox converts the OrderByBottle to a string. Note that if the type is not specific, it may be ignored by GORM's logic.
 // Ox 将 OrderByBottle 转换为字符串。请注意，如果类型不明确，它可能会被 GORM 的逻辑忽略。
 // This is an unavoidable limitation due to GORM's handling of the Order field logic.
@@ -19,5 +25,11 @@ func (ob OrderByBottle) Ob(next OrderByBottle) OrderByBottle {
 // There is currently no elegant solution to this limitation, but it should work fine for personal use.
 // 目前没有优雅的解决方案，但对于个人使用来说应该没有问题。
 func (ob OrderByBottle) Ox() string {
+	return string(ob)
+}
+
+// Orders converts the OrderByBottle to a string. Note that if the type is not specific, it may be ignored by GORM's logic.
+// Orders 将 OrderByBottle 转换为字符串。请注意，如果类型不明确，它可能会被 GORM 的逻辑忽略。
+func (ob OrderByBottle) Orders() string {
 	return string(ob)
 }

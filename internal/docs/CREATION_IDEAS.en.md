@@ -180,7 +180,7 @@ For usage instructions of this generation tool, please refer to the correspondin
 
 ## Some others
 
-This project is actually a tribute to `gorm`. However, `gormcnm` might not sound very elegant. If you don't like the name, you can check out [gormcls](https://github.com/yyle88/gormcls).
+This project is actually a tribute to `gorm`. However, `gormcnm` might not sound very elegant. If you don't like the name, you can check out [gormrepo](https://github.com/yyle88/gormrepo).
 
 I occasionally think that the name `gormcls` might be better, especially since when using a Python ORM in the past, I often used `a.cls` for operations.
 

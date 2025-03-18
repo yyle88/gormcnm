@@ -47,9 +47,9 @@ func (columnName ColumnName[TYPE]) Ob(direction string) OrderByBottle {
 	return OrderByBottle(string(columnName) + " " + direction)
 }
 
-// OrderByDirection creates an order-by clause for the column with the given direction (ASC or DESC).
-// OrderByDirection: 创建一个带有给定方向（ASC或DESC）的ORDER BY子句。
-func (columnName ColumnName[TYPE]) OrderByDirection(direction string) OrderByBottle {
+// OrderByBottle creates an order-by clause for the column with the given direction (ASC or DESC).
+// OrderByBottle: 创建一个带有给定方向（ASC或DESC）的ORDER BY子句。
+func (columnName ColumnName[TYPE]) OrderByBottle(direction string) OrderByBottle {
 	return OrderByBottle(string(columnName) + " " + direction)
 }
 
