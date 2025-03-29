@@ -223,9 +223,9 @@ func TestExample003(t *testing.T) {
 
 		{
 			var res resType
-			var qx *gormcnm.QxConjunction = gormcnqs.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+			var qx = gormcnqs.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
 			t.Log(qx.Qs())
-			var sx *gormcnm.SelectStatement = gormcnqs.CountCaseWhenQxSx(qx, "cnt")
+			var sx = gormcnqs.CountCaseWhenQxSx(qx, "cnt")
 			t.Log(sx.Qs())
 			require.NoError(t, db.Model(&Example{}).Select(sx.Qx2()).Find(&res).Error)
 			require.Equal(t, int64(1), res.Cnt)
@@ -233,9 +233,9 @@ func TestExample003(t *testing.T) {
 
 		{
 			var res resType
-			var qx *gormcnm.QxConjunction = gormcnqs.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+			var qx = gormcnqs.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
 			t.Log(qx.Qs())
-			var sx *gormcnm.SelectStatement = gormcnqs.CountCaseWhenQxSx(qx, "cnt")
+			var sx = gormcnqs.CountCaseWhenQxSx(qx, "cnt")
 			t.Log(sx.Qs())
 			db = db.Model(&Example{})
 			db = gormcnqs.Select(db, sx)
