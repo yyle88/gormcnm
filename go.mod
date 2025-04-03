@@ -8,7 +8,7 @@ require (
 	github.com/yyle88/done v1.0.24
 	github.com/yyle88/must v0.0.20
 	github.com/yyle88/neatjson v0.0.12
-	github.com/yyle88/rese v0.0.8
+	github.com/yyle88/rese v0.0.9
 	github.com/yyle88/runpath v1.0.23
 	github.com/yyle88/sure v0.0.38
 	github.com/yyle88/syntaxgo v0.0.48

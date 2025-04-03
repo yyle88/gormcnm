@@ -1,4 +1,4 @@
-package example3
+package example4
 
 import (
 	"testing"
@@ -60,20 +60,20 @@ func selectFunc(t *testing.T, db *gorm.DB) []*UserOrder {
 // 这是使用名称的逻辑
 func selectFunc1(t *testing.T, db *gorm.DB) []*UserOrder {
 	user := &User{}
-	userColumns := user.Columns()
+	userColumns := user.ColumnsWithDecoration(gormcnm.NewTableDecoration(user.TableName()))
 	order := &Order{}
-	orderColumns := order.Columns()
+	orderColumns := order.ColumnsWithDecoration(gormcnm.NewTableDecoration(order.TableName()))
 
 	var results []*UserOrder
 	require.NoError(t, db.Table(user.TableName()).
 		Select(gormcnmstub.MergeStmts(
-			userColumns.ID.TB(user).AsAlias("user_id"),
-			userColumns.Name.TB(user).AsAlias("user_name"),
-			orderColumns.ID.TB(order).AsAlias("order_id"),
-			orderColumns.Amount.TB(order).AsAlias("order_amount"),
+			userColumns.ID.AsAlias("user_id"),
+			userColumns.Name.AsAlias("user_name"),
+			orderColumns.ID.AsAlias("order_id"),
+			orderColumns.Amount.AsAlias("order_amount"),
 		)).
-		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.TB(order).Eq(userColumns.ID.TB(user)))).
-		Order(userColumns.ID.TB(user).Ob("asc").Ob(orderColumns.ID.TB(order).Ob("asc")).Ox()).
+		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.OnEq(userColumns.ID))).
+		Order(userColumns.ID.Ob("asc").Ob(orderColumns.ID.Ob("asc")).Ox()).
 		Scan(&results).Error)
 	t.Log(neatjsons.S(results))
 	return results
@@ -82,21 +82,21 @@ func selectFunc1(t *testing.T, db *gorm.DB) []*UserOrder {
 // 这是使用名称的逻辑
 func selectFunc2(t *testing.T, db *gorm.DB) []*UserOrder {
 	user := &User{}
-	userColumns := user.Columns()
+	userColumns := user.ColumnsWithDecoration(gormcnm.NewTableDecoration(user.TableName()))
 	order := &Order{}
-	orderColumns := order.Columns()
+	orderColumns := order.ColumnsWithDecoration(gormcnm.NewTableDecoration(order.TableName()))
 
 	//这是使用名称的逻辑
 	var results []*UserOrder
 	require.NoError(t, db.Table(user.TableName()).
 		Select(gormcnmstub.MergeStmts(
-			userColumns.ID.WithTable(user).AsName(gormcnm.New[uint]("user_id")),
-			userColumns.Name.WithTable(user).AsName("user_name"),
-			orderColumns.ID.WithTable(order).AsName(gormcnm.New[uint]("order_id")),
-			orderColumns.Amount.WithTable(order).AsName("order_amount"),
+			userColumns.ID.AsName(gormcnm.New[uint]("user_id")),
+			userColumns.Name.AsName("user_name"),
+			orderColumns.ID.AsName(gormcnm.New[uint]("order_id")),
+			orderColumns.Amount.AsName("order_amount"),
 		)).
-		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.WithTable(order).Eq(userColumns.ID.WithTable(user)))).
-		Order(userColumns.ID.WithTable(user).Ob("asc").Ob(orderColumns.ID.WithTable(order).Ob("asc")).Ox()).
+		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.OnEq(userColumns.ID))).
+		Order(userColumns.ID.Ob("asc").Ob(orderColumns.ID.Ob("asc")).Ox()).
 		Scan(&results).Error)
 	t.Log(neatjsons.S(results))
 	return results
@@ -104,9 +104,9 @@ func selectFunc2(t *testing.T, db *gorm.DB) []*UserOrder {
 
 func selectFunc3(t *testing.T, db *gorm.DB) []*UserOrder {
 	user := &User{}
-	userColumns := user.Columns()
+	userColumns := user.ColumnsWithDecoration(gormcnm.NewTableDecoration(user.TableName()))
 	order := &Order{}
-	orderColumns := order.Columns()
+	orderColumns := order.ColumnsWithDecoration(gormcnm.NewTableDecoration(order.TableName()))
 
 	userOrder := &UserOrder{}
 
@@ -114,13 +114,13 @@ func selectFunc3(t *testing.T, db *gorm.DB) []*UserOrder {
 	var results []*UserOrder
 	require.NoError(t, db.Table(user.TableName()).
 		Select(gormcnmstub.MergeStmts(
-			userColumns.ID.TC(user).AsName(gormcnm.Cnm(userOrder.UserID, "user_id")),
-			userColumns.Name.TC(user).AsName(gormcnm.Cnm(userOrder.UserName, "user_name")),
-			orderColumns.ID.TC(order).AsName(gormcnm.Cnm(userOrder.OrderID, "order_id")),
-			orderColumns.Amount.TC(order).AsName(gormcnm.Cnm(userOrder.OrderAmount, "order_amount")),
+			userColumns.ID.AsName(gormcnm.Cnm(userOrder.UserID, "user_id")),
+			userColumns.Name.AsName(gormcnm.Cnm(userOrder.UserName, "user_name")),
+			orderColumns.ID.AsName(gormcnm.Cnm(userOrder.OrderID, "order_id")),
+			orderColumns.Amount.AsName(gormcnm.Cnm(userOrder.OrderAmount, "order_amount")),
 		)).
-		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.TC(order).Eq(userColumns.ID.TC(user)))).
-		Order(userColumns.ID.TC(user).Ob("asc").Ob(orderColumns.ID.TC(order).Ob("asc")).Ox()).
+		Joins(userColumns.LEFTJOIN(order.TableName()).On(orderColumns.UserID.OnEq(userColumns.ID))).
+		Order(userColumns.ID.Ob("asc").Ob(orderColumns.ID.Ob("asc")).Ox()).
 		Scan(&results).Error)
 	t.Log(neatjsons.S(results))
 	return results

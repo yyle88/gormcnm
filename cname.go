@@ -160,6 +160,14 @@ func (columnName ColumnName[TYPE]) BetweenAnd(arg1, arg2 TYPE) (string, TYPE, TY
 	return string(columnName) + " BETWEEN ? AND ?", arg1, arg2
 }
 
+func (columnName ColumnName[TYPE]) OnEq(columnName2 ColumnName[TYPE]) string {
+	return string(columnName) + "=" + string(columnName2)
+}
+
+func (columnName ColumnName[TYPE]) OnNe(columnName2 ColumnName[TYPE]) string {
+	return string(columnName) + "!=" + string(columnName2)
+}
+
 // Name returns the raw column name.
 // Name 返回原始的列名。
 func (columnName ColumnName[TYPE]) Name() string {
@@ -172,8 +180,14 @@ func (columnName ColumnName[TYPE]) RawName() string {
 	return string(columnName)
 }
 
-// AsAlias returns the column name with an alias applied.
+// AsAlias returns the column name with applied alias.
 // AsAlias 返回带有别名的列名。
 func (columnName ColumnName[TYPE]) AsAlias(alias string) string {
 	return utils.ApplyAliasToColumn(columnName.Name(), alias)
+}
+
+// AsName generates a SQL alias for the column using another ColumnName as the alias.
+// AsName 使用另一个 ColumnName 作为别名生成列的 SQL 别名。
+func (columnName ColumnName[TYPE]) AsName(alias ColumnName[TYPE]) string {
+	return utils.ApplyAliasToColumn(columnName.Name(), string(alias))
 }
