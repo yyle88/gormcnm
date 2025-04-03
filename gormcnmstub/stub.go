@@ -1,4 +1,4 @@
-package gormcnqs
+package gormcnmstub
 
 import "github.com/yyle88/gormcnm"
 

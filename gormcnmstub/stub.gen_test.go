@@ -1,4 +1,4 @@
-package gormcnqs
+package gormcnmstub
 
 import (
 	"testing"

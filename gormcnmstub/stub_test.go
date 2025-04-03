@@ -1,4 +1,4 @@
-package gormcnqs_test
+package gormcnmstub_test
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
-	"github.com/yyle88/gormcnm/gormcnqs"
+	"github.com/yyle88/gormcnm/gormcnmstub"
 	"github.com/yyle88/gormcnm/internal/utils"
 	"github.com/yyle88/neatjson/neatjsons"
 	"gorm.io/gorm"
@@ -32,7 +32,7 @@ func TestExample000(t *testing.T) {
 
 		{
 			result := db.Model(&Example{}).Where(
-				gormcnqs.NewQx(
+				gormcnmstub.NewQx(
 					columnName.Eq("abc"),
 				).AND1(
 					columnType.Eq("xyz"),
@@ -45,10 +45,10 @@ func TestExample000(t *testing.T) {
 		}
 		{
 			stmt := db.Model(&Example{})
-			stmt = gormcnqs.Where(stmt, gormcnqs.Qx(columnName.Eq("aaa")).
+			stmt = gormcnmstub.Where(stmt, gormcnmstub.Qx(columnName.Eq("aaa")).
 				AND(
-					gormcnqs.Qx(columnType.Eq("xxx")),
-					gormcnqs.Qx(columnRank.Eq(456)),
+					gormcnmstub.Qx(columnType.Eq("xxx")),
+					gormcnmstub.Qx(columnRank.Eq(456)),
 				).
 				OR1(columnName.Eq("abc")),
 			)
@@ -58,20 +58,20 @@ func TestExample000(t *testing.T) {
 		}
 		{
 			stmt := db.Model(&Example{})
-			stmt = gormcnqs.Where(stmt, gormcnqs.Qx(columnName.Eq("aaa")).
+			stmt = gormcnmstub.Where(stmt, gormcnmstub.Qx(columnName.Eq("aaa")).
 				AND(
-					gormcnqs.Qx(columnType.Eq("xxx")),
-					gormcnqs.Qx(columnRank.Eq(456)),
+					gormcnmstub.Qx(columnType.Eq("xxx")),
+					gormcnmstub.Qx(columnRank.Eq(456)),
 				),
 			)
-			result := gormcnqs.UpdateColumns(stmt, gormcnqs.NewKw().Kw(columnRank.Kv(100)).Kw(columnType.Kv("uvw")))
+			result := gormcnmstub.UpdateColumns(stmt, gormcnmstub.NewKw().Kw(columnRank.Kv(100)).Kw(columnType.Kv("uvw")))
 			require.NoError(t, result.Error)
 			require.Equal(t, int64(1), result.RowsAffected)
 		}
 		{
 			stmt := db.Model(&Example{})
-			stmt = gormcnqs.Where(stmt, gormcnqs.Qx(columnName.Eq("abc")).OR(gormcnqs.Qx(columnName.Eq("aaa"))))
-			stmt = gormcnqs.OrderByColumns(stmt, columnRank.Ob("asc"))
+			stmt = gormcnmstub.Where(stmt, gormcnmstub.Qx(columnName.Eq("abc")).OR(gormcnmstub.Qx(columnName.Eq("aaa"))))
+			stmt = gormcnmstub.OrderByColumns(stmt, columnRank.Ob("asc"))
 
 			var examples []*Example
 			result := stmt.Find(&examples)
@@ -107,9 +107,9 @@ func TestExample001(t *testing.T) {
 			var results []resType
 			require.NoError(t, db.Model(&Example{}).
 				Group(columnName.Name()).
-				Select(gormcnqs.MergeStmts(
+				Select(gormcnmstub.MergeStmts(
 					columnName.AsAlias("who"),
-					gormcnqs.CountStmt("cnt"),
+					gormcnmstub.CountStmt("cnt"),
 				)).
 				Find(&results).Error)
 			require.Equal(t, 2, len(results))
@@ -123,7 +123,7 @@ func TestExample001(t *testing.T) {
 			var results []resType
 			require.NoError(t, db.Model(&Example{}).
 				Group(columnName.Name()).
-				Select(gormcnqs.MergeStmts(
+				Select(gormcnmstub.MergeStmts(
 					columnName.AsAlias("who"),
 					columnName.Count("cnt"),
 				)).
@@ -139,7 +139,7 @@ func TestExample001(t *testing.T) {
 			var results []resType
 			require.NoError(t, db.Model(&Example{}).
 				Group(columnName.Name()).
-				Select(gormcnqs.MergeStmts(
+				Select(gormcnmstub.MergeStmts(
 					columnName.AsAlias("who"),
 					columnName.CountDistinct("cnt"),
 				)).
@@ -171,7 +171,7 @@ func TestExample002(t *testing.T) {
 		}
 
 		var res resType
-		require.NoError(t, db.Model(&Example{}).Select(gormcnqs.CountStmt("cnt")).Find(&res).Error)
+		require.NoError(t, db.Model(&Example{}).Select(gormcnmstub.CountStmt("cnt")).Find(&res).Error)
 		require.Equal(t, int64(2), res.Cnt)
 	})
 }
@@ -199,7 +199,7 @@ func TestExample003(t *testing.T) {
 
 		{
 			var res resType
-			stmt := gormcnqs.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'", "cnt")
+			stmt := gormcnmstub.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'", "cnt")
 			t.Log(stmt)
 			require.NoError(t, db.Model(&Example{}).Select(stmt).Find(&res).Error)
 			require.Equal(t, int64(1), res.Cnt)
@@ -207,7 +207,7 @@ func TestExample003(t *testing.T) {
 
 		{
 			var res resType
-			stmt := gormcnqs.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'"+" AND "+columnType.Name()+"="+"'xxx'", "cnt")
+			stmt := gormcnmstub.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'"+" AND "+columnType.Name()+"="+"'xxx'", "cnt")
 			t.Log(stmt)
 			require.NoError(t, db.Model(&Example{}).Select(stmt).Find(&res).Error)
 			require.Equal(t, int64(1), res.Cnt)
@@ -215,7 +215,7 @@ func TestExample003(t *testing.T) {
 
 		{
 			var results []*Example
-			var qx = gormcnqs.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+			var qx = gormcnmstub.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
 			t.Log(qx.Qs())
 			require.NoError(t, db.Model(&Example{}).Where(qx.Qx2()).Find(&results).Error)
 			t.Log(len(results))
@@ -223,9 +223,9 @@ func TestExample003(t *testing.T) {
 
 		{
 			var res resType
-			var qx = gormcnqs.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+			var qx = gormcnmstub.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
 			t.Log(qx.Qs())
-			var sx = gormcnqs.CountCaseWhenQxSx(qx, "cnt")
+			var sx = gormcnmstub.CountCaseWhenQxSx(qx, "cnt")
 			t.Log(sx.Qs())
 			require.NoError(t, db.Model(&Example{}).Select(sx.Qx2()).Find(&res).Error)
 			require.Equal(t, int64(1), res.Cnt)
@@ -233,12 +233,12 @@ func TestExample003(t *testing.T) {
 
 		{
 			var res resType
-			var qx = gormcnqs.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+			var qx = gormcnmstub.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
 			t.Log(qx.Qs())
-			var sx = gormcnqs.CountCaseWhenQxSx(qx, "cnt")
+			var sx = gormcnmstub.CountCaseWhenQxSx(qx, "cnt")
 			t.Log(sx.Qs())
 			db = db.Model(&Example{})
-			db = gormcnqs.Select(db, sx)
+			db = gormcnmstub.Select(db, sx)
 			require.NoError(t, db.Find(&res).Error)
 			require.Equal(t, int64(1), res.Cnt)
 		}
