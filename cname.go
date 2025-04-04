@@ -160,12 +160,16 @@ func (columnName ColumnName[TYPE]) BetweenAnd(arg1, arg2 TYPE) (string, TYPE, TY
 	return string(columnName) + " BETWEEN ? AND ?", arg1, arg2
 }
 
-func (columnName ColumnName[TYPE]) OnEq(columnName2 ColumnName[TYPE]) string {
-	return string(columnName) + "=" + string(columnName2)
+// OnEq creates a SQL statement to check if the column is equal to another column in an ON clause.
+// OnEq 创建一个 SQL 语句来判断列是否在 ON 子句中等于另一个列。
+func (columnName ColumnName[TYPE]) OnEq(name ColumnName[TYPE]) string {
+	return string(columnName) + "=" + string(name)
 }
 
-func (columnName ColumnName[TYPE]) OnNe(columnName2 ColumnName[TYPE]) string {
-	return string(columnName) + "!=" + string(columnName2)
+// OnNe creates a SQL statement to check if the column is not equal to another column in an ON clause.
+// OnNe 创建一个 SQL 语句来判断列是否在 ON 子句中不等于另一个列。
+func (columnName ColumnName[TYPE]) OnNe(name ColumnName[TYPE]) string {
+	return string(columnName) + "!=" + string(name)
 }
 
 // Name returns the raw column name.

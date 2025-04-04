@@ -1,5 +1,7 @@
 package gormcnm
 
+import "github.com/yyle88/must"
+
 func New[T any](name string) ColumnName[T] {
 	return ColumnName[T](name)
 }
@@ -18,11 +20,11 @@ type ColumnNameDecoration interface {
 
 type PlainDecoration struct{}
 
-func NewPlainDecoration() *PlainDecoration {
+func NewPlainDecoration() ColumnNameDecoration {
 	return &PlainDecoration{}
 }
 
-func (options *PlainDecoration) DecorateColumnName(name string) string {
+func (D *PlainDecoration) DecorateColumnName(name string) string {
 	return name
 }
 
@@ -30,13 +32,13 @@ type TableDecoration struct {
 	tableName string
 }
 
-func NewTableDecoration(tableName string) *TableDecoration {
+func NewTableDecoration(tableName string) ColumnNameDecoration {
 	return &TableDecoration{tableName: tableName}
 }
 
-func (options *TableDecoration) DecorateColumnName(name string) string {
-	if options.tableName != "" {
-		return options.tableName + "." + name
+func (D *TableDecoration) DecorateColumnName(name string) string {
+	if D.tableName != "" {
+		return D.tableName + "." + name
 	}
 	return name
 }
@@ -45,10 +47,10 @@ type CustomDecoration struct {
 	decorateFunc func(string) string
 }
 
-func NewCustomDecoration(decorateFunc func(name string) string) *CustomDecoration {
+func NewCustomDecoration(decorateFunc func(name string) string) ColumnNameDecoration {
 	return &CustomDecoration{decorateFunc: decorateFunc}
 }
 
-func (d *CustomDecoration) DecorateColumnName(name string) string {
-	return d.decorateFunc(name)
+func (D *CustomDecoration) DecorateColumnName(name string) string {
+	return must.Nice(D.decorateFunc(name))
 }

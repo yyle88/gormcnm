@@ -60,9 +60,9 @@ func selectFunc(t *testing.T, db *gorm.DB) []*UserOrder {
 // 这是使用名称的逻辑
 func selectFunc1(t *testing.T, db *gorm.DB) []*UserOrder {
 	user := &User{}
-	userColumns := user.ColumnsWithDecoration(gormcnm.NewTableDecoration(user.TableName()))
+	userColumns := user.TableColumns(gormcnm.NewTableDecoration(user.TableName()))
 	order := &Order{}
-	orderColumns := order.ColumnsWithDecoration(gormcnm.NewTableDecoration(order.TableName()))
+	orderColumns := order.TableColumns(gormcnm.NewTableDecoration(order.TableName()))
 
 	var results []*UserOrder
 	require.NoError(t, db.Table(user.TableName()).
@@ -82,9 +82,9 @@ func selectFunc1(t *testing.T, db *gorm.DB) []*UserOrder {
 // 这是使用名称的逻辑
 func selectFunc2(t *testing.T, db *gorm.DB) []*UserOrder {
 	user := &User{}
-	userColumns := user.ColumnsWithDecoration(gormcnm.NewTableDecoration(user.TableName()))
+	userColumns := user.TableColumns(gormcnm.NewTableDecoration(user.TableName()))
 	order := &Order{}
-	orderColumns := order.ColumnsWithDecoration(gormcnm.NewTableDecoration(order.TableName()))
+	orderColumns := order.TableColumns(gormcnm.NewTableDecoration(order.TableName()))
 
 	//这是使用名称的逻辑
 	var results []*UserOrder
@@ -104,9 +104,9 @@ func selectFunc2(t *testing.T, db *gorm.DB) []*UserOrder {
 
 func selectFunc3(t *testing.T, db *gorm.DB) []*UserOrder {
 	user := &User{}
-	userColumns := user.ColumnsWithDecoration(gormcnm.NewTableDecoration(user.TableName()))
+	userColumns := user.TableColumns(gormcnm.NewTableDecoration(user.TableName()))
 	order := &Order{}
-	orderColumns := order.ColumnsWithDecoration(gormcnm.NewTableDecoration(order.TableName()))
+	orderColumns := order.TableColumns(gormcnm.NewTableDecoration(order.TableName()))
 
 	userOrder := &UserOrder{}
 

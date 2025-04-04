@@ -19,10 +19,10 @@ func (*User) TableName() string {
 }
 
 func (T *User) Columns() *UserColumns {
-	return T.ColumnsWithDecoration(gormcnm.NewPlainDecoration())
+	return T.TableColumns(gormcnm.NewPlainDecoration())
 }
 
-func (T *User) ColumnsWithDecoration(decoration gormcnm.ColumnNameDecoration) *UserColumns {
+func (T *User) TableColumns(decoration gormcnm.ColumnNameDecoration) *UserColumns {
 	return &UserColumns{
 		ID:   gormcnm.Cmn(T.ID, "id", decoration),
 		Name: gormcnm.Cmn(T.Name, "name", decoration),
@@ -47,10 +47,10 @@ func (*Order) TableName() string {
 }
 
 func (T *Order) Columns() *OrderColumns {
-	return T.ColumnsWithDecoration(gormcnm.NewPlainDecoration())
+	return T.TableColumns(gormcnm.NewPlainDecoration())
 }
 
-func (T *Order) ColumnsWithDecoration(decoration gormcnm.ColumnNameDecoration) *OrderColumns {
+func (T *Order) TableColumns(decoration gormcnm.ColumnNameDecoration) *OrderColumns {
 	return &OrderColumns{
 		ID:     gormcnm.Cmn(T.ID, "id", decoration),
 		UserID: gormcnm.Cmn(T.UserID, "user_id", decoration),
