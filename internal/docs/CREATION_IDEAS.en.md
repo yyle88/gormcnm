@@ -55,7 +55,7 @@ var res Example
 var cls = res.Columns() // This is a hypothetical operation, not actually available, but I expect something like this to be supported at the Go language level, where the class automatically contains its ORM attribute information
 err := db.Where(cls.Name +"=?", req.Name).First(&res).Error // Here, cls contains the metadata (or schema) of Example
 ```
-Ideally, even further:
+Even deeper thinking:
 ```
 var res Example
 var cls = res.Columns()

@@ -28,7 +28,7 @@ require (
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/yyle88/erero v1.0.20 // indirect
 	github.com/yyle88/formatgo v1.0.23 // indirect
-	github.com/yyle88/mutexmap v1.0.10 // indirect
+	github.com/yyle88/mutexmap v1.0.11 // indirect
 	github.com/yyle88/printgo v1.0.5 // indirect
 	github.com/yyle88/zaplog v0.0.21 // indirect
 	go.uber.org/multierr v1.11.0 // indirect

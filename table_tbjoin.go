@@ -9,25 +9,25 @@ import (
 // LEFTJOIN creates a left join operation for the specified table.
 // LEFTJOIN 给指定表创建一个左连接操作。
 func (common *ColumnOperationClass) LEFTJOIN(tableName string) *TableJoin {
-	return newTableJoin(tableName, clause.LeftJoin)
+	return newTableJoin(clause.LeftJoin, tableName)
 }
 
 // RIGHTJOIN creates a right join operation for the specified table.
 // RIGHTJOIN 给指定表创建一个右连接操作。
 func (common *ColumnOperationClass) RIGHTJOIN(tableName string) *TableJoin {
-	return newTableJoin(tableName, clause.RightJoin)
+	return newTableJoin(clause.RightJoin, tableName)
 }
 
 // INNERJOIN creates an inner join operation for the specified table.
 // INNERJOIN 给指定表创建一个内连接操作。
 func (common *ColumnOperationClass) INNERJOIN(tableName string) *TableJoin {
-	return newTableJoin(tableName, clause.InnerJoin)
+	return newTableJoin(clause.InnerJoin, tableName)
 }
 
 // CROSSJOIN creates a cross join operation for the specified table.
 // CROSSJOIN 给指定表创建一个交叉连接操作。
 func (common *ColumnOperationClass) CROSSJOIN(tableName string) *TableJoin {
-	return newTableJoin(tableName, clause.CrossJoin)
+	return newTableJoin(clause.CrossJoin, tableName)
 }
 
 // TableJoin represents a join operation on a table, including its type and name.
@@ -39,7 +39,7 @@ type TableJoin struct {
 
 // newTableJoin creates a new TableJoin instance with the specified table name and join type.
 // newTableJoin 使用指定的表名和连接类型创建一个新的 TableJoin 实例。
-func newTableJoin(tableName string, whichJoin clause.JoinType) *TableJoin {
+func newTableJoin(whichJoin clause.JoinType, tableName string) *TableJoin {
 	return &TableJoin{
 		whichJoin: whichJoin,
 		tableName: tableName,

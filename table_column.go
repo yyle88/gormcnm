@@ -38,6 +38,12 @@ func (tc *TableColumn[TYPE]) Eq(xc *TableColumn[TYPE]) string {
 	return tc.Name() + " = " + xc.Name()
 }
 
+// Ne generates a SQL inequality condition, ensuring type consistency between two columns.
+// Ne 生成 SQL 格式的不等条件，确保两列之间的类型一致。
+func (tc *TableColumn[TYPE]) Ne(xc *TableColumn[TYPE]) string {
+	return tc.Name() + " != " + xc.Name()
+}
+
 // Op generates a custom SQL operation between two columns using the specified operator.
 // Op 使用指定的操作符生成两列之间的自定义 SQL 操作。
 func (tc *TableColumn[TYPE]) Op(op string, xc *TableColumn[TYPE]) string {
