@@ -17,7 +17,7 @@ func TestColumnName_SafeCnm(t *testing.T) {
 
 	const columnCreate = ColumnName[string]("create")
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name:   "aaa",
@@ -67,7 +67,7 @@ func TestColumnName_Count(t *testing.T) {
 
 	const columnName = ColumnName[string]("name")
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)

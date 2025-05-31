@@ -20,7 +20,7 @@ func TestColumnQx_AND(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -67,7 +67,7 @@ func TestColumnQx_AND_2(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -105,7 +105,7 @@ func TestColumnQx_AND_3(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -143,7 +143,7 @@ func TestColumnQx_AND_4(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -181,7 +181,7 @@ func TestColumnQx_AND_5(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)

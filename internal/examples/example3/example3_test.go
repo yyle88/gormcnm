@@ -20,7 +20,7 @@ type UserOrder struct {
 }
 
 func TestExample(t *testing.T) {
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&User{}, &Order{}))
 
 		users := []User{

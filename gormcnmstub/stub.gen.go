@@ -54,6 +54,12 @@ func CombineColumnNames(a ...utils.ColumnNameInterface) string {
 func MergeNames(a ...utils.ColumnNameInterface) string {
 	return stub.MergeNames(a...)
 }
+func CombineNamesSlices(a ...[]string) string {
+	return stub.CombineNamesSlices(a...)
+}
+func MergeSlices(a ...[]string) string {
+	return stub.MergeSlices(a...)
+}
 func CombineStatements(a ...string) string {
 	return stub.CombineStatements(a...)
 }

@@ -25,7 +25,7 @@ func TestExample000(t *testing.T) {
 		columnRank = gormcnm.ColumnName[int]("rank")
 	)
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -93,7 +93,7 @@ func TestExample001(t *testing.T) {
 
 	const columnName = gormcnm.ColumnName[string]("name")
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -161,7 +161,7 @@ func TestExample002(t *testing.T) {
 		Rank int    `gorm:"column:rank;"`
 	}
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -188,7 +188,7 @@ func TestExample003(t *testing.T) {
 		columnType = gormcnm.ColumnName[string]("type")
 	)
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)

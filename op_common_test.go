@@ -26,7 +26,7 @@ func TestExample000(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -96,7 +96,7 @@ func TestExample001(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -166,7 +166,7 @@ func TestExample002(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -195,7 +195,7 @@ func TestExample003(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseInMemDBRun(func(db *gorm.DB) {
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -250,4 +250,15 @@ func TestExample003(t *testing.T) {
 			require.Equal(t, int64(1), res.Cnt)
 		}
 	})
+}
+
+func TestColumnOperationClass_MergeSlices(t *testing.T) {
+	operation := &gormcnm.ColumnOperationClass{}
+
+	slice1 := []string{"a", "b", "c"}
+	slice2 := []string{"d", "e", "f"}
+	slice3 := []string{"g", "h"}
+
+	results := operation.MergeSlices(slice1, slice2, slice3)
+	require.Equal(t, "a, b, c, d, e, f, g, h", results)
 }

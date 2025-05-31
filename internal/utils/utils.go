@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/yyle88/done"
+	"github.com/yyle88/rese"
 	"github.com/yyle88/tern"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -23,13 +23,13 @@ func VOr0[T any](v *T) T {
 	}
 }
 
-func CaseInMemDBRun(run func(db *gorm.DB)) {
-	db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=private"), &gorm.Config{
+// CaseRunInSqliteMemDB 在内存数据库中运行函数(但由于函数已经足够短，其实也没有封装的必要，但还是留着吧)
+func CaseRunInSqliteMemDB(run func(db *gorm.DB)) {
+	db := rese.P1(gorm.Open(sqlite.Open("file::memory:?cache=private"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
-	})).Nice()
-	defer func() {
-		done.Done(done.VCE(db.DB()).Nice().Close())
-	}()
+	}))
+	defer rese.F0(rese.P1(db.DB()).Close)
+
 	run(db)
 }
 

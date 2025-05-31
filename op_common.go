@@ -131,6 +131,18 @@ func (common *ColumnOperationClass) MergeNames(a ...utils.ColumnNameInterface) s
 	return common.CombineColumnNames(a...)
 }
 
+func (common *ColumnOperationClass) CombineNamesSlices(a ...[]string) string {
+	var names []string
+	for _, elems := range a {
+		names = append(names, elems...)
+	}
+	return strings.Join(names, ", ")
+}
+
+func (common *ColumnOperationClass) MergeSlices(a ...[]string) string {
+	return common.CombineNamesSlices(a...)
+}
+
 // CombineStatements combines the provided SQL statements into a single string.
 // CombineStatements 将提供的SQL语句组合成一个字符串。
 func (common *ColumnOperationClass) CombineStatements(a ...string) string {
