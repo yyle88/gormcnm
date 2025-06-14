@@ -1,5 +1,7 @@
 package gormcnm
 
+import "gorm.io/gorm"
+
 // OrderByBottle represents a sort statement builder, designed with a unique naming style that reflects a materials science focus.
 // OrderByBottle 代表排序语句构建器，使用了与材料学相关的命名风格。
 type OrderByBottle string
@@ -32,4 +34,14 @@ func (ob OrderByBottle) Ox() string {
 // Orders 将 OrderByBottle 转换为字符串。请注意，如果类型不明确，它可能会被 GORM 的逻辑忽略。
 func (ob OrderByBottle) Orders() string {
 	return string(ob)
+}
+
+// Scope converts the OrderByBottle to a GORM ScopeFunction used with db.Scopes().
+// It applies the ordering defined by OrderByBottle to the GORM select.
+// Scope 将 OrderByBottle 转换为 GORM 的 ScopeFunction，以便被 db.Scopes() 调用。
+// 它将 OrderByBottle 定义的排序规则应用于 GORM 查询。
+func (ob OrderByBottle) Scope() ScopeFunction {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Order(string(ob))
+	}
 }

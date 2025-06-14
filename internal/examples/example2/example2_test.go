@@ -30,27 +30,27 @@ func TestExample(t *testing.T) {
 	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
 		//create example data
 		done.Done(db.AutoMigrate(&Example{}))
-		done.Done(db.Save(&Example{Name: "abc", Type: utils.GetPointer("xyz"), Rank: utils.GetPointer(123)}).Error)
-		done.Done(db.Save(&Example{Name: "aaa", Type: utils.GetPointer("xxx"), Rank: utils.GetPointer(456)}).Error)
+		done.Done(db.Save(&Example{Name: "abc", Type: utils.GetValuePointer("xyz"), Rank: utils.GetValuePointer(123)}).Error)
+		done.Done(db.Save(&Example{Name: "aaa", Type: utils.GetValuePointer("xxx"), Rank: utils.GetValuePointer(456)}).Error)
 
 		{
 			var res Example
 			err := db.Where("name=?", "abc").First(&res).Error
 			done.Done(err)
 			fmt.Println(res)
-			require.Equal(t, 123, utils.VOr0(res.Rank))
+			require.Equal(t, 123, utils.GetPointerValue(res.Rank))
 		}
 		{ //select an example data
 			var res Example
 			if err := db.Where(columnName.Eq("abc")).
-				Where(columnType.Eq(utils.GetPointer("xyz"))).
-				Where(columnRank.Gt(utils.GetPointer(100))).
-				Where(columnRank.Lt(utils.GetPointer(200))).
+				Where(columnType.Eq(utils.GetValuePointer("xyz"))).
+				Where(columnRank.Gt(utils.GetValuePointer(100))).
+				Where(columnRank.Lt(utils.GetValuePointer(200))).
 				First(&res).Error; err != nil {
 				panic(errors.WithMessage(err, "wrong"))
 			}
 			fmt.Println(res)
-			require.Equal(t, 123, utils.VOr0(res.Rank))
+			require.Equal(t, 123, utils.GetPointerValue(res.Rank))
 		}
 	})
 }

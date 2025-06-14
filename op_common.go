@@ -86,21 +86,19 @@ func (common *ColumnOperationClass) Kw(columnName string, value interface{}) Col
 // Where applies the provided QxConjunctions to the given gorm.DB statement.
 // Where 将提供的QxConjunction应用到给定的gorm.DB语句。
 func (common *ColumnOperationClass) Where(db *gorm.DB, qxs ...*QxConjunction) *gorm.DB {
-	stmt := db
 	for _, qx := range qxs {
-		stmt = stmt.Where(qx.Qs(), qx.args...)
+		db = db.Where(qx.Qs(), qx.args...)
 	}
-	return stmt
+	return db
 }
 
 // OrderByColumns applies the provided OrderByBottle objects to the given gorm.DB statement.
 // OrderByColumns 将提供的OrderByBottle对象应用到给定的gorm.DB语句。
 func (common *ColumnOperationClass) OrderByColumns(db *gorm.DB, obs ...OrderByBottle) *gorm.DB {
-	stmt := db
 	for _, ob := range obs {
-		stmt = stmt.Order(ob.Ox())
+		db = db.Order(ob.Ox())
 	}
-	return stmt
+	return db
 }
 
 // UpdateColumns updates the columns of the given gorm.DB statement with the provided ColumnValueMaps.
@@ -198,9 +196,8 @@ func (common *ColumnOperationClass) CombineSxs(cs ...SelectStatement) *SelectSta
 // Select applies the provided SelectStatements to the given gorm.DB statement.
 // Select 将提供的SelectStatement应用到给定的gorm.DB语句。
 func (common *ColumnOperationClass) Select(db *gorm.DB, qxs ...*SelectStatement) *gorm.DB {
-	stmt := db
 	for _, qx := range qxs {
-		stmt = stmt.Select(qx.Qs(), qx.args...)
+		db = db.Select(qx.Qs(), qx.args...)
 	}
-	return stmt
+	return db
 }

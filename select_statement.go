@@ -1,6 +1,10 @@
 package gormcnm
 
-import "strings"
+import (
+	"strings"
+
+	"gorm.io/gorm"
+)
 
 type SxType = SelectStatement
 
@@ -33,15 +37,25 @@ func NewSelectStatement(stmt string, args ...interface{}) *SelectStatement {
 
 // Combine combines the current SelectStatement with other SelectStatements by merging their query strings and arguments.
 // Combine 将当前的 SelectStatement 与其他 SelectStatement 合并，通过合并它们的查询字符串和参数。
-func (selectStatement *SelectStatement) Combine(cs ...*SelectStatement) *SelectStatement {
+func (sx *SelectStatement) Combine(cs ...*SelectStatement) *SelectStatement {
 	var qsVs []string
-	qsVs = append(qsVs, selectStatement.Qs())
+	qsVs = append(qsVs, sx.Qs())
 	var args []any
-	args = append(args, selectStatement.Args()...)
+	args = append(args, sx.Args()...)
 	for _, c := range cs {
 		qsVs = append(qsVs, c.Qs())
 		args = append(args, c.Args()...)
 	}
 	var stmt = strings.Join(qsVs, ", ")      //得到的就是gorm db.Select() 的要选中的列信息，因此使用逗号分隔
 	return NewSelectStatement(stmt, args...) //得到的就是 gorm db.Select() 的选中信息和附带的参数信息，比如 COUNT(CASE WHEN condition THEN 1 END) 里 condition 的参数信息
+}
+
+// Scope converts the SelectStatement to a GORM ScopeFunction used with db.Scopes().
+// It applies the select query defined by SelectStatement to the GORM select.
+// Scope 将 SelectStatement 转换为 GORM 的 ScopeFunction，以便于被 db.Scopes() 调用。
+// 它将 SelectStatement 定义的查询选择语句应用于 GORM 查询。
+func (sx *SelectStatement) Scope() ScopeFunction {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Select(sx.Qs(), sx.args...)
+	}
 }

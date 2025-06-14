@@ -1,5 +1,7 @@
 package gormcnm
 
+import "gorm.io/gorm"
+
 type QxType = QxConjunction
 
 func NewQx(stmt string, args ...interface{}) *QxType {
@@ -24,7 +26,7 @@ func NewQxConjunction(stmt string, args ...interface{}) *QxConjunction {
 	}
 }
 
-// Qx is a shorthand for creating a new QxConjunction instance.
+// Qx is shorthand for creating a new QxConjunction instance.
 // Qx 是创建 QxConjunction 实例的简写形式。
 func Qx(stmt string, args ...interface{}) *QxConjunction {
 	return NewQxConjunction(stmt, args...)
@@ -77,4 +79,14 @@ func (qx *QxConjunction) AND1(stmt string, args ...interface{}) *QxConjunction {
 // OR1 使用给定的语句和参数创建一个新的 QxConjunction 实例，然后使用 "OR" 将其与当前实例组合。
 func (qx *QxConjunction) OR1(stmt string, args ...interface{}) *QxConjunction {
 	return qx.OR(NewQxConjunction(stmt, args...))
+}
+
+// Scope converts the QxConjunction to a GORM ScopeFunction used with db.Scopes().
+// It applies the query conditions defined by QxConjunction to the GORM select.
+// Scope 将 QxConjunction 转换为 GORM 的 ScopeFunction，以便于被 db.Scopes() 调用。
+// 它将 QxConjunction 定义的查询条件应用于 GORM 查询。
+func (qx *QxConjunction) Scope() ScopeFunction {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where(qx.Qs(), qx.args...)
+	}
 }

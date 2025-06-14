@@ -63,13 +63,13 @@ func (qx *statementArgumentsTuple) Value() (driver.Value, error) {
 	panic(valueIsNotCallable) //当报这个错时，需要修改调用侧代码，请看这个错误码的注释
 }
 
-// Qs returns the statement string of the current statementArgumentsTuple instance.
+// Qs return the statement string of the current statementArgumentsTuple instance.
 // Qs 返回当前 statementArgumentsTuple 实例的语句字符串。
 func (qx *statementArgumentsTuple) Qs() string {
 	return qx.stmt
 }
 
-// Args returns the arguments list of the current statementArgumentsTuple instance.
+// Args return the arguments list of the current statementArgumentsTuple instance.
 // Args 返回当前 statementArgumentsTuple 实例的参数列表。
 func (qx *statementArgumentsTuple) Args() []interface{} {
 	return qx.args

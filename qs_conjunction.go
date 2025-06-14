@@ -64,7 +64,7 @@ func (qsConjunction QsConjunction) Value() (driver.Value, error) {
 	// 如果报这个错误，调用侧需要修改代码。具体可参考错误码的注释。
 }
 
-// Qs converts the QsConjunction instance into a string representation.
+// Qs convert the QsConjunction instance into a string representation.
 // Qs 将 QsConjunction 实例转换为字符串表示。
 func (qsConjunction QsConjunction) Qs() string {
 	return string(qsConjunction)
