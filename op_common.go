@@ -129,6 +129,8 @@ func (common *ColumnOperationClass) MergeNames(a ...utils.ColumnNameInterface) s
 	return common.CombineColumnNames(a...)
 }
 
+// CombineNamesSlices combines multiple string slices into a single comma-separated string
+// CombineNamesSlices 将多个字符串切片组合成一个逗号分隔的字符串
 func (common *ColumnOperationClass) CombineNamesSlices(a ...[]string) string {
 	var names []string
 	for _, elems := range a {
@@ -137,6 +139,8 @@ func (common *ColumnOperationClass) CombineNamesSlices(a ...[]string) string {
 	return strings.Join(names, ", ")
 }
 
+// MergeSlices combines multiple string slices into a single comma-separated string
+// MergeSlices 将多个字符串切片组合成一个逗号分隔的字符串
 func (common *ColumnOperationClass) MergeSlices(a ...[]string) string {
 	return common.CombineNamesSlices(a...)
 }

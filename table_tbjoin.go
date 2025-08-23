@@ -30,11 +30,16 @@ func (common *ColumnOperationClass) CROSSJOIN(tableName string) *TableJoin {
 	return newTableJoin(clause.CrossJoin, tableName)
 }
 
-// TableJoin represents a join operation on a table, including its type and name.
-// TableJoin 表示表上的连接操作，包括连接类型和表名。
+// TableJoin represents a join operation on a table, including its type and name
+// Supports all standard SQL join types: LEFT, RIGHT, INNER, and CROSS joins
+// Auto generates proper SQL JOIN syntax with ON clause conditions
+//
+// TableJoin 表示表上的连接操作，包括连接类型和表名
+// 支持所有标准 SQL 连接类型：LEFT、RIGHT、INNER 和 CROSS 连接
+// 自动生成适当的 SQL JOIN 语法和 ON 子句条件
 type TableJoin struct {
-	whichJoin clause.JoinType // Type of join (e.g., LEFT, RIGHT, INNER, CROSS)
-	tableName string          // Name of the table involved in the join
+	whichJoin clause.JoinType // Type of join (LEFT, RIGHT, INNER, CROSS) // 连接类型（LEFT、RIGHT、INNER、CROSS）
+	tableName string          // Name of the table involved in the join // 参与连接的表名
 }
 
 // newTableJoin creates a new TableJoin instance with the specified table name and join type.

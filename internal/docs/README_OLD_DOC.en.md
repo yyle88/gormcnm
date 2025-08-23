@@ -20,7 +20,7 @@ However, "ensuring models are not modified" is actually an unrealistic expectati
 
 ### Simple Demo:
 
-[Simple Demo](../demos/main/main.go)
+[Simple Demo](../demos/demo1x/main.go) | [Simple Demo](../demos/demo2x/main.go)
 
 These are the simplest examples, but they are at a demo level.
 

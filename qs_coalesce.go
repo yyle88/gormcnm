@@ -5,19 +5,33 @@ import (
 	"github.com/yyle88/tern/zerotern"
 )
 
+// COALESCE creates a COALESCE function wrapper for handling NULL values in SQL queries
+// Auto uses SQL standard COALESCE function, supported by most database systems
+// COALESCE 为处理 SQL 查询中的 NULL 值创建 COALESCE 函数包装器
+// 自动使用 SQL 标准的 COALESCE 函数，被大多数数据库系统支持
 func (columnName ColumnName[TYPE]) COALESCE() *CoalesceNonNullGuardian {
-	return NewCoalesceNonNullGuardian("COALESCE", string(columnName)) // COALESCE 是 SQL 标准中的函数，在大多数数据库系统中都支持
+	return NewCoalesceNonNullGuardian("COALESCE", string(columnName))
 }
 
+// IFNULLFN creates an IFNULL function wrapper for MySQL-specific NULL handling
+// MySQL-specific function, may not be supported in other database systems
+// IFNULLFN 为 MySQL 特定的 NULL 处理创建 IFNULL 函数包装器
+// MySQL 特定函数，在其他数据库系统中可能不受支持
 func (columnName ColumnName[TYPE]) IFNULLFN() *CoalesceNonNullGuardian {
-	return NewCoalesceNonNullGuardian("IFNULL", string(columnName)) // IFNULL 是 MySQL 特定的函数，在其他数据库系统中可能不支持
+	return NewCoalesceNonNullGuardian("IFNULL", string(columnName))
 }
 
+// CoalesceNonNullGuardian provides SQL aggregate functions with NULL value protection
+// Auto handles NULL values using COALESCE or IFNULL functions to provide default values
+// CoalesceNonNullGuardian 提供带有 NULL 值保护的 SQL 聚合函数
+// 自动使用 COALESCE 或 IFNULL 函数处理 NULL 值以提供默认值
 type CoalesceNonNullGuardian struct {
-	method string
-	column string
+	method string // SQL function name (COALESCE or IFNULL) // SQL 函数名（COALESCE 或 IFNULL）
+	column string // Column name to apply the function to // 要应用函数的列名
 }
 
+// NewCoalesceNonNullGuardian creates a new CoalesceNonNullGuardian with specified method and column
+// NewCoalesceNonNullGuardian 使用指定的方法和列名创建新的 CoalesceNonNullGuardian
 func NewCoalesceNonNullGuardian(methodName string, columnName string) *CoalesceNonNullGuardian {
 	return &CoalesceNonNullGuardian{
 		method: methodName,

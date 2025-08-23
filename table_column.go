@@ -2,14 +2,20 @@ package gormcnm
 
 import "github.com/yyle88/gormcnm/internal/utils"
 
+// TB creates a TableColumn by associating this column with a table interface
+// TB 通过将此列与表接口关联创建 TableColumn
 func (columnName ColumnName[TYPE]) TB(tab utils.GormTableNameFace) *TableColumn[TYPE] {
 	return columnName.WithTable(tab)
 }
 
+// TC creates a TableColumn by associating this column with a table interface (alias for TB)
+// TC 通过将此列与表接口关联创建 TableColumn（TB 的别名）
 func (columnName ColumnName[TYPE]) TC(tab utils.GormTableNameFace) *TableColumn[TYPE] {
 	return columnName.WithTable(tab)
 }
 
+// TN creates a TableColumn by associating this column with a table name string
+// TN 通过将此列与表名字符串关联创建 TableColumn
 func (columnName ColumnName[TYPE]) TN(tableName string) *TableColumn[TYPE] {
 	return columnName.WithTable(utils.NewTableNameImp(tableName))
 }

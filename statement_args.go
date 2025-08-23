@@ -15,26 +15,22 @@ import (
 // 这块非常抱歉，但目前尚无特别好的解决方案，因为 Where 需要的是变长的参数列表，而golang不支持变长个数的返回值，返回个数组是没用的
 var valueIsNotCallable = errors.New("column.value() function is not callable")
 
-// 就是语句 stmt 和参数列表 args 的 tuple 元组
-// 因为 db.Where 恰好需要
-// func (db *DB) Where(query interface{}, args ...interface{}) (tx *DB)
-// 当遇到 AND 或 OR 的时候，就需要按照 AND 或 OR 的规则，合并语句和合并参数列表
-// 而且 db.Select 也需要
-// func (db *DB) Select(query interface{}, args ...interface{}) (tx *DB)
-// 当有多个列要被选中且有过滤条件时，就要把选中的语句用逗号分隔合并，再合并参数列表
-// 因此这个类就是个底层的类
-// 由于 db.Where 和 db.Select 的第二个参数都是变长的参数
-// 但这个类返回的 args 是个数组，很明显的，需要也返回变长参数列表，但是目前golang不支持返回变长结果
-// 因此不得不作出这样的设计:
-// func (qx *statementArgumentsTuple) Qx1() (string, interface{})
-// func (qx *statementArgumentsTuple) Qx2() (string, interface{}, interface{})
-// func (qx *statementArgumentsTuple) Qx3() (string, interface{}, interface{}, interface{})
-// 你需要根据参数的数量调用 db.Where(qx.Qx2()) 这样才行
-// 这也是无奈之举啊
-// 当然同时为了防止你在编码时忘记，我还贴心（窝心）的增加了个 panic 的逻辑，让你在忘记是能在运行时快速定位问题
+// statementArgumentsTuple represents a tuple of SQL statement and its arguments
+// Core building block for GORM query construction with proper argument handling
+// Addresses Go language limitation where variadic return values are not supported
+//
+// 核心设计说明：
+// - GORM的Where和Select方法需要: func (db *DB) Where(query interface{}, args ...interface{})
+// - 当遇到AND/OR时需要合并语句和参数列表
+// - 由于Go不支持变长返回值，只能设计Qx1(), Qx2(), Qx3()等方法
+// - 包含panic机制防止直接传递给GORM导致的错误使用
+//
+// statementArgumentsTuple 表示SQL语句及其参数的元组
+// GORM查询构建的核心构建块，提供适当的参数处理
+// 解决Go语言不支持变长返回值的限制
 type statementArgumentsTuple struct {
-	stmt string
-	args []interface{}
+	stmt string        // SQL statement string // SQL 语句字符串
+	args []interface{} // Prepared statement arguments // 预处理语句参数
 }
 
 // newStatementArgumentsTuple creates a new statementArgumentsTuple instance with the provided statement and arguments.

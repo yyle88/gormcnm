@@ -23,19 +23,124 @@ This utility improves code readability, reduces boilerplate, and simplifies comp
 type ColumnName[TYPE any] string
 
 // Qs creates a SQL statement with a given operator.
+// Returns just the SQL fragment without parameter placeholders for raw SQL construction
+// Most commonly used for building complex WHERE clauses with multiple conditions
+//
+// With GORM:
+//
+//	db.Where("name = ?", "abc").Where("type = ?", "xyz")
+//
+// With Qs:
+//
+//	const (
+//		columnName = ColumnName[string]("name")  // Demo definition here
+//		columnType = ColumnName[string]("type")  // Use github.com/yyle88/gormcngen auto generation in projects
+//	)
+//	db.Where(columnName.Qs("= ?"), "abc").Where(columnType.Qs("= ?"), "xyz")
+//
+// Both generate: "WHERE name = ? AND type = ?"
+//
 // Qs 创建一个带有指定操作符的 SQL 语句。
+// 返回不带参数占位符的 SQL 片段，用于原始 SQL 构建
+// 最常用于构建带有多个条件的复杂 WHERE 子句
+//
+// 传统写法：
+//
+//	db.Where("name = ?", "abc").Where("type = ?", "xyz")
+//
+// 使用 Qs：
+//
+//	const (
+//		columnName = ColumnName[string]("name")  // 演示用定义
+//		columnType = ColumnName[string]("type")  // 项目中使用 github.com/yyle88/gormcngen 自动生成
+//	)
+//	db.Where(columnName.Qs("= ?"), "abc").Where(columnType.Qs("= ?"), "xyz")
+//
+// 都生成："WHERE name = ? AND type = ?"
 func (columnName ColumnName[TYPE]) Qs(op string) string {
 	return string(columnName) + " " + op
 }
 
 // Op creates a SQL statement with an operator and a parameter.
+// Returns both SQL fragment and parameter value as a tuple for GORM operations
+// Auto handles parameter binding and type safety for custom operators
+// Most flexible method for custom SQL operations with parameter values
+//
+// With GORM:
+//
+//	db.Where("name = ?", "abc").Where("rank > ?", 100)
+//
+// With Op:
+//
+//	const (
+//		columnName = ColumnName[string]("name")  // Demo definition here
+//		columnRank = ColumnName[int]("rank")     // Use github.com/yyle88/gormcngen auto generation in projects
+//	)
+//	db.Where(columnName.Op("= ?", "abc")).Where(columnRank.Op("> ?", 100))
+//
+// Both generate: "WHERE name = ? AND rank > ?"
+//
 // Op 创建一个带有操作符和参数的 SQL 语句。
+// 返回 SQL 片段和参数值元组，用于 GORM 操作
+// 自动处理参数绑定和自定义操作符的类型安全
+// 最灵活的带参数值自定义 SQL 操作方法
+//
+// 传统写法：
+//
+//	db.Where("name = ?", "abc").Where("rank > ?", 100)
+//
+// 使用 Op：
+//
+//	const (
+//		columnName = ColumnName[string]("name")  // 演示用定义
+//		columnRank = ColumnName[int]("rank")     // 项目中使用 github.com/yyle88/gormcngen 自动生成
+//	)
+//	db.Where(columnName.Op("= ?", "abc")).Where(columnRank.Op("> ?", 100))
+//
+// 都生成："WHERE name = ? AND rank > ?"
 func (columnName ColumnName[TYPE]) Op(op string, x TYPE) (string, TYPE) {
 	return string(columnName) + " " + op, x
 }
 
 // Eq creates a SQL statement to check if the column is equal to a given value.
+// Most commonly used method for equality comparisons with type safety and clean syntax
+// Auto generates "column=?" pattern with parameter binding for GORM WHERE operations
+// Essential building block for all database queries and the foundation of type-safe SQL
+//
+// With GORM:
+//
+//	db.Where("name = ?", "abc").Where("rank = ?", 100)
+//
+// With Eq:
+//
+//	const (
+//		columnName = ColumnName[string]("name")  // Demo definition here
+//		columnRank = ColumnName[int]("rank")     // Use github.com/yyle88/gormcngen auto generation in projects
+//	)
+//	db.Where(columnName.Eq("abc")).Where(columnRank.Eq(100))
+//
+// Both generate: "WHERE name = ? AND rank = ?"
+// Benefits: Type safety, no typos, IDE autocompletion, refactoring support
+//
 // Eq 创建一个 SQL 语句来判断列是否等于给定的值。
+// 最常用的相等比较方法，具有类型安全和简洁语法
+// 自动生成 "column=?" 模式并为 GORM WHERE 操作绑定参数
+// 所有数据库查询的基础构建块，类型安全 SQL 的基石
+//
+// 传统写法：
+//
+//	db.Where("name = ?", "abc").Where("rank = ?", 100)
+//
+// 使用 Eq：
+//
+//	const (
+//		columnName = ColumnName[string]("name")  // 演示用定义
+//		columnRank = ColumnName[int]("rank")     // 项目中使用 github.com/yyle88/gormcngen 自动生成
+//	)
+//	db.Where(columnName.Eq("abc")).Where(columnRank.Eq(100))
+//
+// 都生成："WHERE name = ? AND rank = ?"
+// 优势：类型安全、无拼写错误、IDE 自动补全、重构支持
 func (columnName ColumnName[TYPE]) Eq(x TYPE) (string, TYPE) {
 	return string(columnName) + "=?", x
 }
@@ -158,6 +263,28 @@ func (columnName ColumnName[TYPE]) BetweenAND(arg1, arg2 TYPE) (string, TYPE, TY
 // BetweenAnd 创建一个 SQL 语句来判断列的值是否介于两个给定的值之间。
 func (columnName ColumnName[TYPE]) BetweenAnd(arg1, arg2 TYPE) (string, TYPE, TYPE) {
 	return string(columnName) + " BETWEEN ? AND ?", arg1, arg2
+}
+
+// Between creates a SQL statement to check if the column's value is between two given values.
+// Auto provides most intuitive function name for range queries, improving user experience
+// Users commonly search for "Between" when looking for BETWEEN SQL operations
+//
+// Between 创建一个 SQL 语句来判断列的值是否介于两个给定的值之间。
+// 自动提供范围查询最直观的函数名，提升用户体验
+// 用户查找 BETWEEN SQL 操作时通常搜索 "Between"
+func (columnName ColumnName[TYPE]) Between(arg1, arg2 TYPE) (string, TYPE, TYPE) {
+	return string(columnName) + " BETWEEN ? AND ?", arg1, arg2
+}
+
+// NotBetween creates a SQL statement to check if the column's value is NOT between two given values.
+// Auto provides the counterpart to Between operation, completing range query functionality
+// Most commonly used to exclude specific value ranges from query results
+//
+// NotBetween 创建一个 SQL 语句来判断列的值是否不在两个给定的值之间。
+// 自动提供与 Between 操作对应的反向操作，完善范围查询功能
+// 最常用于从查询结果中排除特定的值范围
+func (columnName ColumnName[TYPE]) NotBetween(arg1, arg2 TYPE) (string, TYPE, TYPE) {
+	return string(columnName) + " NOT BETWEEN ? AND ?", arg1, arg2
 }
 
 // OnEq creates a SQL statement to check if the column is equal to another column in an ON clause.

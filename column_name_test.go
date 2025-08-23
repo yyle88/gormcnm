@@ -89,3 +89,119 @@ func TestColumnName_Count(t *testing.T) {
 		}
 	})
 }
+
+func TestColumnName_ExprOperations(t *testing.T) {
+	type Example struct {
+		ID     uint    `gorm:"primary_key"`
+		Price  float64 `gorm:"column:price"`
+		Amount int     `gorm:"column:amount"`
+		Title  string  `gorm:"column:title"`
+	}
+
+	const (
+		columnPrice  = ColumnName[float64]("price")
+		columnAmount = ColumnName[int]("amount")
+	)
+
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+		require.NoError(t, db.AutoMigrate(&Example{}))
+		require.NoError(t, db.Create(&Example{
+			ID:     1,
+			Price:  100.0,
+			Amount: 10,
+			Title:  "Product",
+		}).Error)
+
+		// Test ExprAdd and ExprMul with UpdateColumns
+		{
+			updateMap := map[string]interface{}{}
+			key1, expr1 := columnPrice.KeAdd(10.0) // price = price + 10
+			key2, expr2 := columnAmount.KeMul(2)   // quantity = quantity * 2
+			updateMap[key1] = expr1
+			updateMap[key2] = expr2
+
+			result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
+			require.NoError(t, result.Error)
+			require.Equal(t, int64(1), result.RowsAffected)
+
+			var updated Example
+			require.NoError(t, db.First(&updated, 1).Error)
+			require.Equal(t, 110.0, updated.Price) // 100 + 10
+			require.Equal(t, 20, updated.Amount)   // 10 * 2
+			t.Log("updated result:", neatjsons.S(updated))
+		}
+
+		// Test ExprSub and ExprDiv
+		{
+			updateMap := map[string]interface{}{}
+			key1, expr1 := columnPrice.KeSub(10.0) // price = price - 10
+			key2, expr2 := columnAmount.KeDiv(4)   // quantity = quantity / 4
+			updateMap[key1] = expr1
+			updateMap[key2] = expr2
+
+			result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
+			require.NoError(t, result.Error)
+			require.Equal(t, int64(1), result.RowsAffected)
+
+			var updated Example
+			require.NoError(t, db.First(&updated, 1).Error)
+			require.Equal(t, 100.0, updated.Price) // 110 - 10
+			require.Equal(t, 5, updated.Amount)    // 20 / 4
+			t.Log("updated result:", neatjsons.S(updated))
+		}
+	})
+}
+
+func TestColumnName_StringExprOperations(t *testing.T) {
+	type Example struct {
+		ID    uint   `gorm:"primary_key"`
+		Title string `gorm:"column:title"`
+		Email string `gorm:"column:email"`
+	}
+
+	const (
+		columnTitle = ColumnName[string]("title")
+		columnEmail = ColumnName[string]("email")
+	)
+
+	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+		require.NoError(t, db.AutoMigrate(&Example{}))
+		require.NoError(t, db.Create(&Example{
+			ID:    1,
+			Title: "Product",
+			Email: "user@company.com",
+		}).Error)
+
+		// Test ExprConcat
+		{
+			updateMap := map[string]interface{}{}
+			key1, expr1 := columnTitle.KeConcat(" [Hot]") // title = CONCAT(title, ' [Hot]')
+			updateMap[key1] = expr1
+
+			result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
+			require.NoError(t, result.Error)
+			require.Equal(t, int64(1), result.RowsAffected)
+
+			var updated Example
+			require.NoError(t, db.First(&updated, 1).Error)
+			require.Equal(t, "Product [Hot]", updated.Title)
+			t.Log("updated result:", neatjsons.S(updated))
+		}
+
+		// Test ExprReplace
+		{
+			updateMap := map[string]interface{}{}
+			key1, expr1 := columnEmail.KeReplace("@company.com", "@newcompany.com") // email = REPLACE(email, '@company.com', '@newcompany.com')
+			updateMap[key1] = expr1
+
+			result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
+			require.NoError(t, result.Error)
+			require.Equal(t, int64(1), result.RowsAffected)
+
+			var updated Example
+			require.NoError(t, db.First(&updated, 1).Error)
+			require.Equal(t, "user@newcompany.com", updated.Email)
+			t.Log("updated result:", neatjsons.S(updated))
+		}
+	})
+}

@@ -20,7 +20,7 @@ err := db.Where("name=?", "abc").First(&res).Error
 
 简单demo:
 
-[简单demo](../demos/main/main.go)
+[简单demo](../demos/demo1x/main.go) | [简单demo](../demos/demo2x/main.go)
 
 这些都是最简单的，但实际上也只是demo级别的
 

@@ -41,6 +41,30 @@ func (columnName ColumnName[TYPE]) ExprSub(v TYPE) clause.Expr {
 	return gorm.Expr(string(columnName)+" - ?", v)
 }
 
+// ExprMul creates a GORM expression to multiply the column by a value.
+// ExprMul: 创建一个GORM表达式，将列乘以一个值。
+func (columnName ColumnName[TYPE]) ExprMul(v TYPE) clause.Expr {
+	return gorm.Expr(string(columnName)+" * ?", v)
+}
+
+// ExprDiv creates a GORM expression to divide the column by a value.
+// ExprDiv: 创建一个GORM表达式，将列除以一个值。
+func (columnName ColumnName[TYPE]) ExprDiv(v TYPE) clause.Expr {
+	return gorm.Expr(string(columnName)+" / ?", v)
+}
+
+// ExprConcat creates a GORM expression to concatenate a string to the column.
+// ExprConcat: 创建一个GORM表达式，将字符串连接到列。
+func (columnName ColumnName[TYPE]) ExprConcat(v TYPE) clause.Expr {
+	return gorm.Expr("CONCAT("+string(columnName)+", ?)", v)
+}
+
+// ExprReplace creates a GORM expression to replace text in the column.
+// ExprReplace: 创建一个GORM表达式，替换列中的文本。
+func (columnName ColumnName[TYPE]) ExprReplace(oldValue, newValue TYPE) clause.Expr {
+	return gorm.Expr("REPLACE("+string(columnName)+", ?, ?)", oldValue, newValue)
+}
+
 // Ob creates an order-by clause for the column with the specified direction (ASC or DESC).
 // Ob: 创建一个带有指定方向（ASC或DESC）的ORDER BY子句。
 func (columnName ColumnName[TYPE]) Ob(direction string) OrderByBottle {
@@ -112,15 +136,85 @@ func (columnName ColumnName[TYPE]) KeExp(x clause.Expr) (string, clause.Expr) {
 }
 
 // KeAdd is used for updates where a value is added to the field (e.g., incrementing a value).
+// Returns (columnName, gorm.Expr) tuple for use in UpdateColumns operations.
+//
+// With Gorm:
+//
+//	db.UpdateColumns(map[string]interface{}{"price": gorm.Expr("price + ?", 10)})
+//
+// With KeAdd:
+//
+//	db.UpdateColumns(map[string]interface{}{cls.Price.KeAdd(10)})
+//
+// Both generate: "UPDATE ... SET price = price + 10"
+//
 // KeAdd: 用于更新字段时，将一个值加到字段上（例如递增一个值）。
+// 返回 (列名, gorm.Expr) 元组，用于 UpdateColumns 操作。
+//
+// 传统写法：
+//
+//	db.UpdateColumns(map[string]interface{}{"price": gorm.Expr("price + ?", 10)})
+//
+// 使用 KeAdd：
+//
+//	db.UpdateColumns(map[string]interface{}{cls.Price.KeAdd(10)})
+//
+// 都生成："UPDATE ... SET price = price + 10"
 func (columnName ColumnName[TYPE]) KeAdd(x TYPE) (string, clause.Expr) {
 	return columnName.KeExp(columnName.ExprAdd(x))
 }
 
 // KeSub is used for updates where a value is subtracted from the field (e.g., decrementing a value).
+// Returns (columnName, gorm.Expr) tuple for use in UpdateColumns operations.
+//
+// With Gorm:
+//
+//	db.UpdateColumns(map[string]interface{}{"stock": gorm.Expr("stock - ?", 1)})
+//
+// With KeSub:
+//
+//	db.UpdateColumns(map[string]interface{}{cls.Stock.KeSub(1)})
+//
+// Both generate: "UPDATE ... SET stock = stock - 1"
+//
 // KeSub: 用于更新字段时，将一个值从字段中减去（例如递减一个值）。
+// 返回 (列名, gorm.Expr) 元组，用于 UpdateColumns 操作。
+//
+// 传统写法：
+//
+//	db.UpdateColumns(map[string]interface{}{"stock": gorm.Expr("stock - ?", 1)})
+//
+// 使用 KeSub：
+//
+//	db.UpdateColumns(map[string]interface{}{cls.Stock.KeSub(1)})
+//
+// 都生成："UPDATE ... SET stock = stock - 1"
 func (columnName ColumnName[TYPE]) KeSub(x TYPE) (string, clause.Expr) {
 	return columnName.KeExp(columnName.ExprSub(x))
+}
+
+// KeMul is used for updates where a field is multiplied by a value (e.g., scaling a value).
+// KeMul: 用于更新字段时，将字段乘以一个值（例如缩放一个值）。
+func (columnName ColumnName[TYPE]) KeMul(x TYPE) (string, clause.Expr) {
+	return columnName.KeExp(columnName.ExprMul(x))
+}
+
+// KeDiv is used for updates where a field is divided by a value (e.g., splitting a value).
+// KeDiv: 用于更新字段时，将字段除以一个值（例如分割一个值）。
+func (columnName ColumnName[TYPE]) KeDiv(x TYPE) (string, clause.Expr) {
+	return columnName.KeExp(columnName.ExprDiv(x))
+}
+
+// KeConcat is used for updates where a string is concatenated to the field (e.g., appending text).
+// KeConcat: 用于更新字段时，将字符串连接到字段（例如追加文本）。
+func (columnName ColumnName[TYPE]) KeConcat(x TYPE) (string, clause.Expr) {
+	return columnName.KeExp(columnName.ExprConcat(x))
+}
+
+// KeReplace is used for updates where text in the field is replaced (e.g., updating patterns).
+// KeReplace: 用于更新字段时，替换字段中的文本（例如更新模式）。
+func (columnName ColumnName[TYPE]) KeReplace(oldValue, newValue TYPE) (string, clause.Expr) {
+	return columnName.KeExp(columnName.ExprReplace(oldValue, newValue))
 }
 
 // Count creates a COUNT query for the column, excluding NULL values.

@@ -1,3 +1,10 @@
+// Package example3 demonstrates advanced table join operations using gormcnm
+// Auto generates complex SQL joins with type-safe column operations
+// Tests compare traditional SQL with gormcnm-generated equivalent queries
+//
+// example3 包演示了使用 gormcnm 的高级表连接操作
+// 自动生成具有类型安全列操作的复杂 SQL 连接
+// 测试比较传统 SQL 与 gormcnm 生成的等效查询
 package example3
 
 import (

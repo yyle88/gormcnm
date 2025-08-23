@@ -1,3 +1,10 @@
+// Package gormcnm tests demonstrate the core functionality of type-safe column operations
+// Auto validates ColumnName operations with GORM integration in SQLite memory database
+// Tests cover basic operations, comparisons, and SQL query generation
+//
+// gormcnm 测试包演示了类型安全列操作的核心功能
+// 自动验证 ColumnName 操作与 GORM 在 SQLite 内存数据库中的集成
+// 测试涵盖基础操作、比较和 SQL 查询生成
 package gormcnm
 
 import (
@@ -38,6 +45,18 @@ func TestColumnName_Op(t *testing.T) {
 			var one Example
 			require.NoError(t, db.Where(columnName.BetweenAND("aba", "abd")).First(&one).Error)
 			require.Equal(t, "abc", one.Name)
+			t.Log(neatjsons.S(one))
+		}
+		{
+			var one Example
+			require.NoError(t, db.Where(columnName.Between("aba", "abd")).First(&one).Error)
+			require.Equal(t, "abc", one.Name)
+			t.Log(neatjsons.S(one))
+		}
+		{
+			var one Example
+			require.NoError(t, db.Where(columnName.NotBetween("aca", "azz")).First(&one).Error)
+			require.Equal(t, "aaa", one.Name)
 			t.Log(neatjsons.S(one))
 		}
 		{

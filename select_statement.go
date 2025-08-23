@@ -14,17 +14,27 @@ func NewSx(stmt string, args ...interface{}) *SxType {
 	}
 }
 
-// SelectStatement 就是传给 db.Select 的语句和参数
-// 目前 "选中返回列" 的函数的定义是这样的
-// func (db *DB) Select(query interface{}, args ...interface{}) (tx *DB)
-// 在99%的场景下都是不需要传条件的
-// 但在 SELECT COUNT(CASE WHEN (((name="abc") AND (type="xyz"))) THEN 1 END) as cnt FROM `examples` 这个语句里
-// 很明显的 db.Select 也需要查询语句和参数 "abc" 和 "xyz"
-// 而且这里条件有可能很长，而且有可能 db.Select 选中多个列的数据，就需要合并语句和合并参数
-// 很明显各个列之间是逗号分隔的
-// 因此定义这个类型，主要用来服务于这种场景（其实非常少用）
+// SelectStatement represents a SELECT statement with arguments for GORM db.Select operations
+// Handles complex SELECT scenarios where conditions and arguments are needed
+// Auto combines multiple select statements with comma separation for multi-column queries
+//
+// Usage scenarios:
+// - 99% of cases db.Select requires no parameters
+// - But for complex queries like: SELECT COUNT(CASE WHEN condition THEN 1 END) as cnt
+// - Need to merge multiple column select statements and corresponding parameters
+// - Columns are separated by commas
+//
+// SelectStatement 表示用于 GORM db.Select 操作的 SELECT 语句及参数
+// 处理需要条件和参数的复杂 SELECT 场景
+// 自动使用逗号分隔合并多个选择语句进行多列查询
+//
+// 使用场景说明：
+// - 99%的情况下 db.Select 不需要参数
+// - 但对于复杂查询如：SELECT COUNT(CASE WHEN condition THEN 1 END) as cnt
+// - 需要合并多个列的选择语句和对应参数
+// - 各列之间使用逗号分隔
 type SelectStatement struct {
-	*statementArgumentsTuple
+	*statementArgumentsTuple // Embedded statement-arguments tuple // 嵌入的语句-参数元组
 }
 
 // NewSelectStatement creates a new SelectStatement with the provided query string and arguments.
