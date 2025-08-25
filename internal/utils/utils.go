@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"fmt"
+
+	"github.com/google/uuid"
 	"github.com/yyle88/rese"
 	"github.com/yyle88/tern"
 	"gorm.io/driver/sqlite"
@@ -30,7 +33,8 @@ func GetPointerValue[T any](v *T) T {
 // CaseRunInSqliteMemDB 在内存数据库中运行函数，用于测试目的
 // 自动创建临时数据库连接并在函数执行后处理清理工作
 func CaseRunInSqliteMemDB(run func(db *gorm.DB)) {
-	db := rese.P1(gorm.Open(sqlite.Open("file::memory:?cache=private"), &gorm.Config{
+	dsn := fmt.Sprintf("file:db-%s?mode=memory&cache=shared", uuid.New().String())
+	db := rese.P1(gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	}))
 	defer rese.F0(rese.P1(db.DB()).Close)

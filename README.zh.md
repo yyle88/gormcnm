@@ -1,333 +1,464 @@
-# `gormcnm` - 基于泛型实现的一种渐进式、类型安全的 GORM 列名工具包
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/yyle88/gormcnm/release.yml?branch=main&label=BUILD)](https://github.com/yyle88/gormcnm/actions/workflows/release.yml?query=branch%3Amain)
+[![GoDoc](https://pkg.go.dev/badge/github.com/yyle88/gormcnm)](https://pkg.go.dev/github.com/yyle88/gormcnm)
+[![Coverage Status](https://img.shields.io/coveralls/github/yyle88/gormcnm/master.svg)](https://coveralls.io/github/yyle88/gormcnm?branch=main)
+![Supported Go Versions](https://img.shields.io/badge/Go-1.22%2C%201.23-lightgrey.svg)
+[![GitHub Release](https://img.shields.io/github/release/yyle88/gormcnm.svg)](https://github.com/yyle88/gormcnm/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/yyle88/gormcnm)](https://goreportcard.com/report/github.com/yyle88/gormcnm)
 
-## 概述
+# 🏗️ GORMCNM - GORM 类型安全列名基础层
 
-`gormcnm` 是一个前沿的 **泛型包**，旨在彻底改变您在 Go 中使用 GORM 的方式。通过充分利用 Go 泛型的强大功能，它提供了一种 **类型安全**、**高效** 和 **高度生产力** 的方式来引用模型中的数据库列。能消除硬编码列名带来的风险，增强 **重构安全性**、**可维护性**，通过减少错误提高您的开发效率。
+**gormcnm** 是整个 **GORM 生态系统的基础层**，提供完全类型安全的列名操作，彻底消除数据库操作中的硬编码字符串。
 
-`gormcnm` 类似于 Java 生态中的 `MyBatis Plus`，允许开发者使用像 `Example::getName` 这样的表达式动态检索列名。类似地，`gormcnm` 为 Go 带来 **类型安全** 的列引用。通过使用 `gormcnm`，开发者可以轻松执行数据库查询，具备 **编译时验证**，并避免在查询中硬编码字符串。
+> 🎯 **零运行时错误：在编译时捕获所有列名和类型错误**
 
-`gormcnm` 类似于 Python 生态系统中的 `SQLAlchemy`，开发者可以像引用 `Example.name` 这样的模型属性来动态访问列名，实现 **类型安全** 的列引用。`gormcnm` 也在 Go 中提供 **类型安全** 的动态列引用，能像 `cls.Name.Eq("abc")` 这样使用。
-
-`gormcnm` 保证您的列引用一致且类型安全，确保代码更加简洁、稳健且易于维护。使用 `gormcnm` 后，模型定义中的任何更改都会轻松地反映在应用程序中而不破坏查询，使其成为您与数据库交互的 **安全网**。
-
-通过 `gormcnm`，您可以充分发挥 Go 泛型的潜力，轻松实现类型安全、无重构问题且开发者友好的数据库交互。告别脆弱的硬编码字符串或运行时错误——`gormcnm` 作为您的最终安全网，确保数据库查询保持一致、可扩展，并且在应用程序发展时易于重构。
-
-作为一个 **渐进式工具包**，`gormcnm` 无缝集成到您现有的 GORM 工作流中，允许开发者根据自己的节奏逐步采用它。您可以决定何时以及在哪些地方利用它的类型安全特性，同时继续享受 GORM 核心 API 的简单性和熟悉性，确保采用 `gormcnm` 时，学习成本最低且不干扰现有项目。
+---
 
 ## 英文文档
 
 [ENGLISH README](README.md)
 
-## 安装
+---
+
+## 🎯 核心理念
+
+### ✨ 类型安全的列名操作
+- **泛型列名定义**：`ColumnName[T]` 确保类型安全
+- **编译时验证**：消除所有硬编码字符串错误
+- **IDE 智能支持**：完整的代码补全和类型检查
+
+### 🔧 完整的 SQL 操作符
+- **比较操作**：`Eq()`、`Ne()`、`Gt()`、`Gte()`、`Lt()`、`Lte()`
+- **范围操作**：`In()`、`NotIn()`、`Between()`、`NotBetween()`
+- **模式匹配**：`Like()`、`NotLike()`、`ILike()`
+- **空值检查**：`IsNull()`、`IsNotNull()`
+
+### 📊 数学表达式构建
+- **算术运算**：`ExprAdd()`、`ExprSub()`、`ExprMul()`、`ExprDiv()`
+- **聚合函数**：`Sum()`、`Count()`、`Avg()`、`Max()`、`Min()`
+- **条件表达式**：`CASE WHEN` 构建、`COALESCE` 支持
+- **排序支持**：`OrderBy()`、`OrderByBottle()` 方法
+
+---
+
+## 🏗️ 生态系统架构
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    GORM Type-Safe Ecosystem                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │
+│  │  gormzhcn   │    │  gormmom    │    │  gormrepo   │              │
+│  │ Chinese API │───▶│ Native Lang │───▶│  Package    │─────┐        │
+│  │  Localize   │    │  Smart Tags │    │  Pattern    │     │        │
+│  └─────────────┘    └─────────────┘    └─────────────┘     │        │
+│         │                   │                              │        │
+│         │                   ▼                              ▼        │
+│         │            ┌─────────────┐              ┌─────────────┐   │
+│         │            │ gormcngen   │              │Application  │   │
+│         │            │Code Generate│─────────────▶│Custom Code  │   │
+│         │            │AST Operation│              │             │   │
+│         │            └─────────────┘              └─────────────┘   │
+│         │                   │                              ▲        │
+│         │                   ▼                              │        │
+│         └────────────▶┌─────────────┐◄─────────────────────┘        │
+│                       │   GORMCNM   │                               │
+│                       │ FOUNDATION  │                               │
+│                       │ Type-Safe   │                               │
+│                       │ Core Logic  │                               │
+│                       └─────────────┘                               │
+│                              │                                      │
+│                              ▼                                      │
+│                       ┌─────────────┐                               │
+│                       │    GORM     │                               │
+│                       │  Database   │                               │
+│                       └─────────────┘                               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**GORMCNM** 作为**基础层**，为整个生态系统提供类型安全的核心逻辑。
+
+---
+
+## 📦 生态系统价值
+
+### 🔹 作为基础层的核心价值
+**gormcnm** 是整个生态系统的**基石**，为上层组件提供：
+- 类型安全的列名定义和操作
+- 完整的 SQL 表达式构建能力
+- 编译时错误检测机制
+
+### 🔹 与上层组件的协作
+- **[gormcngen](https://github.com/yyle88/gormcngen)** 依赖 gormcnm 生成类型安全的列结构
+- **[gormrepo](https://github.com/yyle88/gormrepo)** 使用 gormcnm 实现仓储模式
+- **[gormmom](https://github.com/yyle88/gormmom)** 基于 gormcnm 提供原生语言支持
+- **[gormzhcn](https://github.com/go-zwbc/gormzhcn)** 利用 gormcnm 实现中文编程接口
+
+---
+
+## 🚀 快速开始
+
+### 安装
 
 ```bash
 go get github.com/yyle88/gormcnm
 ```
 
-## 快速开始
+### 基础使用
 
-这是一个完整的可运行示例：
+#### 1. 定义列名类型
 
 ```go
 package main
 
 import (
-	"fmt"
-
-	"github.com/yyle88/done"
-	"github.com/yyle88/gormcnm"
-	"github.com/yyle88/neatjson/neatjsons"
-	"github.com/yyle88/rese"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+    "github.com/yyle88/gormcnm"
 )
 
-type User struct {
-	Username string `gorm:"primary_key;type:varchar(100);"`
-	Nickname string `gorm:"column:nickname;"`
-	Age      int    `gorm:"column:age;"`
+// 定义用户表的列名
+type UserColumns struct {
+    ID       gormcnm.ColumnName[uint]   `json:"id"`
+    Username gormcnm.ColumnName[string] `json:"username"`
+    Email    gormcnm.ColumnName[string] `json:"email"`
+    Age      gormcnm.ColumnName[int]    `json:"age"`
+    IsActive gormcnm.ColumnName[bool]   `json:"is_active"`
 }
 
-const (
-	columnUsername = gormcnm.ColumnName[string]("username")
-	columnNickname = gormcnm.ColumnName[string]("nickname")
-	columnAge      = gormcnm.ColumnName[int]("age")
-)
-
-func main() {
-	db := rese.P1(gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	}))
-	defer rese.F0(rese.P1(db.DB()).Close)
-
-	done.Done(db.AutoMigrate(&User{}))
-	done.Done(db.Create(&User{Username: "alice", Nickname: "Alice", Age: 17}).Error)
-
-	var user User
-	done.Done(db.Where(columnUsername.Eq("alice")).First(&user).Error)
-	fmt.Println(neatjsons.S(user))
-
-	done.Done(db.Model(&user).Update(columnNickname.Kv("SuperAlice")).Error)
-	done.Done(db.Where(columnUsername.Eq("alice")).First(&user).Error)
-	fmt.Println(neatjsons.S(user))
-
-	done.Done(db.Model(&user).Update(columnAge.KeAdd(1)).Error)
-	done.Done(db.Where(columnUsername.Eq("alice")).First(&user).Error)
-	fmt.Println(neatjsons.S(user))
-}
-```
-
-## 特性
-
-- **基于泛型的类型安全**：利用 Go 的泛型创建类型安全的列名，确保列引用在编译时进行验证。
-- **无缝重构**：更改模型字段名或类型时，自动更新所有引用，减少错误，使重构变得轻松。
-- **渐进式采用**：设计上可逐步集成，允许开发者根据需要逐步采用其特性，不会干扰现有工作流程。
-- **像 `MyBatis Plus` 的列引用**：`gormcnm` 提供 `cls.Name.Eq("abc")` 的功能。
-- **类似 `SQLAlchemy` 的操作**: 在 Go 中提供 **类型安全** 的动态列引用，使查询更简洁。
-- **编译时验证**：通过强大的编译时验证，避免因列名错误或类型不匹配而导致的运行时错误。
-- **改进的开发者体验**：享受 IDE 完整支持，包括自动补全、代码检查和针对泛型的重构工具。
-- **减少人为错误**：使用定义良好的常量替代硬编码的魔法字符串，避免打字错误。
-- **自文档化代码**：使用 `gormcnm` 编写的查询明确且易读，方便理解和维护代码。
-- **减少模板代码**：使用 [gormcngen](https://github.com/yyle88/gormcngen) 包自动生成类型安全的列定义，节省时间和精力。
-
-## 示例使用
-
-假设您有一个如下定义的 GORM 模型：
-
-```go
-type Example struct {
-    Name string `gorm:"primary_key;type:varchar(100);"`
-    Type string `gorm:"column:type;"`
-    Rank int    `gorm:"column:rank;"`
-}
-```
-
-在 **Java** 中，`MyBatis Plus` 工具可以通过 `Example::getName` 获得列名，组装查询语句，查询出结果后，再使用 `result.getName()` 获取字段的值：
-
-```java
-@Autowired
-private ExampleMapper exampleMapper;
-
-public void test() {
-    Example result = exampleMapper.selectOne(
-        new LambdaQueryWrapper<Example>().eq(Example::getName, "abc")
-    );
-
-    if (result != null) {
-        System.out.println(result.getName());
-        System.out.println(result.getRank());
+// 实例化列名
+func GetUserColumns() *UserColumns {
+    return &UserColumns{
+        ID:       "id",
+        Username: "username", 
+        Email:    "email",
+        Age:      "age",
+        IsActive: "is_active",
     }
 }
 ```
 
-在 **Python** 中，`SQLAlchemy` 工具可以通过 `Example.name` 获得列名，组装查询语句，查询出结果后，再使用 `result.name` 获取字段的值：
-
-```python
-def test():
-    result = session.query(Example).filter(Example.name == "abc").first()
-
-    if result:
-        print(result.name)
-        print(result.rank)
-```
-
-但是在 Go 中目前还没有 `Example::Name` 的功能，而 example.Name 则是取的字段的值，因此在Go中目前还总是需要使用 硬编码 查询。
-
-### 使用硬编码字段名的传统查询
-
-通常，您会写一个查询，使用硬编码列名，如下所示：
+#### 2. 类型安全的查询条件
 
 ```go
-err := db.Where("name=?", "abc").First(&res).Error
-```
-
-虽然这样有效，但硬编码列名会在 **重构** 或 **类型变化** 时引入风险。稍有疏忽可能导致运行时错误或类型不匹配。
-
-### 使用 `gormcnm` 的安全查询
-
-使用 `gormcnm`，您可以这样定义类型安全的列：
-
-```go
-const (
-    columnName = gormcnm.ColumnName[string]("name")
-    columnType = gormcnm.ColumnName[string]("type")
-    columnRank = gormcnm.ColumnName[int]("rank")
-)
-```
-
-### 类型安全查询
-
-这样，您就能编写 **类型安全的查询**，并在编译时验证：
-
-```go
-var res Example
-if err := db.Where(columnName.Eq("abc")).
-    Where(columnType.Eq("xyz")).
-    Where(columnRank.Gt(100)).
-    Where(columnRank.Lt(200)).
-    First(&res).Error; err != nil {
-    panic(errors.WithMessage(err, "wrong"))
-}
-fmt.Println(res)
-```
-
-这种方式确保列名和列类型的一致性，减少了错误的风险。
-
-## 样例
-
-[简单样例](internal/demos/demo1x/main.go) | [简单样例](internal/demos/demo2x/main.go)
-
-## 优势
-
-- **轻松重构**：列名和类型通过泛型进行强类型定义。重命名字段或更改列类型时，所有引用会自动更新。
-- **编译时类型安全**：在编译时捕获类型不匹配或列引用错误，减少调试时间。
-- **渐进式集成**：可以在代码库中的特定部分开始使用 `gormcnm`，随着需求的增加逐步扩展使用，确保平滑且无缝的过渡。
-- **更简洁的代码**：用常量替代魔法字符串，使查询更加可读、可维护和易于理解。
-- **更快的开发速度**：IDE 特性如自动补全和重构工具加快了编程速度，减少了人为错误的机会。
-- **像 `MyBatis Plus` 的列引用**：`gormcnm` 使用类似于 Java 中 `MyBatis Plus` 的列引用功能。
-- **类似 `SQLAlchemy` 的功能**: `gormcnm` 在 Go 中提供 **类型安全** 的动态列引用。
-- **自文档化的查询**：类型安全的列引用使您的查询更加清晰和具有描述性，有助于协作和未来的维护。
-- **减少调试工作**：由于所有引用都使用了定义良好的常量，定位与列相关的错误变得更容易。
-- **最小化人为错误**：通过集中定义列，避免打字错误和硬编码值导致的运行时错误。
-- **无缝模型同步**：模型的变化会一致地反映在您的查询中，确保您的应用始终使用最新的列定义。
-
-## 示例使用
-
-除了前面展示的类型安全查询，`gormcnm` 还支持复杂和灵活的操作，例如带条件的多个列更新。下面是一个全面的示例：
-
-### 使用条件更新列
-
-```go
-result := db.Model(&Example{}).Where(
-    Qx(columnName.Eq("aaa")).
-        AND(
-            Qx(columnType.Eq("xxx")),
-            Qx(columnRank.Eq(123)),
-        ).Qx3(),
-).UpdateColumns(columnRank.Kw(100).Kw(columnType.Kv("zzz")).AsMap())
-require.NoError(t, result.Error)
-require.Equal(t, int64(1), result.RowsAffected)
-```
-
-## 自动生成列定义
-
-更高效的方法是，您可以使用 **[gormcngen](https://github.com/yyle88/gormcngen)** 包来 **自动生成列定义**。生成的代码可能如下所示：
-
-```go
-type ExampleColumns struct {
-    Name gormcnm.ColumnName[string]
-    Type gormcnm.ColumnName[string]
-    Rank gormcnm.ColumnName[int]
-}
-
-func (*Example) Columns() *ExampleColumns {
-    return &ExampleColumns{
-        Name: "name",
-        Type: "type",
-        Rank: "rank",
+func queryUsers(db *gorm.DB) {
+    cols := GetUserColumns()
+    
+    // 类型安全的条件构建
+    var users []User
+    err := db.Where(cols.Username.Eq("alice")).          // username = 'alice'
+           Where(cols.Age.Gte(18)).                      // AND age >= 18
+           Where(cols.IsActive.Eq(true)).                // AND is_active = true
+           Where(cols.Email.Like("%@gmail.com")).        // AND email LIKE '%@gmail.com'
+           Find(&users).Error
+    
+    if err != nil {
+        log.Fatal(err)
     }
 }
 ```
 
-现在，您可以像 `MyBatis Plus` 中的 `Example::getName` 一样获取列名，通过 `cls = res.Columns()` 获取列名类的对象，然后使用 `cls.Name.Eq("abc")` 进行查询。
-
-### 使用生成的列进行查询
-
-当列定义生成完毕，您可以在查询中使用它们：
+#### 3. 复杂条件和表达式
 
 ```go
-var res models.Example
-var cls = res.Columns()
-if err := db.Where(cls.Name.Eq("abc")).
-    Where(cls.Type.Eq("xyz")).
-    Where(cls.Rank.Gt(100)).
-    Where(cls.Rank.Lt(200)).
-    First(&res).Error; err != nil {
-    panic(errors.WithMessage(err, "wrong"))
+func complexQueries(db *gorm.DB) {
+    cols := GetUserColumns()
+    
+    // 范围查询
+    db.Where(cols.Age.Between(18, 65)).Find(&users)
+    
+    // IN 查询  
+    db.Where(cols.Username.In([]string{"alice", "bob", "carol"})).Find(&users)
+    
+    // 空值检查
+    db.Where(cols.Email.IsNotNull()).Find(&users)
+    
+    // 数学表达式
+    db.Select(cols.Age.ExprAdd(10).As("future_age")).Find(&users)
+    
+    // 聚合查询
+    var avgAge float64
+    db.Model(&User{}).Select(cols.Age.Avg()).Scan(&avgAge)
+    
+    // 排序
+    db.Order(cols.Username.OrderBy("ASC")).
+       Order(cols.Age.OrderBy("DESC")).
+       Find(&users)
 }
-fmt.Println(res)
 ```
 
-### 使用 `gormcnm` 获取带条件的数据
-
-接下来是一个使用 `gormcnm` 获取数据并应用复杂条件的示例：
+#### 4. 更新操作
 
 ```go
-var res models.Example
-var cls = res.Columns()
-require.NoError(t, db.Where(
-    Qx(cls.Name.BetweenAND("aba", "abd")).
-        AND(
-            Qx(cls.Type.IsNotNULL()),
-        ).Qx2(),
-).First(&one).Error)
-require.Equal(t, "abc", res.Name)
+func updateUsers(db *gorm.DB) {
+    cols := GetUserColumns()
+    
+    // 类型安全的更新
+    err := db.Model(&User{}).
+            Where(cols.Username.Eq("alice")).
+            Update(cols.Age.ColName(), 30).Error  // 使用 ColName() 获取列名
+    
+    // 批量更新
+    updates := map[string]interface{}{
+        cols.Age.ColName():      25,
+        cols.IsActive.ColName(): true,
+    }
+    err = db.Model(&User{}).
+            Where(cols.Age.Lt(18)).
+            Updates(updates).Error
+}
 ```
 
-## 使用方法
+---
 
-只需导入该包：
+## 🔧 核心 API 参考
+
+### 基础比较操作
+
+| 方法 | SQL 等价 | 描述 | 示例 |
+|------|---------|------|------|
+| `Eq(value)` | `= value` | 等于 | `cols.Name.Eq("alice")` |
+| `Ne(value)` | `<> value` | 不等于 | `cols.Age.Ne(0)` |
+| `Gt(value)` | `> value` | 大于 | `cols.Age.Gt(18)` |
+| `Gte(value)` | `>= value` | 大于等于 | `cols.Age.Gte(18)` |
+| `Lt(value)` | `< value` | 小于 | `cols.Age.Lt(65)` |
+| `Lte(value)` | `<= value` | 小于等于 | `cols.Age.Lte(65)` |
+
+### 范围和集合操作
+
+| 方法 | SQL 等价 | 描述 | 示例 |
+|------|---------|------|------|
+| `In(values)` | `IN (values)` | 在集合中 | `cols.ID.In([]int{1,2,3})` |
+| `NotIn(values)` | `NOT IN (values)` | 不在集合中 | `cols.Status.NotIn([]string{"deleted"})` |
+| `Between(a, b)` | `BETWEEN a AND b` | 范围查询 | `cols.Age.Between(18, 65)` |
+| `NotBetween(a, b)` | `NOT BETWEEN a AND b` | 不在范围内 | `cols.Score.NotBetween(0, 60)` |
+
+### 模式匹配操作
+
+| 方法 | SQL 等价 | 描述 | 示例 |
+|------|---------|------|------|
+| `Like(pattern)` | `LIKE pattern` | 模式匹配 | `cols.Name.Like("A%")` |
+| `NotLike(pattern)` | `NOT LIKE pattern` | 不匹配模式 | `cols.Email.NotLike("%spam%")` |
+| `ILike(pattern)` | `ILIKE pattern` | 大小写不敏感匹配 | `cols.Name.ILike("alice")` |
+
+### 空值操作
+
+| 方法 | SQL 等价 | 描述 | 示例 |
+|------|---------|------|------|
+| `IsNull()` | `IS NULL` | 为空 | `cols.DeletedAt.IsNull()` |
+| `IsNotNull()` | `IS NOT NULL` | 不为空 | `cols.Email.IsNotNull()` |
+
+### 数学表达式
+
+| 方法 | SQL 等价 | 描述 | 示例 |
+|------|---------|------|------|
+| `ExprAdd(n)` | `column + n` | 加法 | `cols.Age.ExprAdd(1)` |
+| `ExprSub(n)` | `column - n` | 减法 | `cols.Score.ExprSub(10)` |
+| `ExprMul(n)` | `column * n` | 乘法 | `cols.Price.ExprMul(1.1)` |
+| `ExprDiv(n)` | `column / n` | 除法 | `cols.Total.ExprDiv(100)` |
+
+### 聚合函数
+
+| 方法 | SQL 等价 | 描述 | 示例 |
+|------|---------|------|------|
+| `Sum()` | `SUM(column)` | 求和 | `cols.Amount.Sum()` |
+| `Count()` | `COUNT(column)` | 计数 | `cols.ID.Count()` |
+| `Avg()` | `AVG(column)` | 平均值 | `cols.Score.Avg()` |
+| `Max()` | `MAX(column)` | 最大值 | `cols.Age.Max()` |
+| `Min()` | `MIN(column)` | 最小值 | `cols.Price.Min()` |
+
+---
+
+## 💡 最佳实践
+
+### 🎯 列名定义模式
 
 ```go
-import "github.com/yyle88/gormcnm"
+// ✅ 推荐：使用描述性的结构体
+type ProductColumns struct {
+    ID          gormcnm.ColumnName[uint]      `json:"id"`
+    Name        gormcnm.ColumnName[string]   `json:"name"`
+    Price       gormcnm.ColumnName[decimal.Decimal] `json:"price"`
+    CategoryID  gormcnm.ColumnName[uint]      `json:"category_id"`
+    CreatedAt   gormcnm.ColumnName[time.Time] `json:"created_at"`
+    UpdatedAt   gormcnm.ColumnName[time.Time] `json:"updated_at"`
+}
+
+// ✅ 工厂函数模式
+func NewProductColumns() *ProductColumns {
+    return &ProductColumns{
+        ID:         "id",
+        Name:       "name", 
+        Price:      "price",
+        CategoryID: "category_id",
+        CreatedAt:  "created_at", 
+        UpdatedAt:  "updated_at",
+    }
+}
 ```
 
-## 推荐使用 `gormcnm`
+### 🔧 复杂查询构建
 
-1. **让重构更可靠**：放心地重命名字段或更改类型，所有列引用将保持一致。
-2. **增强的安全性**：编译时验证确保没有不匹配或错误的引用。
-3. **提高生产力**：类型安全的列引用和 IDE 自动补全节省开发时间，减少错误。
-4. **渐进式采用**：设计上支持逐步集成，让您从小处开始，逐渐扩展使用，而不会干扰您的工作流程。
-5. **简洁且易维护的代码**：查询更加清晰、可读、自解释，促进协作和未来修改。
-6. **减少运行时错误**：集中定义列，减少人为错误的可能性。
-7. **自动代码生成**：[gormcngen](https://github.com/yyle88/gormcngen) 包简化了设置，自动生成列定义。
+```go
+func findProducts(db *gorm.DB, filters ProductFilters) ([]Product, error) {
+    cols := NewProductColumns()
+    query := db.Model(&Product{})
+    
+    // 动态条件构建
+    if filters.MinPrice > 0 {
+        query = query.Where(cols.Price.Gte(filters.MinPrice))
+    }
+    
+    if filters.MaxPrice > 0 {
+        query = query.Where(cols.Price.Lte(filters.MaxPrice))
+    }
+    
+    if len(filters.Categories) > 0 {
+        query = query.Where(cols.CategoryID.In(filters.Categories))
+    }
+    
+    if filters.NamePattern != "" {
+        query = query.Where(cols.Name.Like("%" + filters.NamePattern + "%"))
+    }
+    
+    // 排序
+    query = query.Order(cols.CreatedAt.OrderBy("DESC"))
+    
+    var products []Product
+    err := query.Find(&products).Error
+    return products, err
+}
+```
 
-## 结论
+### 📊 聚合查询示例
 
-`gormcnm` 提供了一种 **简单**、**类型安全** 和 **高效** 的方式来使用 Go 中的 GORM。通过消除硬编码的列名并利用 Go 的泛型，它确保了数据库查询的安全性、一致性和易于维护。无论是构建小型应用程序还是管理复杂的系统，`gormcnm` 都能帮助您编写健壮、易于重构的代码，从而加速开发并提高工作质量。
-
-通过采用 `gormcnm`，您可以显著提升 GORM 查询的质量，减少人为错误，并加速开发，同时保持清晰、可维护的代码库。
+```go
+func getStatistics(db *gorm.DB) (*ProductStats, error) {
+    cols := NewProductColumns()
+    
+    type Result struct {
+        TotalProducts int             `json:"total_products"`
+        AvgPrice      decimal.Decimal `json:"avg_price"`
+        MaxPrice      decimal.Decimal `json:"max_price"`
+        MinPrice      decimal.Decimal `json:"min_price"`
+    }
+    
+    var result Result
+    err := db.Model(&Product{}).
+            Select(
+                cols.ID.Count().As("total_products"),
+                cols.Price.Avg().As("avg_price"),
+                cols.Price.Max().As("max_price"),
+                cols.Price.Min().As("min_price"),
+            ).
+            Where(cols.CreatedAt.Gte(time.Now().AddDate(0, -1, 0))). // 最近一个月
+            Scan(&result).Error
+            
+    return &ProductStats{
+        TotalProducts: result.TotalProducts,
+        AvgPrice:     result.AvgPrice,
+        MaxPrice:     result.MaxPrice,
+        MinPrice:     result.MinPrice,
+    }, err
+}
+```
 
 ---
 
-## 设计思路
+## 🌟 核心优势
 
-[设计思路](internal/docs/CREATION_IDEAS.zh.md) && [旧版说明](internal/docs/README_OLD_DOC.zh.md)
+### ✨ 编译时安全
+- **类型检查**：编译器确保类型匹配
+- **IDE 支持**：完整的智能提示和重构
+- **重构友好**：字段重命名自动更新所有引用
 
----
+### ⚡ 性能优化
+- **零反射**：纯静态类型定义
+- **内联优化**：编译器优化表达式构建
+- **缓存友好**：预定义的列名常量
 
-## 许可
-
-项目采用 MIT 许可证，详情请参阅 [LICENSE](LICENSE)。
-
----
-
-## 贡献新代码
-
-非常欢迎贡献代码！贡献流程：
-
-1. 在 GitHub 上 Fork 仓库 （通过网页界面操作）。
-2. 克隆Forked项目 (`git clone https://github.com/yourname/repo-name.git`)。
-3. 在克隆的项目里 (`cd repo-name`)
-4. 创建功能分支（`git checkout -b feature/xxx`）。
-5. 添加代码 (`git add .`)。
-6. 提交更改（`git commit -m "添加功能 xxx"`）。
-7. 推送分支（`git push origin feature/xxx`）。
-8. 发起 Pull Request （通过网页界面操作）。
-
-请确保测试通过并更新相关文档。
+### 🎯 开发体验
+- **清晰的 API**：直观的方法命名
+- **链式调用**：支持流畅的查询构建
+- **错误减少**：消除硬编码字符串错误
 
 ---
 
-## 贡献与支持
+## 📝 完整示例
 
-欢迎通过提交 pull request 或报告问题来贡献此项目。
+查看 [examples](internal/examples) 目录获取完整使用示例。
 
-如果你觉得这个包对你有帮助，请在 GitHub 上给个 ⭐，感谢支持！！！
+---
 
-**感谢你的支持！**
+<!-- TEMPLATE (ZH) BEGIN: STANDARD PROJECT FOOTER -->
 
-**祝编程愉快！** 🎉
+## 📄 许可证类型
 
-Give me stars. Thank you!!!
+MIT 许可证。详见 [LICENSE](LICENSE)。
+
+---
+
+## 🤝 项目贡献
+
+非常欢迎贡献代码！报告 BUG、建议功能、贡献代码：
+
+- 🐛 **发现问题？** 在 GitHub 上提交问题并附上重现步骤
+- 💡 **功能建议？** 创建 issue 讨论您的想法
+- 📖 **文档疑惑？** 报告问题，帮助我们改进文档
+- 🚀 **需要功能？** 分享使用场景，帮助理解需求
+- ⚡ **性能瓶颈？** 报告慢操作，帮助我们优化性能
+- 🔧 **配置困扰？** 询问复杂设置的相关问题
+- 📢 **关注进展？** 关注仓库以获取新版本和功能
+- 🌟 **成功案例？** 分享这个包如何改善工作流程
+- 💬 **意见反馈？** 欢迎所有建议和宝贵意见
+
+---
+
+## 🔧 代码贡献
+
+新代码贡献，请遵循此流程：
+
+1. **Fork**：在 GitHub 上 Fork 仓库（使用网页界面）
+2. **克隆**：克隆 Fork 的项目（`git clone https://github.com/yourname/repo-name.git`）
+3. **导航**：进入克隆的项目（`cd repo-name`）
+4. **分支**：创建功能分支（`git checkout -b feature/xxx`）
+5. **编码**：实现您的更改并编写全面的测试
+6. **测试**：（Golang 项目）确保测试通过（`go test ./...`）并遵循 Go 代码风格约定
+7. **文档**：为面向用户的更改更新文档，并使用有意义的提交消息
+8. **暂存**：暂存更改（`git add .`）
+9. **提交**：提交更改（`git commit -m "Add feature xxx"`）确保向后兼容的代码
+10. **推送**：推送到分支（`git push origin feature/xxx`）
+11. **PR**：在 GitHub 上打开 Pull Request（在 GitHub 网页上）并提供详细描述
+
+请确保测试通过并包含相关的文档更新。
+
+---
+
+## 🌟 项目支持
+
+非常欢迎通过提交 Pull Request 和报告问题来为此项目做出贡献。
+
+**项目支持：**
+
+- ⭐ **给予星标**如果项目对您有帮助
+- 🤝 **分享项目**给团队成员和（golang）编程朋友
+- 📝 **撰写博客**关于开发工具和工作流程 - 我们提供写作支持
+- 🌟 **加入生态** - 致力于支持开源和（golang）开发场景
+
+**使用这个包快乐编程！** 🎉
+
+<!-- TEMPLATE (ZH) END: STANDARD PROJECT FOOTER -->
+
+---
+
+## 📈 GitHub Stars
+
+[![starring](https://starchart.cc/yyle88/gormcnm.svg?variant=adaptive)](https://starchart.cc/yyle88/gormcnm)
+
+---
+
+## 🔗 相关项目
+
+- 🏗️ **[gormcnm](https://github.com/yyle88/gormcnm)** - 类型安全列基础包
+- 🤖 **[gormcngen](https://github.com/yyle88/gormcngen)** - 智能代码生成
+- 🏢 **[gormrepo](https://github.com/yyle88/gormrepo)** - 企业仓储模式
+- 🌍 **[gormmom](https://github.com/yyle88/gormmom)** - 原生语言编程支持

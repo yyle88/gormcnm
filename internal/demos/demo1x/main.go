@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/neatjson/neatjsons"
@@ -25,7 +26,8 @@ const (
 )
 
 func main() {
-	db := rese.P1(gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{
+	dsn := fmt.Sprintf("file:db-%s?mode=memory&cache=shared", uuid.New().String())
+	db := rese.P1(gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	}))
 	defer rese.F0(rese.P1(db.DB()).Close)

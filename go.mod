@@ -3,8 +3,9 @@ module github.com/yyle88/gormcnm
 go 1.22.8
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.0
 	github.com/yyle88/done v1.0.27
 	github.com/yyle88/must v0.0.26
 	github.com/yyle88/neatjson v0.0.12

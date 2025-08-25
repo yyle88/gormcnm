@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
@@ -28,7 +29,8 @@ const (
 
 func main() {
 	//new db connection
-	db := done.VCE(gorm.Open(sqlite.Open("file::memory:?cache=private"), &gorm.Config{
+	dsn := fmt.Sprintf("file:db-%s?mode=memory&cache=shared", uuid.New().String())
+	db := done.VCE(gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})).Nice()
 	defer func() {
