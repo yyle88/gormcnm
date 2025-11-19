@@ -1,3 +1,10 @@
+// Package gormcnm provides table-qualified column operations for multi-table queries
+// Auto creates columns with table prefixes for JOIN operations and complex queries
+// Supports building fully-qualified column names with table association
+//
+// gormcnm 提供表限定列操作，用于多表查询
+// 自动创建带表前缀的列，用于 JOIN 操作和复杂查询
+// 支持构建完全限定的列名，具备表关联功能
 package gormcnm
 
 import "github.com/yyle88/gormcnm/internal/utils"

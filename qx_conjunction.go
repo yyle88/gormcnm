@@ -1,9 +1,20 @@
+// Package gormcnm provides query conjunction operations with statement and arguments binding
+// Auto handles complex WHERE clauses with parameter binding and logical operators
+// Supports building dynamic queries with type-safe argument management and GORM integration
+//
+// gormcnm 提供查询连接词操作，具备语句和参数绑定功能
+// 自动处理复杂的 WHERE 子句，包含参数绑定和逻辑运算符
+// 支持构建动态查询，具备类型安全的参数管理和 GORM 集成
 package gormcnm
 
 import "gorm.io/gorm"
 
+// QxType is an alias when using QxConjunction as a short type name
+// QxType 是 QxConjunction 的别名，用作简短的类型名称
 type QxType = QxConjunction
 
+// NewQx creates a new QxConjunction instance with the provided statement and arguments
+// NewQx 使用提供的语句和参数创建一个新的 QxConjunction 实例
 func NewQx(stmt string, args ...interface{}) *QxType {
 	return &QxType{
 		statementArgumentsTuple: newStatementArgumentsTuple(stmt, args),

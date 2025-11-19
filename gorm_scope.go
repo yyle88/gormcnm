@@ -1,3 +1,10 @@
+// Package gormcnm provides GORM scope function type definitions for custom query conditions
+// Auto enables type-safe scope functions that integrate with GORM's db.Scopes() method
+// Supports building reusable query modifiers and composable database operations
+//
+// gormcnm 提供 GORM 作用域函数类型定义，用于自定义查询条件
+// 自动启用类型安全的作用域函数，与 GORM 的 db.Scopes() 方法集成
+// 支持构建可重用的查询修饰符和可组合的数据库操作
 package gormcnm
 
 import (

@@ -1,3 +1,10 @@
+// Package gormcnm tests validate query conjunction operations with parameter binding
+// Auto verifies QxConjunction functionality with statement and arguments management
+// Tests cover AND, OR combinations, parameter binding, and GORM WHERE clause integration
+//
+// gormcnm 测试包验证查询连接词操作，具备参数绑定功能
+// 自动验证 QxConjunction 功能，包含语句和参数管理
+// 测试涵盖 AND、OR 组合、参数绑定和 GORM WHERE 子句集成
 package gormcnm
 
 import (
@@ -20,7 +27,7 @@ func TestColumnQx_AND(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -67,7 +74,7 @@ func TestColumnQx_AND_2(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -105,7 +112,7 @@ func TestColumnQx_AND_3(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -143,7 +150,7 @@ func TestColumnQx_AND_4(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -181,7 +188,7 @@ func TestColumnQx_AND_5(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)

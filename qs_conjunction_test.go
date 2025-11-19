@@ -1,3 +1,10 @@
+// Package gormcnm tests validate query statement conjunction operations for complex WHERE clauses
+// Auto verifies QsConjunction functionality with AND, OR, NOT logical operators
+// Tests cover basic conjunctions, nested conditions, and SQL statement composition
+//
+// gormcnm 测试包验证查询语句连接词操作，用于复杂的 WHERE 子句
+// 自动验证 QsConjunction 功能，包含 AND、OR、NOT 逻辑运算符
+// 测试涵盖基础连接词、嵌套条件和 SQL 语句组合
 package gormcnm
 
 import (
@@ -20,7 +27,7 @@ func TestQsConjunction_AND(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -67,7 +74,7 @@ func TestQsConjunction_AND_2(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)

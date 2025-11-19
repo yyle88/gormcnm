@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type User struct {
+type Account struct {
 	Username string `gorm:"primary_key;type:varchar(100);"`
 	Nickname string `gorm:"column:nickname;"`
 	Age      int    `gorm:"column:age;"`
@@ -32,18 +32,31 @@ func main() {
 	}))
 	defer rese.F0(rese.P1(db.DB()).Close)
 
-	done.Done(db.AutoMigrate(&User{}))
-	done.Done(db.Create(&User{Username: "alice", Nickname: "Alice", Age: 17}).Error)
+	//CREATE TABLE `accounts` (`username` varchar(100),`nickname` text,`age` integer,PRIMARY KEY (`username`))
+	done.Done(db.AutoMigrate(&Account{}))
+	//INSERT INTO `accounts` (`username`,`nickname`,`age`) VALUES ("alice","Alice",17)
+	done.Done(db.Create(&Account{Username: "alice", Nickname: "Alice", Age: 17}).Error)
 
-	var user User
-	done.Done(db.Where(columnUsername.Eq("alice")).First(&user).Error)
-	fmt.Println(neatjsons.S(user))
+	//SELECT * FROM `accounts` WHERE username="alice" ORDER BY `accounts`.`username` LIMIT 1
+	var account Account
+	done.Done(db.Where(columnUsername.Eq("alice")).First(&account).Error)
+	fmt.Println(neatjsons.S(account))
 
-	done.Done(db.Model(&user).Update(columnNickname.Kv("SuperAlice")).Error)
-	done.Done(db.Where(columnUsername.Eq("alice")).First(&user).Error)
-	fmt.Println(neatjsons.S(user))
+	//UPDATE `accounts` SET `nickname`="Alice-2" WHERE `username` = "alice"
+	done.Done(db.Model(&account).Update(columnNickname.Kv("Alice-2")).Error)
+	//SELECT * FROM `accounts` WHERE username="alice" ORDER BY `accounts`.`username` LIMIT 1
+	done.Done(db.Where(columnUsername.Eq("alice")).First(&account).Error)
+	fmt.Println(neatjsons.S(account))
 
-	done.Done(db.Model(&user).Update(columnAge.KeAdd(1)).Error)
-	done.Done(db.Where(columnUsername.Eq("alice")).First(&user).Error)
-	fmt.Println(neatjsons.S(user))
+	//UPDATE `accounts` SET `age`=18,`nickname`="Alice-3" WHERE `username` = "alice"
+	done.Done(db.Model(&account).Updates(columnNickname.Kw("Alice-3").Kw(columnAge.Kv(18)).AsMap()).Error)
+	//SELECT * FROM `accounts` WHERE username="alice" ORDER BY `accounts`.`username` LIMIT 1
+	done.Done(db.Where(columnUsername.Eq("alice")).First(&account).Error)
+	fmt.Println(neatjsons.S(account))
+
+	//UPDATE `accounts` SET `age`=age + 1 WHERE `username` = "alice"
+	done.Done(db.Model(&account).Update(columnAge.KeAdd(1)).Error)
+	//SELECT * FROM `accounts` WHERE username="alice" ORDER BY `accounts`.`username` LIMIT 1
+	done.Done(db.Where(columnUsername.Eq("alice")).First(&account).Error)
+	fmt.Println(neatjsons.S(account))
 }

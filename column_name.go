@@ -1,3 +1,10 @@
+// Package gormcnm provides advanced column operations including math expressions and aggregate functions
+// Auto creates GORM expressions with ExprAdd, ExprSub, ExprMul, ExprDiv and aggregate operations
+// Supports building complex SQL operations with type-safe column expressions and GORM integration
+//
+// gormcnm 包提供高级列操作，包括数学表达式和聚合函数
+// 自动创建 GORM 表达式，包含 ExprAdd、ExprSub、ExprMul、ExprDiv 和聚合操作
+// 支持使用类型安全的列表达式构建复杂 SQL 操作，具有 GORM 集成
 package gormcnm
 
 import (
@@ -8,10 +15,10 @@ import (
 
 // SafeCnm returns a safe column name by enclosing it in backticks.
 // SafeCnm 返回一个安全的列名，将其用反引号括起来。
-// If the column name conflicts with a SQL keyword (e.g., "create"), enclosing it in backticks ensures proper execution.
-// 如果列名与SQL关键字（例如"create"）冲突，使用反引号将其括起来，确保正确执行。
-// This function is useful when using db.Select("`type`").Find(&one) as an example.
-// 该函数在使用 db.Select("`type`").Find(&one) 等查询时非常有用。
+// If the column name conflicts with a SQL keyword (e.g., "create"), enclosing it in backticks ensures correct execution.
+// 如果列名与 SQL 关键字（例如 "create"）冲突，使用反引号将其括起来，确保正确执行。
+// This function is helpful when using db.Select("`type`").Find(&one) as an example.
+// 该函数在使用 db.Select("`type`").Find(&one) 等查询时非常有帮助。
 func (columnName ColumnName[TYPE]) SafeCnm(quote string) ColumnName[TYPE] {
 	switch len(quote) {
 	case 0: // If no quote is provided, we simply add spaces around the column name.
@@ -30,66 +37,66 @@ func (columnName ColumnName[TYPE]) SafeCnm(quote string) ColumnName[TYPE] {
 }
 
 // ExprAdd creates a GORM expression to add a value to the column.
-// ExprAdd: 创建一个GORM表达式，将一个值加到列中。
+// ExprAdd: 创建一个 GORM 表达式，将一个值加到列中。
 func (columnName ColumnName[TYPE]) ExprAdd(v TYPE) clause.Expr {
 	return gorm.Expr(string(columnName)+" + ?", v)
 }
 
 // ExprSub creates a GORM expression to subtract a value from the column.
-// ExprSub: 创建一个GORM表达式，从列中减去一个值。
+// ExprSub: 创建一个 GORM 表达式，从列中减去一个值。
 func (columnName ColumnName[TYPE]) ExprSub(v TYPE) clause.Expr {
 	return gorm.Expr(string(columnName)+" - ?", v)
 }
 
-// ExprMul creates a GORM expression to multiply the column by a value.
-// ExprMul: 创建一个GORM表达式，将列乘以一个值。
+// ExprMul creates a GORM expression when doing multiplication with the column and a value.
+// ExprMul: 创建一个 GORM 表达式，将列乘以一个值。
 func (columnName ColumnName[TYPE]) ExprMul(v TYPE) clause.Expr {
 	return gorm.Expr(string(columnName)+" * ?", v)
 }
 
 // ExprDiv creates a GORM expression to divide the column by a value.
-// ExprDiv: 创建一个GORM表达式，将列除以一个值。
+// ExprDiv: 创建一个 GORM 表达式，将列除以一个值。
 func (columnName ColumnName[TYPE]) ExprDiv(v TYPE) clause.Expr {
 	return gorm.Expr(string(columnName)+" / ?", v)
 }
 
 // ExprConcat creates a GORM expression to concatenate a string to the column.
-// ExprConcat: 创建一个GORM表达式，将字符串连接到列。
+// ExprConcat: 创建一个 GORM 表达式，将字符串连接到列。
 func (columnName ColumnName[TYPE]) ExprConcat(v TYPE) clause.Expr {
 	return gorm.Expr("CONCAT("+string(columnName)+", ?)", v)
 }
 
 // ExprReplace creates a GORM expression to replace text in the column.
-// ExprReplace: 创建一个GORM表达式，替换列中的文本。
+// ExprReplace: 创建一个 GORM 表达式，替换列中的文本。
 func (columnName ColumnName[TYPE]) ExprReplace(oldValue, newValue TYPE) clause.Expr {
 	return gorm.Expr("REPLACE("+string(columnName)+", ?, ?)", oldValue, newValue)
 }
 
-// Ob creates an order-by clause for the column with the specified direction (ASC or DESC).
-// Ob: 创建一个带有指定方向（ASC或DESC）的ORDER BY子句。
+// Ob creates an ordering clause with the specified direction (ASC or DESC) when using this column.
+// Ob: 创建一个带有指定方向（ASC 或 DESC）的 ORDER BY 子句。
 func (columnName ColumnName[TYPE]) Ob(direction string) OrderByBottle {
 	return OrderByBottle(string(columnName) + " " + direction)
 }
 
-// OrderByBottle creates an order-by clause for the column with the given direction (ASC or DESC).
-// OrderByBottle: 创建一个带有给定方向（ASC或DESC）的ORDER BY子句。
+// OrderByBottle creates an ordering clause with the given direction (ASC or DESC) when using this column.
+// OrderByBottle: 创建一个带有给定方向（ASC 或 DESC）的 ORDER BY 子句。
 func (columnName ColumnName[TYPE]) OrderByBottle(direction string) OrderByBottle {
 	return OrderByBottle(string(columnName) + " " + direction)
 }
 
-// Qc creates a condition for the column using the provided operator (e.g., '=', '>', etc.).
+// Qc creates a condition when using the provided op (e.g., '=', '>', etc.) with this column.
 // Qc: 使用提供的运算符（例如 '=', '>', 等）为列创建条件。
 func (columnName ColumnName[TYPE]) Qc(op string) QsConjunction {
 	return QsConjunction(string(columnName) + " " + op)
 }
 
-// ColumnCondition creates a condition for the column using the provided operator (e.g., '=', '>', etc.).
+// ColumnCondition creates a condition when using the provided op (e.g., '=', '>', etc.) with this column.
 // ColumnCondition: 使用提供的运算符（例如 '=', '>', 等）为列创建条件。
 func (columnName ColumnName[TYPE]) ColumnCondition(op string) QsConjunction {
 	return QsConjunction(string(columnName) + " " + op)
 }
 
-// Qx creates a condition with an operator and a value for the column, useful for building complex queries.
+// Qx creates a condition with an op and a value when using this column, helpful when building complex queries.
 // Qx: 创建带有运算符和值的条件，用于构建复杂的查询。
 func (columnName ColumnName[TYPE]) Qx(op string, x TYPE) *QxConjunction {
 	stmt := string(columnName.Qc(op))
@@ -97,7 +104,7 @@ func (columnName ColumnName[TYPE]) Qx(op string, x TYPE) *QxConjunction {
 	return NewQxConjunction(stmt, args...)
 }
 
-// ColumnConditionWithValue creates a condition with an operator and a value for the column, useful for building complex queries.
+// ColumnConditionWithValue creates a condition with an op and a value when using this column, helpful when building complex queries.
 // ColumnConditionWithValue: 创建带有运算符和值的列条件，用于构建复杂的查询。
 func (columnName ColumnName[TYPE]) ColumnConditionWithValue(op string, x TYPE) *QxConjunction {
 	stmt := string(columnName.ColumnCondition(op))
@@ -105,32 +112,32 @@ func (columnName ColumnName[TYPE]) ColumnConditionWithValue(op string, x TYPE) *
 	return NewQxConjunction(stmt, args...)
 }
 
-// Kw creates a map with a single key-value.
-// Kw: 创建一个包含单个键值对的map。
+// Kw creates a map with a single column-value mapping.
+// Kw: 创建一个包含单个键值对的 map。
 func (columnName ColumnName[TYPE]) Kw(x TYPE) ColumnValueMap {
 	return ColumnValueMap{string(columnName): x}
 }
 
-// CreateColumnValueMap creates a map with a single key-value.
-// CreateColumnValueMap: 创建一个包含单个键值对的map。
+// CreateColumnValueMap creates a map with a single column-value mapping.
+// CreateColumnValueMap: 创建一个包含单个键值对的 map。
 func (columnName ColumnName[TYPE]) CreateColumnValueMap(x TYPE) ColumnValueMap {
 	return ColumnValueMap{string(columnName): x}
 }
 
-// Kv returns a key-value, works with GORM's Update function.
-// Kv: 返回键值对，适用于GORM的Update函数。
+// Kv returns a column-value mapping, works with GORM's Update function.
+// Kv: 返回键值对，适用于 GORM 的 Update 函数。
 func (columnName ColumnName[TYPE]) Kv(x TYPE) (string, TYPE) {
 	return string(columnName), x
 }
 
-// ColumnKeyAndValue returns a key-value, useful for GORM's Update function.
-// ColumnKeyAndValue: 返回键值对，适用于GORM的Update函数。
+// ColumnKeyAndValue returns a column-value mapping, helpful when using GORM's Update function.
+// ColumnKeyAndValue: 返回键值对，适用于 GORM 的 Update 函数。
 func (columnName ColumnName[TYPE]) ColumnKeyAndValue(x TYPE) (string, TYPE) {
 	return string(columnName), x
 }
 
-// KeExp extends Kv by returning a key-expression, useful in GORM's Update function with expressions.
-// KeExp: 扩展Kv，返回键表达式对，适用于GORM的Update函数，支持表达式。
+// KeExp extends Kv by returning a column-expression mapping, helpful when using GORM's Update function with expressions.
+// KeExp: 扩展 Kv，返回键表达式对，适用于 GORM 的 Update 函数，支持表达式。
 func (columnName ColumnName[TYPE]) KeExp(x clause.Expr) (string, clause.Expr) {
 	return string(columnName), x
 }
@@ -217,14 +224,14 @@ func (columnName ColumnName[TYPE]) KeReplace(oldValue, newValue TYPE) (string, c
 	return columnName.KeExp(columnName.ExprReplace(oldValue, newValue))
 }
 
-// Count creates a COUNT query for the column, excluding NULL values.
-// Count: 创建一个COUNT查询，只统计非NULL值的列。
+// Count creates a COUNT queries statement on the column, excluding NULL values.
+// Count: 创建一个 COUNT 查询，只统计非 NULL 值的列。
 func (columnName ColumnName[TYPE]) Count(alias string) string {
 	return utils.ApplyAliasToColumn("COUNT("+string(columnName)+")", alias)
 }
 
-// CountDistinct creates a COUNT DISTINCT query for the given column, skipping NULL values in the count.
-// CountDistinct: 创建一个COUNT DISTINCT查询，用于给定列，跳过NULL值。
+// CountDistinct creates a COUNT DISTINCT queries statement on the given column, skipping NULL values in the count.
+// CountDistinct: 创建一个 COUNT DISTINCT 查询，用于给定列，跳过 NULL 值。
 func (columnName ColumnName[TYPE]) CountDistinct(alias string) string {
 	return utils.ApplyAliasToColumn("COUNT(DISTINCT("+string(columnName)+"))", alias)
 }

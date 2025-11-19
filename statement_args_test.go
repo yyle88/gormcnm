@@ -1,3 +1,10 @@
+// Package gormcnm tests validate statement and arguments tuple operations
+// Auto verifies statementArgumentsTuple functionality with SQL statement and parameter management
+// Tests cover driver.Valuer implementation, argument binding, and GORM query integration
+//
+// gormcnm 测试包验证语句和参数元组操作
+// 自动验证 statementArgumentsTuple 功能，包含 SQL 语句和参数管理
+// 测试涵盖 driver.Valuer 实现、参数绑定和 GORM 查询集成
 package gormcnm
 
 import (
@@ -26,7 +33,7 @@ func Test_statementArgumentsTuple_Qx2(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Rank: 100}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Rank: 101}).Error)

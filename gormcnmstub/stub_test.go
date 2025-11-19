@@ -1,3 +1,10 @@
+// Package gormcnmstub_test validates stub implementation with integration tests
+// Auto verifies stub wrapper functions with real GORM database operations
+// Tests cover query conditions, select statements, and column operations
+//
+// gormcnmstub_test 包通过集成测试验证存根实现
+// 自动使用真实 GORM 数据库操作验证存根包装函数
+// 测试涵盖查询条件、select 语句和列操作
 package gormcnmstub_test
 
 import (
@@ -25,7 +32,7 @@ func TestExample000(t *testing.T) {
 		columnRank = gormcnm.ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -93,7 +100,7 @@ func TestExample001(t *testing.T) {
 
 	const columnName = gormcnm.ColumnName[string]("name")
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -161,7 +168,7 @@ func TestExample002(t *testing.T) {
 		Rank int    `gorm:"column:rank;"`
 	}
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -188,7 +195,7 @@ func TestExample003(t *testing.T) {
 		columnType = gormcnm.ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)

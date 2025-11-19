@@ -1,3 +1,10 @@
+// Package gormcnm provides type-safe column name operations with comprehensive SQL queries support
+// Auto handles comparisons, equality checks, range queries, pattern matching, and NULL value operations
+// Supports column aliases, raw column names, and dynamic SQL generation with compile-time type-safe features
+//
+// gormcnm 包提供类型安全的列名操作，具有全面的 SQL 查询支持
+// 自动处理比较、等值检查、范围查询、模式匹配和 NULL 值操作
+// 支持列别名、原始列名和动态 SQL 生成，具有编译时类型安全特性
 package gormcnm
 
 import "github.com/yyle88/gormcnm/internal/utils"
@@ -22,9 +29,9 @@ This utility improves code readability, reduces boilerplate, and simplifies comp
 // ColumnName 表示一个通用的列名 可用于 SQL 查询
 type ColumnName[TYPE any] string
 
-// Qs creates a SQL statement with a given operator.
-// Returns just the SQL fragment without parameter placeholders for raw SQL construction
-// Most commonly used for building complex WHERE clauses with multiple conditions
+// Qs creates a SQL statement with a given op.
+// Returns the SQL fragment without param placeholders, used in raw SQL construction
+// Most often used when building complex WHERE clauses with multiple conditions
 //
 // With GORM:
 //
@@ -61,10 +68,10 @@ func (columnName ColumnName[TYPE]) Qs(op string) string {
 	return string(columnName) + " " + op
 }
 
-// Op creates a SQL statement with an operator and a parameter.
-// Returns both SQL fragment and parameter value as a tuple for GORM operations
-// Auto handles parameter binding and type safety for custom operators
-// Most flexible method for custom SQL operations with parameter values
+// Op creates a SQL statement with an op and a param.
+// Returns both SQL fragment and param value as a tuple used in GORM operations
+// Auto handles param binding and type-safe operations when using custom ops
+// Most flexible method when using custom SQL operations with param values
 //
 // With GORM:
 //
@@ -102,10 +109,10 @@ func (columnName ColumnName[TYPE]) Op(op string, x TYPE) (string, TYPE) {
 	return string(columnName) + " " + op, x
 }
 
-// Eq creates a SQL statement to check if the column is equal to a given value.
-// Most commonly used method for equality comparisons with type safety and clean syntax
-// Auto generates "column=?" pattern with parameter binding for GORM WHERE operations
-// Essential building block for all database queries and the foundation of type-safe SQL
+// Eq creates a SQL statement to check if the column equals a given value.
+// Most often used method when doing equality comparisons with type-safe operations and clean syntax
+// Auto generates "column=?" pattern with param binding when using GORM WHERE operations
+// Key building block when constructing database queries and the foundation of type-safe SQL
 //
 // With GORM:
 //
@@ -120,7 +127,7 @@ func (columnName ColumnName[TYPE]) Op(op string, x TYPE) (string, TYPE) {
 //	db.Where(columnName.Eq("abc")).Where(columnRank.Eq(100))
 //
 // Both generate: "WHERE name = ? AND rank = ?"
-// Benefits: Type safety, no typos, IDE autocompletion, refactoring support
+// Benefits: Type-safe operations, no typos, IDE autocompletion, refactoring support
 //
 // Eq 创建一个 SQL 语句来判断列是否等于给定的值。
 // 最常用的相等比较方法，具有类型安全和简洁语法
@@ -145,7 +152,7 @@ func (columnName ColumnName[TYPE]) Eq(x TYPE) (string, TYPE) {
 	return string(columnName) + "=?", x
 }
 
-// Gt creates a SQL statement to check if the column is greater than a given value.
+// Gt creates a SQL statement to check if the column is more than a given value.
 // Gt 创建一个 SQL 语句来判断列是否大于给定的值。
 func (columnName ColumnName[TYPE]) Gt(x TYPE) (string, TYPE) {
 	return string(columnName) + ">?", x
@@ -157,19 +164,19 @@ func (columnName ColumnName[TYPE]) Lt(x TYPE) (string, TYPE) {
 	return string(columnName) + "<?", x
 }
 
-// Gte creates a SQL statement to check if the column is greater than or equal to a given value.
+// Gte creates a SQL statement to check if the column is greater than/equal to a given value.
 // Gte 创建一个 SQL 语句来判断列是否大于等于给定的值。
 func (columnName ColumnName[TYPE]) Gte(x TYPE) (string, TYPE) {
 	return string(columnName) + ">=?", x
 }
 
-// Lte creates a SQL statement to check if the column is less than or equal to a given value.
+// Lte creates a SQL statement to check if the column is less than/equal to a given value.
 // Lte 创建一个 SQL 语句来判断列是否小于等于给定的值。
 func (columnName ColumnName[TYPE]) Lte(x TYPE) (string, TYPE) {
 	return string(columnName) + "<=?", x
 }
 
-// Ne creates a SQL statement to check if the column is not equal to a given value.
+// Ne creates a SQL statement to check if the column is not the same as a given value.
 // Ne 创建一个 SQL 语句来判断列是否不等于给定的值。
 func (columnName ColumnName[TYPE]) Ne(x TYPE) (string, TYPE) {
 	return string(columnName) + "!=?", x
@@ -199,7 +206,7 @@ func (columnName ColumnName[TYPE]) NotLike(x TYPE) (string, TYPE) {
 	return string(columnName) + " NOT LIKE ?", x
 }
 
-// NotEq creates a SQL statement to check if the column is not equal to a given value.
+// NotEq creates a SQL statement to check if the column is not the same as a given value.
 // NotEq 创建一个 SQL 语句来判断列是否不等于给定的值。
 func (columnName ColumnName[TYPE]) NotEq(x TYPE) (string, TYPE) {
 	return string(columnName) + "!=?", x
@@ -266,19 +273,19 @@ func (columnName ColumnName[TYPE]) BetweenAnd(arg1, arg2 TYPE) (string, TYPE, TY
 }
 
 // Between creates a SQL statement to check if the column's value is between two given values.
-// Auto provides most intuitive function name for range queries, improving user experience
-// Users commonly search for "Between" when looking for BETWEEN SQL operations
+// Auto provides most intuitive function name when doing range queries, enhancing the development experience
+// Developers often search the "Between" keyword when looking up BETWEEN SQL operations
 //
 // Between 创建一个 SQL 语句来判断列的值是否介于两个给定的值之间。
-// 自动提供范围查询最直观的函数名，提升用户体验
-// 用户查找 BETWEEN SQL 操作时通常搜索 "Between"
+// 自动提供范围查询最直观的函数名，提升开发体验
+// 开发者查找 BETWEEN SQL 操作时通常搜索 "Between"
 func (columnName ColumnName[TYPE]) Between(arg1, arg2 TYPE) (string, TYPE, TYPE) {
 	return string(columnName) + " BETWEEN ? AND ?", arg1, arg2
 }
 
 // NotBetween creates a SQL statement to check if the column's value is NOT between two given values.
-// Auto provides the counterpart to Between operation, completing range query functionality
-// Most commonly used to exclude specific value ranges from query results
+// Auto provides the counterpart to Between operation, completing range queries functions
+// Most often used to exclude specific value ranges from the results
 //
 // NotBetween 创建一个 SQL 语句来判断列的值是否不在两个给定的值之间。
 // 自动提供与 Between 操作对应的反向操作，完善范围查询功能
@@ -287,14 +294,14 @@ func (columnName ColumnName[TYPE]) NotBetween(arg1, arg2 TYPE) (string, TYPE, TY
 	return string(columnName) + " NOT BETWEEN ? AND ?", arg1, arg2
 }
 
-// OnEq creates a SQL statement to check if the column is equal to another column in an ON clause.
-// OnEq 创建一个 SQL 语句来判断列是否在 ON 子句中等于另一个列。
+// OnEq creates a SQL statement to check if the column is the same as other column in an ON clause.
+// OnEq 创建一个 SQL 语句来判断列是否在 ON 子句中等于另一列。
 func (columnName ColumnName[TYPE]) OnEq(name ColumnName[TYPE]) string {
 	return string(columnName) + "=" + string(name)
 }
 
-// OnNe creates a SQL statement to check if the column is not equal to another column in an ON clause.
-// OnNe 创建一个 SQL 语句来判断列是否在 ON 子句中不等于另一个列。
+// OnNe creates a SQL statement to check if the column is not the same as other column in an ON clause.
+// OnNe 创建一个 SQL 语句来判断列是否在 ON 子句中不等于另一列。
 func (columnName ColumnName[TYPE]) OnNe(name ColumnName[TYPE]) string {
 	return string(columnName) + "!=" + string(name)
 }
@@ -317,8 +324,8 @@ func (columnName ColumnName[TYPE]) AsAlias(alias string) string {
 	return utils.ApplyAliasToColumn(columnName.Name(), alias)
 }
 
-// AsName generates a SQL alias for the column using another ColumnName as the alias.
-// AsName 使用另一个 ColumnName 作为别名生成列的 SQL 别名。
+// AsName generates a SQL alias when using the specified ColumnName as the alias.
+// AsName 使用指定的 ColumnName 作为别名生成列的 SQL 别名。
 func (columnName ColumnName[TYPE]) AsName(alias ColumnName[TYPE]) string {
 	return utils.ApplyAliasToColumn(columnName.Name(), string(alias))
 }

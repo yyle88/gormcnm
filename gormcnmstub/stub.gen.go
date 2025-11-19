@@ -1,3 +1,8 @@
+// Code generated using sure/cls_stub_gen. DO NOT EDIT.
+// This file was auto generated via github.com/yyle88/sure
+// Generated from: stub.gen_test.go:35 -> gormcnmstub.TestGen
+// ========== SURE:DO-NOT-EDIT-SECTION:END ==========
+
 package gormcnmstub
 
 import (

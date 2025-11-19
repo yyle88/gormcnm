@@ -1,4 +1,4 @@
-// Package gormcnm tests demonstrate the core functionality of type-safe column operations
+// Package gormcnm tests demonstrate the core functions of type-safe column operations
 // Auto validates ColumnName operations with GORM integration in SQLite memory database
 // Tests cover basic operations, comparisons, and SQL query generation
 //
@@ -24,7 +24,7 @@ func TestColumnName_Op(t *testing.T) {
 
 	const columnName = ColumnName[string]("name")
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -101,7 +101,7 @@ func TestColumnName_Op2(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -121,7 +121,7 @@ func TestColumnName_Op3(t *testing.T) {
 
 	const columnName = ColumnName[string]("name")
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)

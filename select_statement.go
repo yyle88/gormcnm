@@ -1,3 +1,10 @@
+// Package gormcnm provides SELECT statement building operations for custom column selection
+// Auto constructs SELECT clauses with column combinations, aliases, and aggregate functions
+// Supports building complex SELECT queries with type-safe column management and GORM integration
+//
+// gormcnm 提供 SELECT 语句构建操作，用于自定义列选择
+// 自动构建 SELECT 子句，包含列组合、别名和聚合函数
+// 支持构建复杂的 SELECT 查询，具备类型安全的列管理和 GORM 集成
 package gormcnm
 
 import (
@@ -6,8 +13,12 @@ import (
 	"gorm.io/gorm"
 )
 
+// SxType is an alias when using SelectStatement as a short type name
+// SxType 是 SelectStatement 的别名，用作简短的类型名称
 type SxType = SelectStatement
 
+// NewSx creates a new SelectStatement instance with the provided statement and arguments
+// NewSx 使用提供的语句和参数创建一个新的 SelectStatement 实例
 func NewSx(stmt string, args ...interface{}) *SxType {
 	return &SxType{
 		statementArgumentsTuple: newStatementArgumentsTuple(stmt, args),

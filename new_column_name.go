@@ -1,3 +1,10 @@
+// Package gormcnm provides column name creation and decoration operations with flexible patterns
+// Auto creates ColumnName instances with type inference and customizable decoration strategies
+// Supports plain names, table-prefixed names, and custom transformation logic
+//
+// gormcnm 包提供列名创建和装饰操作，具有灵活的模式
+// 自动创建 ColumnName 实例，包含类型推断和可定制的装饰策略
+// 支持普通名称、表前缀名称和自定义转换逻辑
 package gormcnm
 
 import "github.com/yyle88/must"
@@ -54,7 +61,7 @@ func NewTableDecoration(tableName string) ColumnNameDecoration {
 	return &TableDecoration{tableName: tableName}
 }
 
-// DecorateColumnName adds table prefix to the column name if table name is not empty
+// DecorateColumnName adds table prefix to the column name when table name is not an empty string
 // DecorateColumnName 如果表名不为空，则为列名添加表前缀
 func (D *TableDecoration) DecorateColumnName(name string) string {
 	if D.tableName != "" {

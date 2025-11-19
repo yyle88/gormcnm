@@ -1,3 +1,10 @@
+// Package gormcnm tests validate column value map operations for updates
+// Auto verifies ColumnValueMap functionality with GORM Updates and Save operations
+// Tests cover key-value mapping, batch updates, and value management
+//
+// gormcnm 测试包验证用于更新的列值映射操作
+// 自动验证 ColumnValueMap 功能与 GORM Updates 和 Save 操作
+// 测试涵盖键值映射、批量更新和值管理
 package gormcnm
 
 import (
@@ -21,7 +28,7 @@ func TestValuesMap_SetValue(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name: "aaa",

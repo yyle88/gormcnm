@@ -1,3 +1,10 @@
+// Package gormcnm tests validate COALESCE and IFNULL operations for NULL-safe aggregates
+// Auto verifies CoalesceNonNullGuardian functionality with SUM, AVG, MAX, MIN operations
+// Tests cover NULL value protection, default value handling, and MySQL/standard SQL compatibility
+//
+// gormcnm 测试包验证 COALESCE 和 IFNULL 操作，实现 NULL 安全的聚合函数
+// 自动验证 CoalesceNonNullGuardian 功能，包含 SUM、AVG、MAX、MIN 操作
+// 测试涵盖 NULL 值保护、默认值处理和 MySQL/标准 SQL 兼容性
 package gormcnm
 
 import (
@@ -16,7 +23,7 @@ func TestCoalesceStmt(t *testing.T) {
 
 	const columnRank = ColumnName[int]("rank")
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name: "aaa",

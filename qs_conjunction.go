@@ -1,3 +1,10 @@
+// Package gormcnm provides query statement conjunction operations for building complex WHERE clauses
+// Auto combines multiple conditions using AND, OR, NOT logical operators
+// Supports nested conditions and flexible query composition with type-safe SQL generation
+//
+// gormcnm 提供查询语句连接词操作，用于构建复杂的 WHERE 子句
+// 自动使用 AND、OR、NOT 逻辑运算符组合多个条件
+// 支持嵌套条件和灵活的查询组合，具备类型安全的 SQL 生成
 package gormcnm
 
 import (
@@ -6,8 +13,12 @@ import (
 	"strings"
 )
 
+// QsType is an alias when using QsConjunction as a short type name
+// QsType 是 QsConjunction 的别名，用作简短的类型名称
 type QsType = QsConjunction
 
+// NewQs creates a new QsConjunction instance from the given SQL statement string
+// NewQs 从给定的 SQL 语句字符串创建一个新的 QsConjunction 实例
 func NewQs(stmt string) QsType {
 	return QsType(stmt)
 }
@@ -18,6 +29,8 @@ func NewQs(stmt string) QsType {
 // 在语法学中，conjunction（连词）是一种词类，用来连接词、短语、语句
 type QsConjunction string
 
+// NewQsConjunction creates a new QsConjunction instance from the given SQL statement string
+// NewQsConjunction 从给定的 SQL 语句字符串创建一个新的 QsConjunction 实例
 func NewQsConjunction(stmt string) QsConjunction {
 	return QsConjunction(stmt)
 }
@@ -56,9 +69,9 @@ func (qsConjunction QsConjunction) NOT() QsConjunction {
 // 因此也就是说 db.Where(xxx("name = ? AND type = ?")) 这个是不行的
 // 基本的结论是：
 // 当你执行 db.Where(xxx("name = ? AND type = ?")) 时，GORM 会将 xxx("name = ? AND type = ?") 视为一个单独的值，再将其传递给查询条件，而不会将其展开为具体的 SQL 语句。
-// 这时，给 type xxx string 增加 Value 函数，而且里面报panic，就能避免用错
+// 这时，给 type xxx string 增加 Value 函数，而且里面报 panic，就能避免用错
 // 这就是这里给出 Value { panic } 的原因
-// 这样，假如你不把结果转换为string，而是直接往where条件里传递，就会在where条件中触发value异常
+// 这样，假如你不把结果转换为 string，而是直接往 where 条件里传递，就会在 where 条件中触发 value 异常
 func (qsConjunction QsConjunction) Value() (driver.Value, error) {
 	panic(valueIsNotCallable) // If this error occurs, the caller must adjust their code. See error code comments.
 	// 如果报这个错误，调用侧需要修改代码。具体可参考错误码的注释。

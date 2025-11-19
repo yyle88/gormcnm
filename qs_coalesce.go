@@ -1,3 +1,10 @@
+// Package gormcnm provides COALESCE and IFNULL operations for NULL-safe SQL queries
+// Auto handles NULL values in aggregate functions using COALESCE (standard) or IFNULL (MySQL)
+// Supports SUM, COUNT, AVG, MAX, MIN with automatic NULL value protection
+//
+// gormcnm 提供 COALESCE 和 IFNULL 操作，实现 NULL 安全的 SQL 查询
+// 自动使用 COALESCE（标准）或 IFNULL（MySQL）处理聚合函数中的 NULL 值
+// 支持 SUM、COUNT、AVG、MAX、MIN，具备自动 NULL 值保护
 package gormcnm
 
 import (

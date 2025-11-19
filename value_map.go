@@ -1,3 +1,10 @@
+// Package gormcnm provides column-value map operations for GORM update and batch operations
+// Auto manages column-value mappings for Updates and UpdateColumns operations
+// Supports building dynamic update maps with type-safe column assignments
+//
+// gormcnm 提供列值映射操作，用于 GORM 更新和批量操作
+// 自动管理 Updates 和 UpdateColumns 操作的列值映射
+// 支持构建动态更新映射，具备类型安全的列赋值
 package gormcnm
 
 // ColumnValueMap is a map type used for GORM update logic to represent column-value mappings.

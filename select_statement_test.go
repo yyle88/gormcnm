@@ -1,3 +1,10 @@
+// Package gormcnm tests validate SELECT statement building and column selection
+// Auto verifies SelectStatement functionality with GORM Select clauses
+// Tests cover column selection, aggregation functions, and query execution
+//
+// gormcnm 测试包验证 SELECT 语句构建和列选择
+// 自动验证 SelectStatement 功能与 GORM Select 子句
+// 测试涵盖列选择、聚合函数和查询执行
 package gormcnm
 
 import (
@@ -20,7 +27,7 @@ func TestSelectStatement_Combine(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Rank: 100}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Rank: 101}).Error)

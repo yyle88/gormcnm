@@ -1,3 +1,10 @@
+// Package gormcnm tests validate GORM scope function operations and integration
+// Auto verifies ScopeFunction type operations with GORM db.Scopes() method
+// Tests cover scope composition, reusable query modifiers, and database integration
+//
+// gormcnm 测试包验证 GORM 作用域函数操作和集成
+// 自动验证 ScopeFunction 类型功能与 GORM db.Scopes() 方法
+// 测试涵盖作用域组合、可重用查询修饰符和数据库集成
 package gormcnm
 
 import (
@@ -20,7 +27,7 @@ func TestOrderByBottle_Scope(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -61,7 +68,7 @@ func TestQxConjunction_Scope(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -91,7 +98,7 @@ func TestQxConjunction_Scope_Example2(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz", Rank: 25}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 30}).Error)
@@ -121,7 +128,7 @@ func TestSelectStatement_Scope(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Rank: 100}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Rank: 101}).Error)

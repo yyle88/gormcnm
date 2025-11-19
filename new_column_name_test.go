@@ -1,3 +1,10 @@
+// Package gormcnm tests validate column name creation and decoration operations
+// Auto verifies New, Cnm, Cmn constructors with PlainDecoration, TableDecoration, CustomDecoration
+// Tests cover column name instantiation, table prefix decoration, and custom transformation logic
+//
+// gormcnm 测试包验证列名创建和装饰操作
+// 自动验证 New、Cnm、Cmn 构造函数，包含 PlainDecoration、TableDecoration、CustomDecoration
+// 测试涵盖列名实例化、表前缀装饰和自定义转换逻辑
 package gormcnm
 
 import (

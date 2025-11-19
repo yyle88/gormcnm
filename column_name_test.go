@@ -1,3 +1,10 @@
+// Package gormcnm tests validate core column operations including math expressions and aggregates
+// Auto verifies ExprAdd, ExprSub, ExprMul, ExprDiv, ExprConcat, ExprReplace operations
+// Tests cover basic expressions, aggregation functions, and column method operations
+//
+// gormcnm 测试包验证核心列操作，包括数学表达式和聚合函数
+// 自动验证 ExprAdd、ExprSub、ExprMul、ExprDiv、ExprConcat、ExprReplace 操作
+// 测试涵盖基础表达式、聚合函数和列方法功能
 package gormcnm
 
 import (
@@ -17,7 +24,7 @@ func TestColumnName_SafeCnm(t *testing.T) {
 
 	const columnCreate = ColumnName[string]("create")
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name:   "aaa",
@@ -67,7 +74,7 @@ func TestColumnName_Count(t *testing.T) {
 
 	const columnName = ColumnName[string]("name")
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -103,7 +110,7 @@ func TestColumnName_ExprOperations(t *testing.T) {
 		columnAmount = ColumnName[int]("amount")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Create(&Example{
 			ID:     1,
@@ -164,7 +171,7 @@ func TestColumnName_StringExprOperations(t *testing.T) {
 		columnEmail = ColumnName[string]("email")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Create(&Example{
 			ID:    1,

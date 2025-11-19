@@ -27,7 +27,7 @@ func TestExample(t *testing.T) {
 		columnRank = gormcnm.ColumnName[*int]("rank")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		//create example data
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: utils.GetValuePointer("xyz"), Rank: utils.GetValuePointer(123)}).Error)

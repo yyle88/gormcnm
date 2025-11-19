@@ -1,3 +1,10 @@
+// Package gormcnm tests validate ordering operations and sort statement construction
+// Auto verifies OrderByBottle functionality with GORM Order clauses
+// Tests cover basic ordering, combined sorting, and query execution
+//
+// gormcnm 测试包验证排序操作和排序语句构建
+// 自动验证 OrderByBottle 功能与 GORM Order 子句
+// 测试涵盖基础排序、组合排序和查询执行
 package gormcnm
 
 import (
@@ -20,7 +27,7 @@ func TestOrderByBottle_Ob(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)

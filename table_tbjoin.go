@@ -1,3 +1,10 @@
+// Package gormcnm provides table JOIN operations for building multi-table query relationships
+// Auto creates LEFT JOIN, INNER JOIN, and custom JOIN operations with ON conditions
+// Supports building complex table relationships with type-safe join clause construction
+//
+// gormcnm 提供表 JOIN 操作，用于构建多表查询关系
+// 自动创建 LEFT JOIN、INNER JOIN 和自定义 JOIN 操作，包含 ON 条件
+// 支持构建复杂的表关系，具备类型安全的连接子句构建
 package gormcnm
 
 import (

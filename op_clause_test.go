@@ -1,3 +1,10 @@
+// Package gormcnm tests validate GORM clause operations and column assignments
+// Auto verifies Clause, ClauseWithTable methods and ClauseColumn operations
+// Tests cover clause creation, table qualification, alias assignment, and GORM integration
+//
+// gormcnm 测试包验证 GORM 子句操作和列赋值
+// 自动验证 Clause、ClauseWithTable 方法和 ClauseColumn 功能
+// 测试涵盖子句创建、表限定、别名赋值和 GORM 集成
 package gormcnm
 
 import (

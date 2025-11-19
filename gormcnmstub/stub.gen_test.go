@@ -1,3 +1,10 @@
+// Package gormcnmstub tests validate code generation operations used in stub wrapper creation
+// Auto verifies generated code correctness and AST manipulation patterns
+// Tests cover stub generation, reflection-based code creation, and syntax validation
+//
+// gormcnmstub 测试包验证存根包装创建中使用的代码生成操作
+// 自动验证生成代码的正确性和 AST 操作模式
+// 测试涵盖存根生成、基于反射的代码创建和语法验证
 package gormcnmstub
 
 import (

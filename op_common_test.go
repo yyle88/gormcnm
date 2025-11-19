@@ -1,4 +1,4 @@
-// Package gormcnm_test provides comprehensive integration tests for gormcnm functionality
+// Package gormcnm_test provides comprehensive integration tests with gormcnm features
 // Auto validates column operations, query generation, and GORM integration patterns
 // Tests demonstrate real-world usage scenarios with SQLite in-memory database
 //
@@ -33,7 +33,7 @@ func TestExample000(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -103,7 +103,7 @@ func TestExample001(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -173,7 +173,7 @@ func TestExample002(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -202,7 +202,7 @@ func TestExample003(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.CaseRunInSqliteMemDB(func(db *gorm.DB) {
+	utils.InMemDB(func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)

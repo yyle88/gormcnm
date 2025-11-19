@@ -1,3 +1,10 @@
+// Package gormcnm provides GORM clause operations for type-safe column assignments
+// Auto creates clause.Column and clause.Assignment instances with table and alias support
+// Supports building complex SQL clauses with proper column qualification and raw SQL handling
+//
+// gormcnm 提供 GORM 子句操作，实现类型安全的列赋值
+// 自动创建 clause.Column 和 clause.Assignment 实例，支持表名和别名
+// 支持构建复杂的 SQL 子句，具备正确的列限定和原始 SQL 处理
 package gormcnm
 
 import "gorm.io/gorm/clause"

@@ -1,3 +1,10 @@
+// Package utils provides utility functions and helpers used across GORM column operations
+// Auto handles pointer operations, alias application, and test database setup
+// Supports testing with SQLite in-memory databases and column alias formatting
+//
+// utils 包提供跨 GORM 列操作使用的实用函数和辅助工具
+// 自动处理指针操作、别名应用和测试数据库设置
+// 支持使用 SQLite 内存数据库进行测试和列别名格式化
 package utils
 
 import (
@@ -28,11 +35,11 @@ func GetPointerValue[T any](v *T) T {
 	}
 }
 
-// CaseRunInSqliteMemDB runs a function with an in-memory SQLite database for testing purposes
+// InMemDB runs a function with an in-memory SQLite database for testing purposes
 // Auto creates a temporary database connection and handles cleanup after function execution
-// CaseRunInSqliteMemDB 在内存数据库中运行函数，用于测试目的
+// InMemDB 在内存数据库中运行函数，用于测试目的
 // 自动创建临时数据库连接并在函数执行后处理清理工作
-func CaseRunInSqliteMemDB(run func(db *gorm.DB)) {
+func InMemDB(run func(db *gorm.DB)) {
 	dsn := fmt.Sprintf("file:db-%s?mode=memory&cache=shared", uuid.New().String())
 	db := rese.P1(gorm.Open(sqlite.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
