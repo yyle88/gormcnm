@@ -1,4 +1,4 @@
-// Package gormcnm provides table JOIN operations for building multi-table query relationships
+// Package gormcnm provides table JOIN operations to build multi-table data relationships
 // Auto creates LEFT JOIN, INNER JOIN, and custom JOIN operations with ON conditions
 // Supports building complex table relationships with type-safe join clause construction
 //
@@ -13,33 +13,33 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// LEFTJOIN creates a left join operation for the specified table.
+// LEFTJOIN creates a left join operation on the specified table.
 // LEFTJOIN 给指定表创建一个左连接操作。
 func (common *ColumnOperationClass) LEFTJOIN(tableName string) *TableJoin {
 	return newTableJoin(clause.LeftJoin, tableName)
 }
 
-// RIGHTJOIN creates a right join operation for the specified table.
+// RIGHTJOIN creates a right join operation on the specified table.
 // RIGHTJOIN 给指定表创建一个右连接操作。
 func (common *ColumnOperationClass) RIGHTJOIN(tableName string) *TableJoin {
 	return newTableJoin(clause.RightJoin, tableName)
 }
 
-// INNERJOIN creates an inner join operation for the specified table.
+// INNERJOIN creates an INNER join operation on the specified table.
 // INNERJOIN 给指定表创建一个内连接操作。
 func (common *ColumnOperationClass) INNERJOIN(tableName string) *TableJoin {
 	return newTableJoin(clause.InnerJoin, tableName)
 }
 
-// CROSSJOIN creates a cross join operation for the specified table.
+// CROSSJOIN creates a cross join operation on the specified table.
 // CROSSJOIN 给指定表创建一个交叉连接操作。
 func (common *ColumnOperationClass) CROSSJOIN(tableName string) *TableJoin {
 	return newTableJoin(clause.CrossJoin, tableName)
 }
 
 // TableJoin represents a join operation on a table, including its type and name
-// Supports all standard SQL join types: LEFT, RIGHT, INNER, and CROSS joins
-// Auto generates proper SQL JOIN syntax with ON clause conditions
+// Supports every standard SQL join type: LEFT, RIGHT, INNER, and CROSS joins
+// Auto generates correct SQL JOIN syntax with ON clause conditions
 //
 // TableJoin 表示表上的连接操作，包括连接类型和表名
 // 支持所有标准 SQL 连接类型：LEFT、RIGHT、INNER 和 CROSS 连接

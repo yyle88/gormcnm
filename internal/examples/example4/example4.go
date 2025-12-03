@@ -1,3 +1,10 @@
+// Package example4 demonstrates decoration pattern and dynamic column generation with gormcnm
+// Auto shows User and Order models with TableColumns() methods using decoration pattern
+// Supports dynamic column name prefixing and flexible column name transformations
+//
+// example4 包演示使用 gormcnm 的装饰模式和动态列生成
+// 自动展示 User 和 Order 模型，通过 TableColumns() 方法使用装饰模式
+// 支持动态列名前缀和灵活的列名转换
 package example4
 
 import "github.com/yyle88/gormcnm"

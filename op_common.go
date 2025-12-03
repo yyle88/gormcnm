@@ -14,18 +14,17 @@ import (
 	"gorm.io/gorm"
 )
 
-// ColumnOperationClass provides a set of common methods for handling column operations in database queries.
+// ColumnOperationClass provides a set of common methods to handle column operations in database queries.
 // ColumnOperationClass 提供一组常用的数据库列操作工具函数。
 type ColumnOperationClass struct{}
 
-// OK always returns true and provides a simple boolean condition.
-// Its main purpose is to provide a compact scope in which variables are valid just within
-// the conditional block. This helps improve code readability by limiting the scope of variables
-// and makes the logic simple to follow.
-// OK 函数始终返回 true，提供一个简单的布尔条件供控制流使用。
-// 它的主要目的是提供一个小的作用域，在这个作用域内定义的变量仅在条件块内有效。
-// 这种做法有助于提高代码的清晰度，通过限制变量的作用域，
-// 使得逻辑更加清晰和易于理解。
+// OK always returns true and provides a simple condition.
+// Its main purpose is to provide a compact scope in which variables exist just within
+// the condition block. Scope limitation keeps code clean and makes the logic simple to understand.
+//
+// OK 始终返回 true，提供一个简单的条件。
+// 主要目的是提供一个紧凑的作用域，变量仅在条件块内有效。
+// 作用域限制使代码整洁，逻辑易于理解。
 func (common *ColumnOperationClass) OK() bool {
 	return true
 }

@@ -1,6 +1,6 @@
 // Package gormcnm tests validate ordering operations and sort statement construction
-// Auto verifies OrderByBottle functionality with GORM Order clauses
-// Tests cover basic ordering, combined sorting, and query execution
+// Auto verifies OrderByBottle features with GORM Order clauses
+// Tests examine basic ordering, combined sorting, and SQL execution
 //
 // gormcnm 测试包验证排序操作和排序语句构建
 // 自动验证 OrderByBottle 功能与 GORM Order 子句

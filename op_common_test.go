@@ -1,6 +1,6 @@
 // Package gormcnm_test provides comprehensive integration tests with gormcnm features
-// Auto validates column operations, query generation, and GORM integration patterns
-// Tests demonstrate real-world usage scenarios with SQLite in-memory database
+// Auto validates column operations, where generation, and GORM integration patterns
+// Tests demonstrate real-world usage scenarios with an SQLite memory-based database
 //
 // gormcnm_test 包为 gormcnm 功能提供全面的集成测试
 // 自动验证列操作、查询生成和 GORM 集成模式

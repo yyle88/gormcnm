@@ -1,6 +1,6 @@
-// Package gormcnm provides query statement conjunction operations for building complex WHERE clauses
-// Auto combines multiple conditions using AND, OR, NOT logical operators
-// Supports nested conditions and flexible query composition with type-safe SQL generation
+// Package gormcnm provides conjunction operations to build complex WHERE clauses
+// Auto combines multiple conditions using AND, OR, NOT boolean operators
+// Supports nested conditions and flexible queries composition with type-safe SQL generation
 //
 // gormcnm 提供查询语句连接词操作，用于构建复杂的 WHERE 子句
 // 自动使用 AND、OR、NOT 逻辑运算符组合多个条件
@@ -23,7 +23,7 @@ func NewQs(stmt string) QsType {
 	return QsType(stmt)
 }
 
-// QsConjunction means gorm query statement conjunction. example: OR AND NOT
+// QsConjunction means gorm queries conjunction. example: OR AND NOT
 // QsConjunction 表示 GORM 查询语句中的连接词，例如 OR、AND、NOT
 // 就是表示 "或"、"且"、"非" 的连接词
 // 在语法学中，conjunction（连词）是一种词类，用来连接词、短语、语句
@@ -38,7 +38,7 @@ func NewQsConjunction(stmt string) QsConjunction {
 // AND constructs a conjunction using "AND" between QsConjunction instances.
 // AND 使用 "AND" 在多个 QsConjunction 实例之间构造连接语句。
 func (qsConjunction QsConjunction) AND(qcs ...QsConjunction) QsConjunction {
-	var qss = make([]string, 0, 1+len(qcs)) // New slice to ensure thread safety // 新建一个切片以确保线程安全
+	var qss = make([]string, 0, 1+len(qcs)) // New slice to ensure thread-safe operation // 新建一个切片以确保线程安全
 	qss = append(qss, "("+qsConjunction.Qs()+")")
 	for _, c := range qcs {
 		qss = append(qss, "("+c.Qs()+")") // Add parentheses around each component to avoid logic issues // 在每个组件周围加括号以避免逻辑问题
@@ -49,7 +49,7 @@ func (qsConjunction QsConjunction) AND(qcs ...QsConjunction) QsConjunction {
 // OR constructs a conjunction using "OR" between QsConjunction instances.
 // OR 使用 "OR" 在多个 QsConjunction 实例之间构造连接语句。
 func (qsConjunction QsConjunction) OR(qcs ...QsConjunction) QsConjunction {
-	var qss = make([]string, 0, 1+len(qcs)) // New slice to ensure thread safety // 新建一个切片以确保线程安全
+	var qss = make([]string, 0, 1+len(qcs)) // New slice to ensure thread-safe operation // 新建一个切片以确保线程安全
 	qss = append(qss, "("+qsConjunction.Qs()+")")
 	for _, c := range qcs {
 		qss = append(qss, "("+c.Qs()+")") // Add parentheses around each component to avoid logic issues // 在每个组件周围加括号以避免逻辑问题

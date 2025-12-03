@@ -1,6 +1,6 @@
 // Package gormcnm tests validate GORM scope function operations and integration
 // Auto verifies ScopeFunction type operations with GORM db.Scopes() method
-// Tests cover scope composition, reusable query modifiers, and database integration
+// Tests examine scope composition, reusable where modifiers, and database integration
 //
 // gormcnm 测试包验证 GORM 作用域函数操作和集成
 // 自动验证 ScopeFunction 类型功能与 GORM db.Scopes() 方法

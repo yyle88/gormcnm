@@ -1,4 +1,4 @@
-// Package gormcnm tests validate query conjunction operations with parameter binding
+// Package gormcnm tests validate conjunction operations with parameter binding
 // Auto verifies QxConjunction functionality with statement and arguments management
 // Tests cover AND, OR combinations, parameter binding, and GORM WHERE clause integration
 //

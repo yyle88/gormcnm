@@ -1,6 +1,6 @@
 // Package gormcnm tests demonstrate the core functions of type-safe column operations
-// Auto validates ColumnName operations with GORM integration in SQLite memory database
-// Tests cover basic operations, comparisons, and SQL query generation
+// Auto validates ColumnName operations with GORM integration in an SQLite memory-based database
+// Tests examine basic operations, comparisons, and SQL where generation
 //
 // gormcnm 测试包演示了类型安全列操作的核心功能
 // 自动验证 ColumnName 操作与 GORM 在 SQLite 内存数据库中的集成

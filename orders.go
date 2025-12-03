@@ -25,7 +25,7 @@ func (ob OrderByBottle) OrderByBottle(next OrderByBottle) OrderByBottle {
 	return ob + " , " + next
 }
 
-// Ox converts the OrderByBottle to a string. Note that if the type is not specific, it may be ignored by GORM's logic.
+// Ox converts the OrderByBottle to a string. Note that if the type is not specific, it could be ignored by GORM's logic.
 // Ox 将 OrderByBottle 转换为字符串。请注意，如果类型不明确，它可能会被 GORM 的逻辑忽略。
 // This is an unavoidable limitation due to GORM's handling of the Order field logic.
 // 这是由于 GORM 对 Order 字段逻辑的处理所造成的无法避免的限制。
@@ -37,7 +37,7 @@ func (ob OrderByBottle) Ox() string {
 	return string(ob)
 }
 
-// Orders converts the OrderByBottle to a string. Note that if the type is not specific, it may be ignored by GORM's logic.
+// Orders converts the OrderByBottle to a string. Note that if the type is not specific, it could be ignored by GORM's logic.
 // Orders 将 OrderByBottle 转换为字符串。请注意，如果类型不明确，它可能会被 GORM 的逻辑忽略。
 func (ob OrderByBottle) Orders() string {
 	return string(ob)

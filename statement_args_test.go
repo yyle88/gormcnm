@@ -1,6 +1,6 @@
 // Package gormcnm tests validate statement and arguments tuple operations
-// Auto verifies statementArgumentsTuple functionality with SQL statement and parameter management
-// Tests cover driver.Valuer implementation, argument binding, and GORM query integration
+// Auto verifies statementArgumentsTuple features with SQL statement and argument management
+// Tests examine driver.Valuer implementation, argument binding, and GORM queries integration
 //
 // gormcnm 测试包验证语句和参数元组操作
 // 自动验证 statementArgumentsTuple 功能，包含 SQL 语句和参数管理

@@ -1,6 +1,6 @@
 // Package gormcnmstub_test validates stub implementation with integration tests
-// Auto verifies stub wrapper functions with real GORM database operations
-// Tests cover query conditions, select statements, and column operations
+// Auto verifies stub wrapping functions with actual GORM database operations
+// Tests examine condition logic, select statements, and column operations
 //
 // gormcnmstub_test 包通过集成测试验证存根实现
 // 自动使用真实 GORM 数据库操作验证存根包装函数

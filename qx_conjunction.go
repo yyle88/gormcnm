@@ -1,5 +1,5 @@
-// Package gormcnm provides query conjunction operations with statement and arguments binding
-// Auto handles complex WHERE clauses with parameter binding and logical operators
+// Package gormcnm provides conjunction operations with statement and arguments binding
+// Auto handles complex WHERE clauses with argument binding and boolean operators
 // Supports building dynamic queries with type-safe argument management and GORM integration
 //
 // gormcnm 提供查询连接词操作，具备语句和参数绑定功能
@@ -21,7 +21,7 @@ func NewQx(stmt string, args ...interface{}) *QxType {
 	}
 }
 
-// QxConjunction is used for constructing relational query statements (AND, OR, NOT) and their arguments for db.Where.
+// QxConjunction is used to construct WHERE queries (AND, OR, NOT) and associated arguments.
 // QxConjunction 用于构造关系查询语句（AND、OR、NOT）以及其对应的参数，以供 db.Where 使用。
 // Example: When combining conditions like a.Eq("xyz") and b.Eq("uvw"), this class concatenates statements with (---) AND (---) and merges arguments into a new list.
 // 示例：当需要组合条件如 a.Eq("xyz") 和 b.Eq("uvw") 时，该工具类将语句用 (---) AND (---) 连接，并将参数列表合并为新的列表。
@@ -93,7 +93,7 @@ func (qx *QxConjunction) OR1(stmt string, args ...interface{}) *QxConjunction {
 }
 
 // Scope converts the QxConjunction to a GORM ScopeFunction used with db.Scopes().
-// It applies the query conditions defined by QxConjunction to the GORM select.
+// It applies the SELECT conditions defined by QxConjunction to the GORM select.
 // Scope 将 QxConjunction 转换为 GORM 的 ScopeFunction，以便于被 db.Scopes() 调用。
 // 它将 QxConjunction 定义的查询条件应用于 GORM 查询。
 func (qx *QxConjunction) Scope() ScopeFunction {

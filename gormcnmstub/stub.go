@@ -9,6 +9,6 @@ package gormcnmstub
 
 import "github.com/yyle88/gormcnm"
 
-// stub provides a shared instance of ColumnOperationClass for testing purposes
+// stub provides a shared instance of ColumnOperationClass, intended to be used in testing
 // stub 提供 ColumnOperationClass 的共享实例，用于测试目的
 var stub = &gormcnm.ColumnOperationClass{}

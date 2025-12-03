@@ -4,7 +4,7 @@
 //
 // gormcnm 提供 SELECT 语句构建操作，用于自定义列选择
 // 自动构建 SELECT 子句，包含列组合、别名和聚合函数
-// 支持构建复杂的 SELECT 查询，具备类型安全的列管理和 GORM 集成
+// 支持构建复杂的 SELECT 操作，具备类型安全的列管理和 GORM 集成
 package gormcnm
 
 import (
@@ -25,24 +25,24 @@ func NewSx(stmt string, args ...interface{}) *SxType {
 	}
 }
 
-// SelectStatement represents a SELECT statement with arguments for GORM db.Select operations
+// SelectStatement represents a SELECT statement with arguments used in GORM db.Select operations
 // Handles complex SELECT scenarios where conditions and arguments are needed
-// Auto combines multiple select statements with comma separation for multi-column queries
+// Auto combines multiple select statements with comma separation to form multi-column queries
 //
 // Usage scenarios:
 // - 99% of cases db.Select requires no parameters
-// - But for complex queries like: SELECT COUNT(CASE WHEN condition THEN 1 END) as cnt
+// - However, with complex queries such as: SELECT COUNT(CASE WHEN condition THEN 1 END) as cnt
 // - Need to merge multiple column select statements and corresponding parameters
-// - Columns are separated by commas
+// - Columns are separated using commas
 //
 // SelectStatement 表示用于 GORM db.Select 操作的 SELECT 语句及参数
 // 处理需要条件和参数的复杂 SELECT 场景
-// 自动使用逗号分隔合并多个选择语句进行多列查询
+// 自动使用逗号分隔合并多个 SELECT 语句进行多列查询
 //
 // 使用场景说明：
 // - 99%的情况下 db.Select 不需要参数
 // - 但对于复杂查询如：SELECT COUNT(CASE WHEN condition THEN 1 END) as cnt
-// - 需要合并多个列的选择语句和对应参数
+// - 需要合并多个列的 SELECT 语句和对应参数
 // - 各列之间使用逗号分隔
 type SelectStatement struct {
 	*statementArgumentsTuple // Embedded statement-arguments tuple // 嵌入的语句-参数元组
@@ -72,9 +72,9 @@ func (sx *SelectStatement) Combine(cs ...*SelectStatement) *SelectStatement {
 }
 
 // Scope converts the SelectStatement to a GORM ScopeFunction used with db.Scopes().
-// It applies the select query defined by SelectStatement to the GORM select.
+// It applies the SELECT operation defined by SelectStatement to the GORM select.
 // Scope 将 SelectStatement 转换为 GORM 的 ScopeFunction，以便于被 db.Scopes() 调用。
-// 它将 SelectStatement 定义的查询选择语句应用于 GORM 查询。
+// 它将 SelectStatement 定义的查询语句应用于 GORM 查询。
 func (sx *SelectStatement) Scope() ScopeFunction {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.Select(sx.Qs(), sx.args...)

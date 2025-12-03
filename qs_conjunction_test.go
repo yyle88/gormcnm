@@ -1,4 +1,4 @@
-// Package gormcnm tests validate query statement conjunction operations for complex WHERE clauses
+// Package gormcnm tests validate conjunction operations for complex WHERE clauses
 // Auto verifies QsConjunction functionality with AND, OR, NOT logical operators
 // Tests cover basic conjunctions, nested conditions, and SQL statement composition
 //

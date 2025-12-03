@@ -1,6 +1,6 @@
 // Package gormcnm tests validate SELECT statement building and column selection
-// Auto verifies SelectStatement functionality with GORM Select clauses
-// Tests cover column selection, aggregation functions, and query execution
+// Auto verifies SelectStatement features with GORM Select clauses
+// Tests examine column selection, aggregation functions, and SQL execution
 //
 // gormcnm 测试包验证 SELECT 语句构建和列选择
 // 自动验证 SelectStatement 功能与 GORM Select 子句

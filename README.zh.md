@@ -11,7 +11,14 @@
 
 ---
 
+## 生态系统
+
+![GORM Type-Safe Ecosystem](assets/gormcnm-ecosystem.svg)
+
+---
+
 <!-- TEMPLATE (ZH) BEGIN: LANGUAGE NAVIGATION -->
+
 ## 英文文档
 
 [ENGLISH README](README.md)
@@ -37,55 +44,6 @@
 - 🔄 **重构安全查询**：IDE 自动补全和自动重构支持
 - 🌍 **丰富查询操作**：全面的比较、范围、模式和聚合操作
 - 📋 **生态系统基础**：支持代码生成和仓储模式工具
-
----
-
-## 🏗️ 生态系统架构
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    GORM Type-Safe Ecosystem                         │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │
-│  │  gormzhcn   │    │  gormmom    │    │  gormrepo   │              │
-│  │ Chinese API │───▶│ Native Lang │───▶│  Package    │─────┐        │
-│  │  Localize   │    │  Smart Tags │    │  Pattern    │     │        │
-│  └─────────────┘    └─────────────┘    └─────────────┘     │        │
-│         │                   │                              │        │
-│         │                   ▼                              ▼        │
-│         │            ┌─────────────┐              ┌─────────────┐   │
-│         │            │ gormcngen   │              │Application  │   │
-│         │            │Code Generate│─────────────▶│Custom Code  │   │
-│         │            │AST Operation│              │             │   │
-│         │            └─────────────┘              └─────────────┘   │
-│         │                   │                              ▲        │
-│         │                   ▼                              │        │
-│         └────────────▶┌─────────────┐◄─────────────────────┘        │
-│                       │   GORMCNM   │                               │
-│                       │ FOUNDATION  │                               │
-│                       │ Type-Safe   │                               │
-│                       │ Core Logic  │                               │
-│                       └─────────────┘                               │
-│                              │                                      │
-│                              ▼                                      │
-│                       ┌─────────────┐                               │
-│                       │    GORM     │                               │
-│                       │  Database   │                               │
-│                       └─────────────┘                               │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-**GORMCNM** 作为**基础**，为生态系统提供类型安全的核心逻辑。
-
-**生态系统项目：**
-
-- 🏗️ **[gormcnm](https://github.com/yyle88/gormcnm)** - 类型安全的列名基础（本包）
-- 🤖 **[gormcngen](https://github.com/yyle88/gormcngen)** - 从模型自动生成列定义
-- 🏢 **[gormrepo](https://github.com/yyle88/gormrepo)** - 仓储模式与类型安全查询
-- 🌍 **[gormmom](https://github.com/yyle88/gormmom)** - 原生语言字段标签管理
-- 🇨🇳 **[gormzhcn](https://github.com/go-zwbc/gormzhcn)** - 中文编程接口
 
 ---
 
@@ -298,24 +256,40 @@ db.Where(columnAge.Lte(65))      // <=
 
 ---
 
-<!-- TEMPLATE (ZH) BEGIN: STANDARD PROJECT FOOTER -->
-<!-- VERSION 2025-09-26 07:39:27.188023 +0000 UTC -->
+## 关联项目
 
-## 📄 许可证类型
+探索完整的 GORM 生态系统集成包：
 
-MIT 许可证。详见 [LICENSE](LICENSE)。
+### 核心生态
+
+- **[gormcnm](https://github.com/yyle88/gormcnm)** - GORM 基础层，提供类型安全的列操作和查询构建器（本项目）
+- **[gormcngen](https://github.com/yyle88/gormcngen)** - 使用 AST 的代码生成工具，用于类型安全的 GORM 操作
+- **[gormrepo](https://github.com/yyle88/gormrepo)** - 仓储模式实现，遵循 GORM 最佳实践
+- **[gormmom](https://github.com/yyle88/gormmom)** - 原生语言 GORM 标签生成引擎，支持智能列名
+- **[gormzhcn](https://github.com/go-zwbc/gormzhcn)** - 完整的 GORM 中文编程接口
+
+每个包针对 GORM 开发的不同方面，从本地化到类型安全和代码生成。
 
 ---
 
-## 🤝 项目贡献
+<!-- TEMPLATE (ZH) BEGIN: STANDARD PROJECT FOOTER -->
+<!-- VERSION 2025-11-25 03:52:28.131064 +0000 UTC -->
+
+## 📄 许可证类型
+
+MIT 许可证 - 详见 [LICENSE](LICENSE)。
+
+---
+
+## 💬 联系与反馈
 
 非常欢迎贡献代码！报告 BUG、建议功能、贡献代码：
 
-- 🐛 **发现问题？** 在 GitHub 上提交问题并附上重现步骤
-- 💡 **功能建议？** 创建 issue 讨论您的想法
-- 📖 **文档疑惑？** 报告问题，帮助我们改进文档
+- 🐛 **问题报告？** 在 GitHub 上提交问题并附上重现步骤
+- 💡 **新颖思路？** 创建 issue 讨论
+- 📖 **文档疑惑？** 报告问题，帮助我们完善文档
 - 🚀 **需要功能？** 分享使用场景，帮助理解需求
-- ⚡ **性能瓶颈？** 报告慢操作，帮助我们优化性能
+- ⚡ **性能瓶颈？** 报告慢操作，协助解决性能问题
 - 🔧 **配置困扰？** 询问复杂设置的相关问题
 - 📢 **关注进展？** 关注仓库以获取新版本和功能
 - 🌟 **成功案例？** 分享这个包如何改善工作流程
@@ -333,7 +307,7 @@ MIT 许可证。详见 [LICENSE](LICENSE)。
 4. **分支**：创建功能分支（`git checkout -b feature/xxx`）
 5. **编码**：实现您的更改并编写全面的测试
 6. **测试**：（Golang 项目）确保测试通过（`go test ./...`）并遵循 Go 代码风格约定
-7. **文档**：为面向用户的更改更新文档，并使用有意义的提交消息
+7. **文档**：面向用户的更改需要更新文档
 8. **暂存**：暂存更改（`git add .`）
 9. **提交**：提交更改（`git commit -m "Add feature xxx"`）确保向后兼容的代码
 10. **推送**：推送到分支（`git push origin feature/xxx`）
@@ -345,7 +319,7 @@ MIT 许可证。详见 [LICENSE](LICENSE)。
 
 ## 🌟 项目支持
 
-非常欢迎通过提交 Merge Request 和报告问题来为此项目做出贡献。
+非常欢迎通过提交 Merge Request 和报告问题来贡献此项目。
 
 **项目支持：**
 

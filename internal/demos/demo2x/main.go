@@ -1,3 +1,10 @@
+// Package main demonstrates advanced gormcnm usage with multi-condition WHERE queries
+// Auto shows comparison with traditional GORM queries vs type-safe column operations
+// Runs with SQLite in-memory database to showcase Gt, Lt, Eq operations
+//
+// main 包演示 gormcnm 多条件 WHERE 查询的高级用法
+// 自动展示传统 GORM 查询与类型安全列操作的对比
+// 使用 SQLite 内存数据库运行以展示 Gt、Lt、Eq 操作
 package main
 
 import (

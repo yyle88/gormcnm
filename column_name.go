@@ -13,18 +13,18 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// SafeCnm returns a safe column name by enclosing it in backticks.
+// SafeCnm returns a safe column name, enclosing it in backticks.
 // SafeCnm 返回一个安全的列名，将其用反引号括起来。
 // If the column name conflicts with a SQL keyword (e.g., "create"), enclosing it in backticks ensures correct execution.
 // 如果列名与 SQL 关键字（例如 "create"）冲突，使用反引号将其括起来，确保正确执行。
-// This function is helpful when using db.Select("`type`").Find(&one) as an example.
-// 该函数在使用 db.Select("`type`").Find(&one) 等查询时非常有帮助。
+// Usage example: db.Select("`type`").Find(&one) demonstrates the standard pattern.
+// 使用示例：db.Select("`type`").Find(&one) 展示了标准使用模式。
 func (columnName ColumnName[TYPE]) SafeCnm(quote string) ColumnName[TYPE] {
 	switch len(quote) {
-	case 0: // If no quote is provided, we simply add spaces around the column name.
+	case 0: // If no quote is provided, we just add spaces around the column name.
 		// 如果没有提供引号，我们将列名周围加上空格作为默认处理。
 		return ColumnName[TYPE](" " + string(columnName) + " ")
-	case 1: // If the quote is a single character like "`", `"`
+	case 1: // When the quote has one byte like "`", `"`
 		// 如果引号是一个单字符（例如 "`" 或 `"`）
 		return ColumnName[TYPE](quote + string(columnName) + quote)
 	case 2: // If the quote is two characters like `""`, "``", "[]"
@@ -96,7 +96,7 @@ func (columnName ColumnName[TYPE]) ColumnCondition(op string) QsConjunction {
 	return QsConjunction(string(columnName) + " " + op)
 }
 
-// Qx creates a condition with an op and a value when using this column, helpful when building complex queries.
+// Qx creates a condition with an op and a value when using this column, designed to build complex queries.
 // Qx: 创建带有运算符和值的条件，用于构建复杂的查询。
 func (columnName ColumnName[TYPE]) Qx(op string, x TYPE) *QxConjunction {
 	stmt := string(columnName.Qc(op))
@@ -104,7 +104,7 @@ func (columnName ColumnName[TYPE]) Qx(op string, x TYPE) *QxConjunction {
 	return NewQxConjunction(stmt, args...)
 }
 
-// ColumnConditionWithValue creates a condition with an op and a value when using this column, helpful when building complex queries.
+// ColumnConditionWithValue creates a condition with an op and a value when using this column, designed to build complex queries.
 // ColumnConditionWithValue: 创建带有运算符和值的列条件，用于构建复杂的查询。
 func (columnName ColumnName[TYPE]) ColumnConditionWithValue(op string, x TYPE) *QxConjunction {
 	stmt := string(columnName.ColumnCondition(op))
@@ -130,20 +130,20 @@ func (columnName ColumnName[TYPE]) Kv(x TYPE) (string, TYPE) {
 	return string(columnName), x
 }
 
-// ColumnKeyAndValue returns a column-value mapping, helpful when using GORM's Update function.
+// ColumnKeyAndValue returns a column-value mapping, works with GORM's Update function.
 // ColumnKeyAndValue: 返回键值对，适用于 GORM 的 Update 函数。
 func (columnName ColumnName[TYPE]) ColumnKeyAndValue(x TYPE) (string, TYPE) {
 	return string(columnName), x
 }
 
-// KeExp extends Kv by returning a column-expression mapping, helpful when using GORM's Update function with expressions.
+// KeExp extends Kv by returning a column-expression mapping, works with GORM's Update function with expressions.
 // KeExp: 扩展 Kv，返回键表达式对，适用于 GORM 的 Update 函数，支持表达式。
 func (columnName ColumnName[TYPE]) KeExp(x clause.Expr) (string, clause.Expr) {
 	return string(columnName), x
 }
 
-// KeAdd is used for updates where a value is added to the field (e.g., incrementing a value).
-// Returns (columnName, gorm.Expr) tuple for use in UpdateColumns operations.
+// KeAdd is used in updates where a value is added to the field (e.g., incrementing a value).
+// Returns (columnName, gorm.Expr) tuple to use in UpdateColumns operations.
 //
 // With Gorm:
 //
@@ -171,8 +171,8 @@ func (columnName ColumnName[TYPE]) KeAdd(x TYPE) (string, clause.Expr) {
 	return columnName.KeExp(columnName.ExprAdd(x))
 }
 
-// KeSub is used for updates where a value is subtracted from the field (e.g., decrementing a value).
-// Returns (columnName, gorm.Expr) tuple for use in UpdateColumns operations.
+// KeSub is used in updates where a value is subtracted from the field (e.g., decrementing a value).
+// Returns (columnName, gorm.Expr) tuple to use in UpdateColumns operations.
 //
 // With Gorm:
 //
@@ -200,25 +200,25 @@ func (columnName ColumnName[TYPE]) KeSub(x TYPE) (string, clause.Expr) {
 	return columnName.KeExp(columnName.ExprSub(x))
 }
 
-// KeMul is used for updates where a field is multiplied by a value (e.g., scaling a value).
+// KeMul is used in updates where a field is multiplied by a value (e.g., scaling a value).
 // KeMul: 用于更新字段时，将字段乘以一个值（例如缩放一个值）。
 func (columnName ColumnName[TYPE]) KeMul(x TYPE) (string, clause.Expr) {
 	return columnName.KeExp(columnName.ExprMul(x))
 }
 
-// KeDiv is used for updates where a field is divided by a value (e.g., splitting a value).
+// KeDiv is used in updates where a field is divided by a value (e.g., splitting a value).
 // KeDiv: 用于更新字段时，将字段除以一个值（例如分割一个值）。
 func (columnName ColumnName[TYPE]) KeDiv(x TYPE) (string, clause.Expr) {
 	return columnName.KeExp(columnName.ExprDiv(x))
 }
 
-// KeConcat is used for updates where a string is concatenated to the field (e.g., appending text).
+// KeConcat is used in updates where a string is concatenated to the field (e.g., appending text).
 // KeConcat: 用于更新字段时，将字符串连接到字段（例如追加文本）。
 func (columnName ColumnName[TYPE]) KeConcat(x TYPE) (string, clause.Expr) {
 	return columnName.KeExp(columnName.ExprConcat(x))
 }
 
-// KeReplace is used for updates where text in the field is replaced (e.g., updating patterns).
+// KeReplace is used in updates where text in the field is replaced (e.g., updating patterns).
 // KeReplace: 用于更新字段时，替换字段中的文本（例如更新模式）。
 func (columnName ColumnName[TYPE]) KeReplace(oldValue, newValue TYPE) (string, clause.Expr) {
 	return columnName.KeExp(columnName.ExprReplace(oldValue, newValue))

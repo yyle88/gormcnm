@@ -1,5 +1,5 @@
 // Package gormcnm provides type-safe column name operations with comprehensive SQL queries support
-// Auto handles comparisons, equality checks, range queries, pattern matching, and NULL value operations
+// Auto handles comparisons, equivalence checks, range queries, pattern matching, and NULL value operations
 // Supports column aliases, raw column names, and dynamic SQL generation with compile-time type-safe features
 //
 // gormcnm 包提供类型安全的列名操作，具有全面的 SQL 查询支持
@@ -10,11 +10,11 @@ package gormcnm
 import "github.com/yyle88/gormcnm/internal/utils"
 
 /*
-Defines a reusable `ColumnName` type designed to simplify and optimize SQL query construction.
-It supports a wide range of SQL operations, including comparisons, equality checks, range queries,
-pattern matching, and handling NULL values or boolean expressions. Additionally, it enables the use of column aliases
-and retrieval of raw column names, providing flexibility and reducing the risk of manual errors in queries.
-This utility improves code readability, reduces boilerplate, and simplifies complex query construction, making it adaptable to dynamic SQL generation scenarios.
+Defines a reusable `ColumnName` type designed to streamline and optimize SQL statement construction.
+It supports a wide range of SQL operations, including comparisons, equivalence checks, range lookups,
+pattern matching, and handling NULL values and boolean expressions. It also enables column aliases
+and access to raw column names, providing great adaptiveness and reducing human mistakes in database code.
+This package improves code readableness, reduces boilerplate, and simplifies complex statement construction, making it adaptable to dynamic SQL generation scenarios.
 */
 
 /*
@@ -25,7 +25,7 @@ This utility improves code readability, reduces boilerplate, and simplifies comp
 该工具有效减少了样板代码，且使 SQL 查询更加简洁和易于扩展，特别适用于动态生成或复杂的查询场景。
 */
 
-// ColumnName represents a generic column name for use in SQL queries
+// ColumnName represents a generic column name used in SQL queries
 // ColumnName 表示一个通用的列名 可用于 SQL 查询
 type ColumnName[TYPE any] string
 
@@ -110,9 +110,9 @@ func (columnName ColumnName[TYPE]) Op(op string, x TYPE) (string, TYPE) {
 }
 
 // Eq creates a SQL statement to check if the column equals a given value.
-// Most often used method when doing equality comparisons with type-safe operations and clean syntax
+// Most often used method when doing equivalence comparisons with type-safe operations and clean syntax
 // Auto generates "column=?" pattern with param binding when using GORM WHERE operations
-// Key building block when constructing database queries and the foundation of type-safe SQL
+// Core building block when constructing database queries and the foundation of type-safe SQL
 //
 // With GORM:
 //
@@ -164,13 +164,13 @@ func (columnName ColumnName[TYPE]) Lt(x TYPE) (string, TYPE) {
 	return string(columnName) + "<?", x
 }
 
-// Gte creates a SQL statement to check if the column is greater than/equal to a given value.
+// Gte creates a SQL statement to check if the column value at least equals the given value.
 // Gte 创建一个 SQL 语句来判断列是否大于等于给定的值。
 func (columnName ColumnName[TYPE]) Gte(x TYPE) (string, TYPE) {
 	return string(columnName) + ">=?", x
 }
 
-// Lte creates a SQL statement to check if the column is less than/equal to a given value.
+// Lte creates a SQL statement to check if the column value at most equals the given value.
 // Lte 创建一个 SQL 语句来判断列是否小于等于给定的值。
 func (columnName ColumnName[TYPE]) Lte(x TYPE) (string, TYPE) {
 	return string(columnName) + "<=?", x
@@ -294,13 +294,13 @@ func (columnName ColumnName[TYPE]) NotBetween(arg1, arg2 TYPE) (string, TYPE, TY
 	return string(columnName) + " NOT BETWEEN ? AND ?", arg1, arg2
 }
 
-// OnEq creates a SQL statement to check if the column is the same as other column in an ON clause.
+// OnEq creates a SQL statement to check if the column matches a second column in an ON clause.
 // OnEq 创建一个 SQL 语句来判断列是否在 ON 子句中等于另一列。
 func (columnName ColumnName[TYPE]) OnEq(name ColumnName[TYPE]) string {
 	return string(columnName) + "=" + string(name)
 }
 
-// OnNe creates a SQL statement to check if the column is not the same as other column in an ON clause.
+// OnNe creates a SQL statement to check if the column differs from a second column in an ON clause.
 // OnNe 创建一个 SQL 语句来判断列是否在 ON 子句中不等于另一列。
 func (columnName ColumnName[TYPE]) OnNe(name ColumnName[TYPE]) string {
 	return string(columnName) + "!=" + string(name)

@@ -1,6 +1,6 @@
-// Package gormcnm provides statement and arguments tuple handling for GORM query operations
-// Auto manages SQL statements with parameter binding and type conversion
-// Supports driver.Valuer interface implementation for custom types in GORM WHERE clauses
+// Package gormcnm provides statement and arguments tuple handling in GORM queries operations
+// Auto manages SQL statements with argument binding and type conversion
+// Supports driver.Valuer interface implementation, enabling custom types in GORM WHERE clauses
 //
 // gormcnm 提供语句和参数元组处理，用于 GORM 查询操作
 // 自动管理 SQL 语句及参数绑定和类型转换
@@ -23,7 +23,7 @@ import (
 var valueIsNotCallable = errors.New("column.value() function is not callable")
 
 // statementArgumentsTuple represents a tuple of SQL statement and its arguments
-// Core building block for GORM query construction with proper argument handling
+// Core building block in GORM queries construction with suitable argument handling
 // Addresses Go language limitation where variadic return values are not supported
 //
 // 核心设计说明：
@@ -99,53 +99,71 @@ func (qx *statementArgumentsTuple) Qx2() (string, interface{}, interface{}) {
 	return qx.Qs(), qx.args[0], qx.args[1]
 }
 
-// Qx3 这块暂时没有什么好的方案，我只能这样罗列下来，很期望将来能够解决这个问题
+// Qx3 returns the statement string and three arguments in the statementArgumentsTuple instance.
+// Qx3 返回 statementArgumentsTuple 实例的语句字符串和三个参数。
 func (qx *statementArgumentsTuple) Qx3() (string, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 3)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2]
 }
 
-// Qx4 这块暂时没有什么好的方案，我只能这样罗列下来，很期望将来能够解决这个问题
+// Qx4 returns the statement string and four arguments in the statementArgumentsTuple instance.
+// Qx4 返回 statementArgumentsTuple 实例的语句字符串和四个参数。
 func (qx *statementArgumentsTuple) Qx4() (string, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 4)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3]
 }
 
+// Qx5 returns the statement string and five arguments in the statementArgumentsTuple instance.
+// Qx5 返回 statementArgumentsTuple 实例的语句字符串和五个参数。
 func (qx *statementArgumentsTuple) Qx5() (string, interface{}, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 5)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4]
 }
 
+// Qx6 returns the statement string and six arguments in the statementArgumentsTuple instance.
+// Qx6 返回 statementArgumentsTuple 实例的语句字符串和六个参数。
 func (qx *statementArgumentsTuple) Qx6() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 6)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5]
 }
 
+// Qx7 returns the statement string and seven arguments in the statementArgumentsTuple instance.
+// Qx7 返回 statementArgumentsTuple 实例的语句字符串和七个参数。
 func (qx *statementArgumentsTuple) Qx7() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 7)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6]
 }
 
+// Qx8 returns the statement string and eight arguments in the statementArgumentsTuple instance.
+// Qx8 返回 statementArgumentsTuple 实例的语句字符串和八个参数。
 func (qx *statementArgumentsTuple) Qx8() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 8)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7]
 }
 
+// Qx9 returns the statement string and nine arguments in the statementArgumentsTuple instance.
+// Qx9 返回 statementArgumentsTuple 实例的语句字符串和九个参数。
 func (qx *statementArgumentsTuple) Qx9() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 9)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8]
 }
 
+// Qx10 returns the statement string and ten arguments in the statementArgumentsTuple instance.
+// Qx10 返回 statementArgumentsTuple 实例的语句字符串和十个参数。
 func (qx *statementArgumentsTuple) Qx10() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 10)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9]
 }
 
+// Qx11 returns the statement string and eleven arguments in the statementArgumentsTuple instance.
+// Qx11 返回 statementArgumentsTuple 实例的语句字符串和十一个参数。
 func (qx *statementArgumentsTuple) Qx11() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 11)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9], qx.args[10]
 }
 
+// Qx12 returns the statement string and twelve arguments in the statementArgumentsTuple instance.
+// Qx12 返回 statementArgumentsTuple 实例的语句字符串和十二个参数。
 func (qx *statementArgumentsTuple) Qx12() (string, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}, interface{}) {
 	must.Len(qx.args, 12)
 	return qx.Qs(), qx.args[0], qx.args[1], qx.args[2], qx.args[3], qx.args[4], qx.args[5], qx.args[6], qx.args[7], qx.args[8], qx.args[9], qx.args[10], qx.args[11]

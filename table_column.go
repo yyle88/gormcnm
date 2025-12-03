@@ -1,6 +1,6 @@
-// Package gormcnm provides table-qualified column operations for multi-table queries
-// Auto creates columns with table prefixes for JOIN operations and complex queries
-// Supports building fully-qualified column names with table association
+// Package gormcnm provides table-qualified column operations to support multi-table data retrieval
+// Auto creates columns with table prefixes to facilitate JOIN operations and complex data retrieval
+// Supports building complete column names with table association
 //
 // gormcnm 提供表限定列操作，用于多表查询
 // 自动创建带表前缀的列，用于 JOIN 操作和复杂查询
@@ -9,24 +9,26 @@ package gormcnm
 
 import "github.com/yyle88/gormcnm/internal/utils"
 
-// TB creates a TableColumn by associating this column with a table interface
+// TB creates a TableColumn through associating this column with a table interface
 // TB 通过将此列与表接口关联创建 TableColumn
 func (columnName ColumnName[TYPE]) TB(tab utils.GormTableNameFace) *TableColumn[TYPE] {
 	return columnName.WithTable(tab)
 }
 
-// TC creates a TableColumn by associating this column with a table interface (alias for TB)
+// TC creates a TableColumn through associating this column with a table interface (alias of TB)
 // TC 通过将此列与表接口关联创建 TableColumn（TB 的别名）
 func (columnName ColumnName[TYPE]) TC(tab utils.GormTableNameFace) *TableColumn[TYPE] {
 	return columnName.WithTable(tab)
 }
 
-// TN creates a TableColumn by associating this column with a table name string
+// TN creates a TableColumn through associating this column with a table name string
 // TN 通过将此列与表名字符串关联创建 TableColumn
 func (columnName ColumnName[TYPE]) TN(tableName string) *TableColumn[TYPE] {
 	return columnName.WithTable(utils.NewTableNameImp(tableName))
 }
 
+// WithTable associates the column with a table interface and returns a TableColumn
+// WithTable 将列与表接口关联并返回 TableColumn
 func (columnName ColumnName[TYPE]) WithTable(tab utils.GormTableNameFace) *TableColumn[TYPE] {
 	return &TableColumn[TYPE]{
 		tab: tab,
@@ -34,6 +36,8 @@ func (columnName ColumnName[TYPE]) WithTable(tab utils.GormTableNameFace) *Table
 	}
 }
 
+// WithTableName associates the column with a table name string and returns a TableColumn
+// WithTableName 将列与表名字符串关联并返回 TableColumn
 func (columnName ColumnName[TYPE]) WithTableName(tableName string) *TableColumn[TYPE] {
 	return columnName.WithTable(utils.NewTableNameImp(tableName))
 }
@@ -45,25 +49,25 @@ type TableColumn[TYPE any] struct {
 	cnm ColumnName[TYPE]
 }
 
-// Eq generates an equality condition in SQL format, ensuring type consistency between two columns.
+// Eq generates an equivalence condition in SQL format, ensuring type uniformity between two columns.
 // Eq 生成 SQL 格式的相等条件，确保两列之间的类型一致。
 func (tc *TableColumn[TYPE]) Eq(xc *TableColumn[TYPE]) string {
 	return tc.Name() + " = " + xc.Name()
 }
 
-// Ne generates a SQL inequality condition, ensuring type consistency between two columns.
+// Ne generates a SQL non-equivalence condition, ensuring type uniformity between two columns.
 // Ne 生成 SQL 格式的不等条件，确保两列之间的类型一致。
 func (tc *TableColumn[TYPE]) Ne(xc *TableColumn[TYPE]) string {
 	return tc.Name() + " != " + xc.Name()
 }
 
 // Op generates a custom SQL operation between two columns using the specified operator.
-// Op 使用指定的操作符生成两列之间的自定义 SQL 操作。
+// Op 使用指定的 operand 生成两列之间的自定义 SQL 操作。
 func (tc *TableColumn[TYPE]) Op(op string, xc *TableColumn[TYPE]) string {
 	return tc.Name() + " " + op + " " + xc.Name()
 }
 
-// Name returns the fully qualified name of the column in the format "table.column".
+// Name returns the complete name of the column in the format "table.column".
 // Name 返回列的完全限定名称，格式为 "table.column"。
 func (tc *TableColumn[TYPE]) Name() string {
 	return tc.tab.TableName() + "." + tc.cnm.Name()
@@ -81,13 +85,13 @@ func (tc *TableColumn[TYPE]) Cnm() ColumnName[TYPE] {
 	return ColumnName[TYPE](tc.Name())
 }
 
-// Ob creates an OrderByBottle object for specifying ordering based on the column name and direction.
+// Ob creates an OrderByBottle object to specify ordering based on the column name and direction.
 // Ob 基于列名和方向创建一个 OrderByBottle 对象用于指定排序。
 func (tc *TableColumn[TYPE]) Ob(direction string) OrderByBottle {
 	return tc.Cnm().Ob(direction)
 }
 
-// AsAlias generates a SQL alias for the column in the format "table.column AS alias".
+// AsAlias generates a SQL alias to the column in the format "table.column AS alias".
 // AsAlias 生成列的 SQL 别名，格式为 "table.column AS alias"。
 func (tc *TableColumn[TYPE]) AsAlias(alias string) string {
 	return utils.ApplyAliasToColumn(tc.Name(), alias)

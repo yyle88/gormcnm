@@ -1,3 +1,10 @@
+// Package example3 demonstrates namespace pattern and manual column definition with gormcnm
+// Auto shows User and Order models with Columns() methods returning column name collections
+// Supports avoiding column name conflicts across multiple tables
+//
+// example3 包演示使用 gormcnm 的命名空间模式和手动列定义
+// 自动展示 User 和 Order 模型，通过 Columns() 方法返回列名集合
+// 支持避免多个表之间的列名冲突
 package example3
 
 import "github.com/yyle88/gormcnm"

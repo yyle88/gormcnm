@@ -15,7 +15,7 @@ func New[T any](name string) ColumnName[T] {
 	return ColumnName[T](name)
 }
 
-// Cnm creates a ColumnName using the type inferred from the value parameter
+// Cnm creates a ColumnName using the type inferred from the value argument
 // Cnm 使用从值参数推断出的类型创建 ColumnName
 func Cnm[T any](v T, name string) ColumnName[T] {
 	return ColumnName[T](name)
@@ -27,7 +27,7 @@ func Cmn[T any](v T, name string, decoration ColumnNameDecoration) ColumnName[T]
 	return ColumnName[T](decoration.DecorateColumnName(name))
 }
 
-// ColumnNameDecoration defines an interface for decorating column names
+// ColumnNameDecoration defines an interface to decorate column names
 // ColumnNameDecoration 定义装饰列名的接口
 type ColumnNameDecoration interface {
 	DecorateColumnName(name string) string
@@ -61,7 +61,7 @@ func NewTableDecoration(tableName string) ColumnNameDecoration {
 	return &TableDecoration{tableName: tableName}
 }
 
-// DecorateColumnName adds table prefix to the column name when table name is not an empty string
+// DecorateColumnName adds table prefix to the column name when table name is not a blank string
 // DecorateColumnName 如果表名不为空，则为列名添加表前缀
 func (D *TableDecoration) DecorateColumnName(name string) string {
 	if D.tableName != "" {

@@ -11,7 +11,14 @@
 
 ---
 
+## Ecosystem
+
+![GORM Type-Safe Ecosystem](assets/gormcnm-ecosystem.svg)
+
+---
+
 <!-- TEMPLATE (EN) BEGIN: LANGUAGE NAVIGATION -->
+
 ## CHINESE README
 
 [中文说明](README.zh.md)
@@ -35,57 +42,8 @@
 - 🎯 **Type-Safe Column Operations**: Generic `ColumnName[T]` type with compile-time validation
 - ⚡ **Zero Runtime Overhead**: Type checking happens at compile time
 - 🔄 **Refactor-Safe Queries**: IDE auto-completion and automatic refactoring support
-- 🌍 **Rich Query Operations**: Comprehensive comparison, range, pattern, and aggregate operations
+- 🌍 **Rich Gorm Operations**: Comprehensive comparison, range, pattern, and aggregate operations
 - 📋 **Ecosystem Foundation**: Powers code generation and repo pattern tools
-
----
-
-## 🏗️ GORMCNM Ecosystem Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    GORM Type-Safe Ecosystem                         │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │
-│  │  gormzhcn   │    │  gormmom    │    │  gormrepo   │              │
-│  │ Chinese API │───▶│ Native Lang │───▶│  Package    │─────┐        │
-│  │  Localize   │    │  Smart Tags │    │  Pattern    │     │        │
-│  └─────────────┘    └─────────────┘    └─────────────┘     │        │
-│         │                   │                              │        │
-│         │                   ▼                              ▼        │
-│         │            ┌─────────────┐              ┌─────────────┐   │
-│         │            │ gormcngen   │              │Application  │   │
-│         │            │Code Generate│─────────────▶│Custom Code  │   │
-│         │            │AST Operation│              │             │   │
-│         │            └─────────────┘              └─────────────┘   │
-│         │                   │                              ▲        │
-│         │                   ▼                              │        │
-│         └────────────▶┌─────────────┐◄─────────────────────┘        │
-│                       │   GORMCNM   │                               │
-│                       │ FOUNDATION  │                               │
-│                       │ Type-Safe   │                               │
-│                       │ Core Logic  │                               │
-│                       └─────────────┘                               │
-│                              │                                      │
-│                              ▼                                      │
-│                       ┌─────────────┐                               │
-│                       │    GORM     │                               │
-│                       │  Database   │                               │
-│                       └─────────────┘                               │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-**GORMCNM** sits at the **foundation**, providing the core type-safe primitives that ecosystem components depend on.
-
-**Ecosystem Projects:**
-
-- 🏗️ **[gormcnm](https://github.com/yyle88/gormcnm)** - Type-safe column foundation (this package)
-- 🤖 **[gormcngen](https://github.com/yyle88/gormcngen)** - Auto-generate column definitions from models
-- 🏢 **[gormrepo](https://github.com/yyle88/gormrepo)** - Repository pattern with type-safe queries
-- 🌍 **[gormmom](https://github.com/yyle88/gormmom)** - Native language field tag management
-- 🇨🇳 **[gormzhcn](https://github.com/go-zwbc/gormzhcn)** - Chinese programming interface
 
 ---
 
@@ -168,7 +126,7 @@ func main() {
 
 ---
 
-## 🔥 Advanced Query Example
+## 🔥 Advanced Queries Example
 
 ```go
 package main
@@ -298,21 +256,37 @@ This package includes extension sub-packages for specialized database operations
 
 ---
 
-<!-- TEMPLATE (EN) BEGIN: STANDARD PROJECT FOOTER -->
-<!-- VERSION 2025-09-26 07:39:27.188023 +0000 UTC -->
+## Related Projects
 
-## 📄 License
+Explore the complete GORM ecosystem with these integrated packages:
 
-MIT License. See [LICENSE](LICENSE).
+### Core Ecosystem
+
+- **[gormcnm](https://github.com/yyle88/gormcnm)** - GORM foundation providing type-safe column operations and query builders (this project)
+- **[gormcngen](https://github.com/yyle88/gormcngen)** - Code generation tool using AST for type-safe GORM operations
+- **[gormrepo](https://github.com/yyle88/gormrepo)** - Repository pattern implementation with GORM best practices
+- **[gormmom](https://github.com/yyle88/gormmom)** - Native language GORM tag generation engine with smart column naming
+- **[gormzhcn](https://github.com/go-zwbc/gormzhcn)** - Complete Chinese programming interface with GORM
+
+Each package targets different aspects of GORM development, from localization to type safety and code generation.
 
 ---
 
-## 🤝 Contributing
+<!-- TEMPLATE (EN) BEGIN: STANDARD PROJECT FOOTER -->
+<!-- VERSION 2025-11-25 03:52:28.131064 +0000 UTC -->
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE).
+
+---
+
+## 💬 Contact & Feedback
 
 Contributions are welcome! Report bugs, suggest features, and contribute code:
 
-- 🐛 **Found a mistake?** Open an issue on GitHub with reproduction steps
-- 💡 **Have a feature idea?** Create an issue to discuss the suggestion
+- 🐛 **Mistake reports?** Open an issue on GitHub with reproduction steps
+- 💡 **Fresh ideas?** Create an issue to discuss
 - 📖 **Documentation confusing?** Report it so we can improve
 - 🚀 **Need new features?** Share the use cases to help us understand requirements
 - ⚡ **Performance issue?** Help us optimize through reporting slow operations
@@ -333,7 +307,7 @@ New code contributions, follow this process:
 4. **Branch**: Create a feature branch (`git checkout -b feature/xxx`).
 5. **Code**: Implement the changes with comprehensive tests
 6. **Testing**: (Golang project) Ensure tests pass (`go test ./...`) and follow Go code style conventions
-7. **Documentation**: Update documentation to support client-facing changes and use significant commit messages
+7. **Documentation**: Update documentation to support client-facing changes
 8. **Stage**: Stage changes (`git add .`)
 9. **Commit**: Commit changes (`git commit -m "Add feature xxx"`) ensuring backward compatible code
 10. **Push**: Push to the branch (`git push origin feature/xxx`).

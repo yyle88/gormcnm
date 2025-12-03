@@ -18,7 +18,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// GetValuePointer gets a pointer to any value, especially useful for literal values like numbers 0,1,2,3 or strings "a", "b", "c"
+// GetValuePointer gets a pointer to any value, great to use with numbers 0,1,2,3 and strings "a", "b", "c"
 // GetValuePointer 给任何值取地址，特别是当参数为数字0，1，2，3或者字符串"a", "b", "c"的时候
 func GetValuePointer[T any](v T) *T {
 	return &v

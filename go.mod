@@ -10,10 +10,10 @@ require (
 	github.com/yyle88/must v0.0.28
 	github.com/yyle88/neatjson v0.0.13
 	github.com/yyle88/rese v0.0.12
-	github.com/yyle88/runpath v1.0.24
+	github.com/yyle88/runpath v1.0.25
 	github.com/yyle88/sure v0.0.42
 	github.com/yyle88/syntaxgo v0.0.53
-	github.com/yyle88/tern v0.0.9
+	github.com/yyle88/tern v0.0.10
 	gorm.io/datatypes v1.2.7
 	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gorm v1.31.1
@@ -36,7 +36,7 @@ require (
 	github.com/yyle88/printgo v1.0.6 // indirect
 	github.com/yyle88/zaplog v0.0.27 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.27.0 // indirect
+	go.uber.org/zap v1.27.1 // indirect
 	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
 	golang.org/x/mod v0.23.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
