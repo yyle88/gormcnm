@@ -41,7 +41,7 @@
 - 🎯 **核心价值**：使用类型安全操作避免硬编码列名
 - 🎯 **类型安全列操作**：泛型 `ColumnName[T]` 类型，编译时验证
 - ⚡ **零运行时开销**：类型检查在编译时完成
-- 🔄 **重构安全查询**：IDE 自动补全和自动重构支持
+- 🔄 **重命名安全查询**：IDE 自动补全和自动重命名支持
 - 🌍 **丰富查询操作**：全面的比较、范围、模式和聚合操作
 - 📋 **生态系统基础**：支持代码生成和仓储模式工具
 
@@ -231,12 +231,86 @@ db.Where(columnAge.Lte(65))      // <=
 | `KeAdd(n)`  | 表达式：加      | `db.Model(&user).Update(cls.Age.KeAdd(1))`                   |
 | `KeSub(n)`  | 表达式：减 | `db.Model(&user).Update(cls.Score.KeSub(10))`                |
 
+### ColumnValueMap 用法
+
+`ColumnValueMap` 用于多列更新，配合 `gormrepo.Updates`、`gormrepo.UpdatesM` 或 GORM 原生 `db.Updates` 使用。
+
+**使用 gormrepo.Updates**（需要 `AsMap()` 转换）：
+
+```go
+repo.Updates(where, func(cls *AccountColumns) map[string]interface{} {
+    return cls.
+        Kw(cls.Nickname.Kv(newNickname)).
+        Kw(cls.Password.Kv(newPassword)).
+        AsMap() // 转换为 map[string]interface{} 类型
+})
+```
+
+**使用 gormrepo.UpdatesM**（无需 `AsMap()`，推荐）：
+
+```go
+repo.UpdatesM(where, func(cls *AccountColumns) gormcnm.ColumnValueMap {
+    return cls.
+        Kw(cls.Nickname.Kv(newNickname)).
+        Kw(cls.Password.Kv(newPassword))
+    // 不需要 AsMap()！
+})
+```
+
+**使用 GORM 原生 db.Updates**：
+
+```go
+db.Model(&account).Updates(
+    cls.Nickname.Kw(newNickname).
+        Kw(cls.Password.Kv(newPassword)).
+        AsMap(),
+)
+```
+
 ### 聚合与排序
 
 | 方法          | SQL                      | 示例                            |
 |---------------|--------------------------|--------------------------------|
 | `Count(alias)`  | `COUNT(column) AS alias` | `db.Select(cls.ID.Count("total"))` |
 | `Ob(direction)` | `ORDER BY`               | `db.Order(cls.Age.Ob("asc").Ox())` |
+
+---
+
+## 🔗 配合 gormrepo 使用
+
+将 **gormcnm** 与 **[gormrepo](https://github.com/yyle88/gormrepo)** 配合使用，获得类型安全的 CRUD 操作。
+
+### 快速预览
+
+```go
+// 创建 repo，传入列定义
+repo := gormrepo.NewRepo(&Account{}, (&Account{}).Columns())
+
+// gormrepo/gormclass 简洁写法
+repo := gormrepo.NewRepo(gormclass.Use(&Account{}))
+
+// 类型安全查询
+account, err := repo.With(ctx, db).First(func(db *gorm.DB, cls *AccountColumns) *gorm.DB {
+    return db.Where(cls.Username.Eq("alice"))
+})
+
+// 条件查询
+accounts, err := repo.With(ctx, db).Find(func(db *gorm.DB, cls *AccountColumns) *gorm.DB {
+    return db.Where(cls.Age.Gte(18)).Where(cls.Age.Lte(65))
+})
+
+// 类型安全更新
+err := repo.With(ctx, db).Updates(
+    func(db *gorm.DB, cls *AccountColumns) *gorm.DB {
+        return db.Where(cls.ID.Eq(1))
+    },
+    func(cls *AccountColumns) map[string]interface{} {
+        return cls.Kw(cls.Age.Kv(26)).Kw(cls.Nickname.Kv("NewNick")).AsMap()
+    },
+)
+```
+
+👉 查看 **[gormrepo](https://github.com/yyle88/gormrepo)** 获取完整文档和更多示例。
 
 ---
 
@@ -262,9 +336,9 @@ db.Where(columnAge.Lte(65))      // <=
 
 ### 核心生态
 
-- **[gormcnm](https://github.com/yyle88/gormcnm)** - GORM 基础层，提供类型安全的列操作和查询构建器（本项目）
-- **[gormcngen](https://github.com/yyle88/gormcngen)** - 使用 AST 的代码生成工具，用于类型安全的 GORM 操作
-- **[gormrepo](https://github.com/yyle88/gormrepo)** - 仓储模式实现，遵循 GORM 最佳实践
+- **[gormcnm](https://github.com/yyle88/gormcnm)** - GORM 基础层，提供类型安全的列操作和语句构造（本项目）
+- **[gormcngen](https://github.com/yyle88/gormcngen)** - 使用 AST 的代码生成工具，支持类型安全的 GORM 操作
+- **[gormrepo](https://github.com/yyle88/gormrepo)** - Repo 模式实现，遵循 GORM 最佳实践
 - **[gormmom](https://github.com/yyle88/gormmom)** - 原生语言 GORM 标签生成引擎，支持智能列名
 - **[gormzhcn](https://github.com/go-zwbc/gormzhcn)** - 完整的 GORM 中文编程接口
 

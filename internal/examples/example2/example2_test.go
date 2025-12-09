@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
+	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/gormcnm/internal/utils"
 	"gorm.io/gorm"
 )
@@ -27,7 +28,7 @@ func TestExample(t *testing.T) {
 		columnRank = gormcnm.ColumnName[*int]("rank")
 	)
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		//create example data
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: utils.GetValuePointer("xyz"), Rank: utils.GetValuePointer(123)}).Error)

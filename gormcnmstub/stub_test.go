@@ -14,7 +14,7 @@ import (
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/gormcnm/gormcnmstub"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
 	"gorm.io/gorm"
 )
@@ -32,7 +32,7 @@ func TestExample000(t *testing.T) {
 		columnRank = gormcnm.ColumnName[int]("rank")
 	)
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -100,7 +100,7 @@ func TestExample001(t *testing.T) {
 
 	const columnName = gormcnm.ColumnName[string]("name")
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -168,7 +168,7 @@ func TestExample002(t *testing.T) {
 		Rank int    `gorm:"column:rank;"`
 	}
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -195,7 +195,7 @@ func TestExample003(t *testing.T) {
 		columnType = gormcnm.ColumnName[string]("type")
 	)
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)

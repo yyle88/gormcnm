@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/gormcnm/internal/tests"
 	"gorm.io/gorm"
 )
 
@@ -28,7 +28,7 @@ func TestValuesMap_SetValue(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name: "aaa",

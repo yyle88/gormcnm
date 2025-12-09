@@ -8,14 +8,7 @@
 package utils
 
 import (
-	"fmt"
-
-	"github.com/google/uuid"
-	"github.com/yyle88/rese"
 	"github.com/yyle88/tern"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // GetValuePointer gets a pointer to any value, great to use with numbers 0,1,2,3 and strings "a", "b", "c"
@@ -29,24 +22,13 @@ func GetValuePointer[T any](v T) *T {
 func GetPointerValue[T any](v *T) T {
 	if v != nil {
 		return *v
-	} else {
-		var zeroValue T
-		return zeroValue
 	}
+	return Zero[T]()
 }
 
-// InMemDB runs a function with an in-memory SQLite database for testing purposes
-// Auto creates a temporary database connection and handles cleanup after function execution
-// InMemDB 在内存数据库中运行函数，用于测试目的
-// 自动创建临时数据库连接并在函数执行后处理清理工作
-func InMemDB(run func(db *gorm.DB)) {
-	dsn := fmt.Sprintf("file:db-%s?mode=memory&cache=shared", uuid.New().String())
-	db := rese.P1(gorm.Open(sqlite.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	}))
-	defer rese.F0(rese.P1(db.DB()).Close)
-
-	run(db)
+func Zero[T any]() T {
+	var zero T
+	return zero
 }
 
 // ApplyAliasToColumn applies an alias to a column statement, returns format like "COUNT(*) as cnt"

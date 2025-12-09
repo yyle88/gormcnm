@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
 	"gorm.io/gorm"
 )
@@ -33,7 +33,7 @@ func TestExample000(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -103,7 +103,7 @@ func TestExample001(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -173,7 +173,7 @@ func TestExample002(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
@@ -202,7 +202,7 @@ func TestExample003(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&Example{}))
 		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
 		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)

@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
 	"gorm.io/gorm"
 )
@@ -27,7 +27,7 @@ func TestSelectStatement_Combine(t *testing.T) {
 		columnRank = ColumnName[int]("rank")
 	)
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Rank: 100}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Rank: 101}).Error)

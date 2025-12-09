@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
 	"gorm.io/gorm"
 )
@@ -24,7 +24,7 @@ func TestColumnName_SafeCnm(t *testing.T) {
 
 	const columnCreate = ColumnName[string]("create")
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{
 			Name:   "aaa",
@@ -74,7 +74,7 @@ func TestColumnName_Count(t *testing.T) {
 
 	const columnName = ColumnName[string]("name")
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
@@ -110,7 +110,7 @@ func TestColumnName_ExprOperations(t *testing.T) {
 		columnAmount = ColumnName[int]("amount")
 	)
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Create(&Example{
 			ID:     1,
@@ -171,7 +171,7 @@ func TestColumnName_StringExprOperations(t *testing.T) {
 		columnEmail = ColumnName[string]("email")
 	)
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		require.NoError(t, db.AutoMigrate(&Example{}))
 		require.NoError(t, db.Create(&Example{
 			ID:    1,

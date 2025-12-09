@@ -76,7 +76,7 @@
 
     <!-- 标题 -->
     <text x="475" y="50" text-anchor="middle" class="title">GORM Type-Safe Ecosystem</text>
-    <text x="475" y="72" text-anchor="middle" class="subtitle">gormcnm as the foundation for type-safe column operations</text>
+    <text x="475" y="72" text-anchor="middle" class="subtitle">gormcnm powers type-safe column operations</text>
 
     <!-- 层级标签 -->
     <text x="50" y="125" class="layer-label">APPLICATION</text>

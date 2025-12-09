@@ -41,7 +41,7 @@
 - 🎯 **Core Value**: Avoid hardcoded column names with type-safe operations
 - 🎯 **Type-Safe Column Operations**: Generic `ColumnName[T]` type with compile-time validation
 - ⚡ **Zero Runtime Overhead**: Type checking happens at compile time
-- 🔄 **Refactor-Safe Queries**: IDE auto-completion and automatic refactoring support
+- 🔄 **Rename-Safe Queries**: IDE auto-completion and automatic rename support
 - 🌍 **Rich Gorm Operations**: Comprehensive comparison, range, pattern, and aggregate operations
 - 📋 **Ecosystem Foundation**: Powers code generation and repo pattern tools
 
@@ -231,12 +231,86 @@ db.Where(columnAge.Lte(65))      // <=
 | `KeAdd(n)`  | Expression: add      | `db.Model(&user).Update(cls.Age.KeAdd(1))`                   |
 | `KeSub(n)`  | Expression: subtract | `db.Model(&user).Update(cls.Score.KeSub(10))`                |
 
+### ColumnValueMap Usage
+
+`ColumnValueMap` is used when updating multiple columns with `gormrepo.Updates`, `gormrepo.UpdatesM`, or GORM native `db.Updates`.
+
+**With gormrepo.Updates** (requires `AsMap()` conversion):
+
+```go
+repo.Updates(where, func(cls *AccountColumns) map[string]interface{} {
+    return cls.
+        Kw(cls.Nickname.Kv(newNickname)).
+        Kw(cls.Password.Kv(newPassword)).
+        AsMap() // Convert to map[string]interface{}
+})
+```
+
+**With gormrepo.UpdatesM** (no `AsMap()` needed, recommended):
+
+```go
+repo.UpdatesM(where, func(cls *AccountColumns) gormcnm.ColumnValueMap {
+    return cls.
+        Kw(cls.Nickname.Kv(newNickname)).
+        Kw(cls.Password.Kv(newPassword))
+    // No AsMap() needed!
+})
+```
+
+**With GORM native db.Updates**:
+
+```go
+db.Model(&account).Updates(
+    cls.Nickname.Kw(newNickname).
+        Kw(cls.Password.Kv(newPassword)).
+        AsMap(),
+)
+```
+
 ### Aggregates and Ordering
 
 | Method          | SQL                      | Example                            |
 |-----------------|--------------------------|------------------------------------|
 | `Count(alias)`  | `COUNT(column) AS alias` | `db.Select(cls.ID.Count("total"))` |
 | `Ob(direction)` | `ORDER BY`               | `db.Order(cls.Age.Ob("asc").Ox())` |
+
+---
+
+## 🔗 Using with gormrepo
+
+Combine **gormcnm** with **[gormrepo](https://github.com/yyle88/gormrepo)** to get type-safe CRUD operations.
+
+### Quick Preview
+
+```go
+// Create repo with columns
+repo := gormrepo.NewRepo(&Account{}, (&Account{}).Columns())
+
+// Concise approach with gormrepo/gormclass
+repo := gormrepo.NewRepo(gormclass.Use(&Account{}))
+
+// Type-safe queries
+account, err := repo.With(ctx, db).First(func(db *gorm.DB, cls *AccountColumns) *gorm.DB {
+    return db.Where(cls.Username.Eq("alice"))
+})
+
+// Find with conditions
+accounts, err := repo.With(ctx, db).Find(func(db *gorm.DB, cls *AccountColumns) *gorm.DB {
+    return db.Where(cls.Age.Gte(18)).Where(cls.Age.Lte(65))
+})
+
+// Type-safe updates
+err := repo.With(ctx, db).Updates(
+    func(db *gorm.DB, cls *AccountColumns) *gorm.DB {
+        return db.Where(cls.ID.Eq(1))
+    },
+    func(cls *AccountColumns) map[string]interface{} {
+        return cls.Kw(cls.Age.Kv(26)).Kw(cls.Nickname.Kv("NewNick")).AsMap()
+    },
+)
+```
+
+👉 See **[gormrepo](https://github.com/yyle88/gormrepo)** to get complete documentation and more examples.
 
 ---
 
@@ -262,13 +336,13 @@ Explore the complete GORM ecosystem with these integrated packages:
 
 ### Core Ecosystem
 
-- **[gormcnm](https://github.com/yyle88/gormcnm)** - GORM foundation providing type-safe column operations and query builders (this project)
-- **[gormcngen](https://github.com/yyle88/gormcngen)** - Code generation tool using AST for type-safe GORM operations
-- **[gormrepo](https://github.com/yyle88/gormrepo)** - Repository pattern implementation with GORM best practices
+- **[gormcnm](https://github.com/yyle88/gormcnm)** - GORM foundation providing type-safe column operations and statement construction (this project)
+- **[gormcngen](https://github.com/yyle88/gormcngen)** - Code generation tool using AST, enables type-safe GORM operations
+- **[gormrepo](https://github.com/yyle88/gormrepo)** - Repo pattern implementation with GORM best practices
 - **[gormmom](https://github.com/yyle88/gormmom)** - Native language GORM tag generation engine with smart column naming
 - **[gormzhcn](https://github.com/go-zwbc/gormzhcn)** - Complete Chinese programming interface with GORM
 
-Each package targets different aspects of GORM development, from localization to type safety and code generation.
+Each package targets different aspects of GORM development, from localization to type-safe operations and code generation.
 
 ---
 

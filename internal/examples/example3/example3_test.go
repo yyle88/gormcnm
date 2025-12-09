@@ -14,7 +14,7 @@ import (
 	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/gormcnm/gormcnmstub"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
 	"gorm.io/gorm"
 )
@@ -27,7 +27,7 @@ type UserOrder struct {
 }
 
 func TestExample(t *testing.T) {
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		done.Done(db.AutoMigrate(&User{}, &Order{}))
 
 		users := []User{

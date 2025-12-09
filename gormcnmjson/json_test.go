@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/gormcnm/gormcnmjson"
-	"github.com/yyle88/gormcnm/internal/utils"
+	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/must"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -26,7 +26,7 @@ const (
 )
 
 func TestColumn_Get(t *testing.T) {
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		must.Done(db.AutoMigrate(&Product{}))
 
 		products := []Product{
@@ -45,7 +45,7 @@ func TestColumn_Get(t *testing.T) {
 }
 
 func TestColumn_GetInt(t *testing.T) {
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		must.Done(db.AutoMigrate(&Product{}))
 
 		products := []Product{
@@ -65,7 +65,7 @@ func TestColumn_GetInt(t *testing.T) {
 }
 
 func TestColumn_Length(t *testing.T) {
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		must.Done(db.AutoMigrate(&Product{}))
 
 		products := []Product{
@@ -85,7 +85,7 @@ func TestColumn_Length(t *testing.T) {
 }
 
 func TestColumn_Extract(t *testing.T) {
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		must.Done(db.AutoMigrate(&Product{}))
 
 		products := []Product{
@@ -110,7 +110,7 @@ func TestColumn_Extract(t *testing.T) {
 }
 
 func TestColumn_Type(t *testing.T) {
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		must.Done(db.AutoMigrate(&Product{}))
 
 		products := []Product{
@@ -133,7 +133,7 @@ func TestColumn_Type(t *testing.T) {
 }
 
 func TestColumn_Valid(t *testing.T) {
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		must.Done(db.AutoMigrate(&Product{}))
 
 		products := []Product{
@@ -156,7 +156,7 @@ func TestColumn_Valid(t *testing.T) {
 }
 
 func TestColumn_Update(t *testing.T) {
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		must.Done(db.AutoMigrate(&Product{}))
 
 		products := []Product{
@@ -188,7 +188,7 @@ func TestColumn_New(t *testing.T) {
 
 	const stringMeta = gormcnm.ColumnName[string]("meta")
 
-	utils.InMemDB(func(db *gorm.DB) {
+	tests.NewDBRun(t, func(db *gorm.DB) {
 		must.Done(db.AutoMigrate(&ProductWithString{}))
 
 		products := []ProductWithString{
