@@ -22,14 +22,15 @@
 ## 英文文档
 
 [ENGLISH README](README.md)
+
 <!-- TEMPLATE (ZH) END: LANGUAGE NAVIGATION -->
 
 ---
 
 ## 语言生态系统对比
 
-| 语言       | ORM          | 类型安全列        | 示例                                    |
-|------------|--------------|-------------------|----------------------------------------|
+| 语言       | ORM          | 类型安全列         | 示例                                    |
+| ---------- | ------------ | ------------------ | --------------------------------------- |
 | **Java**   | MyBatis Plus | `Example::getName` | `wrapper.eq(Example::getName, "alice")` |
 | **Python** | SQLAlchemy   | `Example.name`     | `query.filter(Example.name == "alice")` |
 | **Go**     | **GORMCNM**  | `cls.Name.Eq()`    | `db.Where(cls.Name.Eq("alice"))`        |
@@ -135,6 +136,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/must"
 	"github.com/yyle88/rese"
@@ -166,9 +168,9 @@ func main() {
 	defer rese.F0(rese.P1(db.DB()).Close)
 
 	//create example data
-	must.Done(db.AutoMigrate(&Example{}).Error)
-	must.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
-	must.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	done.Done(db.AutoMigrate(&Example{}))
+	done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
 	{
 		//SELECT * FROM `examples` WHERE name="abc" ORDER BY `examples`.`name` LIMIT 1
@@ -214,8 +216,8 @@ db.Where(columnAge.Lte(65))      // <=
 
 ### 范围和模式操作
 
-| 方法          | SQL               | 示例                   |
-|---------------|-------------------|------------------------|
+| 方法            | SQL               | 示例                      |
+| --------------- | ----------------- | ------------------------- |
 | `Between(a, b)` | `BETWEEN a AND b` | `cls.Age.Between(18, 65)` |
 | `In(values)`    | `IN (...)`        | `cls.ID.In([]int{1,2,3})` |
 | `Like(pattern)` | `LIKE pattern`    | `cls.Name.Like("A%")`     |
@@ -224,12 +226,12 @@ db.Where(columnAge.Lte(65))      // <=
 
 ### 更新操作
 
-| 方法      | 说明          | 示例                                                      |
-|-----------|---------------|-----------------------------------------------------------|
-| `Kv(value)` | 单字段更新  | `db.Model(&user).Update(cls.Age.Kv(26))`                     |
-| `Kw(value)` | 构建更新映射     | `cls.Age.Kw(26).Kw(cls.Email.Kv("new@example.com")).AsMap()` |
-| `KeAdd(n)`  | 表达式：加      | `db.Model(&user).Update(cls.Age.KeAdd(1))`                   |
-| `KeSub(n)`  | 表达式：减 | `db.Model(&user).Update(cls.Score.KeSub(10))`                |
+| 方法        | 说明         | 示例                                                         |
+| ----------- | ------------ | ------------------------------------------------------------ |
+| `Kv(value)` | 单字段更新   | `db.Model(&user).Update(cls.Age.Kv(26))`                     |
+| `Kw(value)` | 构建更新映射 | `cls.Age.Kw(26).Kw(cls.Email.Kv("new@example.com")).AsMap()` |
+| `KeAdd(n)`  | 表达式：加   | `db.Model(&user).Update(cls.Age.KeAdd(1))`                   |
+| `KeSub(n)`  | 表达式：减   | `db.Model(&user).Update(cls.Score.KeSub(10))`                |
 
 ### ColumnValueMap 用法
 
@@ -269,8 +271,8 @@ db.Model(&account).Updates(
 
 ### 聚合与排序
 
-| 方法          | SQL                      | 示例                            |
-|---------------|--------------------------|--------------------------------|
+| 方法            | SQL                      | 示例                               |
+| --------------- | ------------------------ | ---------------------------------- |
 | `Count(alias)`  | `COUNT(column) AS alias` | `db.Select(cls.ID.Count("total"))` |
 | `Ob(direction)` | `ORDER BY`               | `db.Order(cls.Age.Ob("asc").Ox())` |
 
@@ -322,11 +324,11 @@ err := repo.With(ctx, db).Updates(
 
 **未来扩展**（计划中）：
 
-| 包名          | 用途            | 状态    |
-|---------------|-----------------|---------|
-| gormcnmtext   | 文本搜索操作    | 计划中  |
-| gormcnmdate   | 日期时间操作    | 计划中  |
-| gormcnmmath   | 数学运算操作    | 计划中  |
+| 包名        | 用途         | 状态   |
+| ----------- | ------------ | ------ |
+| gormcnmtext | 文本搜索操作 | 计划中 |
+| gormcnmdate | 日期时间操作 | 计划中 |
+| gormcnmmath | 数学运算操作 | 计划中 |
 
 ---
 

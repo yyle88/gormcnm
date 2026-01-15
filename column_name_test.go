@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
-	"gorm.io/gorm"
+	"github.com/yyle88/rese"
 )
 
 func TestColumnName_SafeCnm(t *testing.T) {
@@ -24,45 +24,46 @@ func TestColumnName_SafeCnm(t *testing.T) {
 
 	const columnCreate = ColumnName[string]("create")
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Save(&Example{
-			Name:   "aaa",
-			Create: "abc",
-		}).Error)
-		require.NoError(t, db.Save(&Example{
-			Name:   "xxx",
-			Create: "xyz",
-		}).Error)
-		require.NoError(t, db.Save(&Example{
-			Name:   "uuu",
-			Create: "uvw",
-		}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		{
-			var one Example
-			require.NoError(t, db.Where(columnCreate.SafeCnm(`""`).Eq("abc")).First(&one).Error)
-			require.Equal(t, "aaa", one.Name)
-			t.Log(neatjsons.S(one))
-		}
-		{
-			var one Example
-			require.NoError(t, db.Where(columnCreate.SafeCnm("`").Eq("xyz")).First(&one).Error)
-			require.Equal(t, "xxx", one.Name)
-			t.Log(neatjsons.S(one))
-		}
-		{
-			var one Example
-			require.NoError(t, db.Where(columnCreate.SafeCnm("[]").Eq("uvw")).First(&one).Error)
-			require.Equal(t, "uuu", one.Name)
-			t.Log(neatjsons.S(one))
-		}
-		{
-			var one Example
-			require.NoError(t, db.Where(columnCreate.SafeCnm("[-quote-]").Eq("uvw")).First(&one).Error)
-			require.Equal(t, "uuu", one.Name)
-			t.Log(neatjsons.S(one))
-		}
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Save(&Example{
+		Name:   "aaa",
+		Create: "abc",
+	}).Error)
+	require.NoError(t, db.Save(&Example{
+		Name:   "xxx",
+		Create: "xyz",
+	}).Error)
+	require.NoError(t, db.Save(&Example{
+		Name:   "uuu",
+		Create: "uvw",
+	}).Error)
+
+	t.Run("case-1", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(columnCreate.SafeCnm(`""`).Eq("abc")).First(&one).Error)
+		require.Equal(t, "aaa", one.Name)
+		t.Log(neatjsons.S(one))
+	})
+	t.Run("case-2", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(columnCreate.SafeCnm("`").Eq("xyz")).First(&one).Error)
+		require.Equal(t, "xxx", one.Name)
+		t.Log(neatjsons.S(one))
+	})
+	t.Run("case-3", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(columnCreate.SafeCnm("[]").Eq("uvw")).First(&one).Error)
+		require.Equal(t, "uuu", one.Name)
+		t.Log(neatjsons.S(one))
+	})
+	t.Run("case-4", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(columnCreate.SafeCnm("[-quote-]").Eq("uvw")).First(&one).Error)
+		require.Equal(t, "uuu", one.Name)
+		t.Log(neatjsons.S(one))
 	})
 }
 
@@ -74,26 +75,27 @@ func TestColumnName_Count(t *testing.T) {
 
 	const columnName = ColumnName[string]("name")
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		{
-			var value int
-			err := db.Model(&Example{}).Select(columnName.Count("cnt")).First(&value).Error
-			require.NoError(t, err)
-			require.Equal(t, 2, value)
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+
+	t.Run("case-1", func(t *testing.T) {
+		var value int
+		err := db.Model(&Example{}).Select(columnName.Count("cnt")).First(&value).Error
+		require.NoError(t, err)
+		require.Equal(t, 2, value)
+	})
+	t.Run("case-2", func(t *testing.T) {
+		type resType struct {
+			Cnt int64
 		}
-		{
-			type resType struct {
-				Cnt int64
-			}
-			var res resType
-			err := db.Model(&Example{}).Select(columnName.CountDistinct("cnt")).First(&res).Error
-			require.NoError(t, err)
-			require.Equal(t, int64(2), res.Cnt)
-		}
+		var res resType
+		err := db.Model(&Example{}).Select(columnName.CountDistinct("cnt")).First(&res).Error
+		require.NoError(t, err)
+		require.Equal(t, int64(2), res.Cnt)
 	})
 }
 
@@ -110,52 +112,53 @@ func TestColumnName_ExprOperations(t *testing.T) {
 		columnAmount = ColumnName[int]("amount")
 	)
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Create(&Example{
-			ID:     1,
-			Price:  100.0,
-			Amount: 10,
-			Title:  "Product",
-		}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		// Test ExprAdd and ExprMul with UpdateColumns
-		{
-			updateMap := map[string]interface{}{}
-			key1, expr1 := columnPrice.KeAdd(10.0) // price = price + 10
-			key2, expr2 := columnAmount.KeMul(2)   // quantity = quantity * 2
-			updateMap[key1] = expr1
-			updateMap[key2] = expr2
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Create(&Example{
+		ID:     1,
+		Price:  100.0,
+		Amount: 10,
+		Title:  "Product",
+	}).Error)
 
-			result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
-			require.NoError(t, result.Error)
-			require.Equal(t, int64(1), result.RowsAffected)
+	// Test ExprAdd and ExprMul with UpdateColumns
+	t.Run("case-1", func(t *testing.T) {
+		updateMap := map[string]interface{}{}
+		key1, expr1 := columnPrice.KeAdd(10.0) // price = price + 10
+		key2, expr2 := columnAmount.KeMul(2)   // quantity = quantity * 2
+		updateMap[key1] = expr1
+		updateMap[key2] = expr2
 
-			var updated Example
-			require.NoError(t, db.First(&updated, 1).Error)
-			require.Equal(t, 110.0, updated.Price) // 100 + 10
-			require.Equal(t, 20, updated.Amount)   // 10 * 2
-			t.Log("updated result:", neatjsons.S(updated))
-		}
+		result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
+		require.NoError(t, result.Error)
+		require.Equal(t, int64(1), result.RowsAffected)
 
-		// Test ExprSub and ExprDiv
-		{
-			updateMap := map[string]interface{}{}
-			key1, expr1 := columnPrice.KeSub(10.0) // price = price - 10
-			key2, expr2 := columnAmount.KeDiv(4)   // quantity = quantity / 4
-			updateMap[key1] = expr1
-			updateMap[key2] = expr2
+		var updated Example
+		require.NoError(t, db.First(&updated, 1).Error)
+		require.Equal(t, 110.0, updated.Price) // 100 + 10
+		require.Equal(t, 20, updated.Amount)   // 10 * 2
+		t.Log("updated result:", neatjsons.S(updated))
+	})
 
-			result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
-			require.NoError(t, result.Error)
-			require.Equal(t, int64(1), result.RowsAffected)
+	// Test ExprSub and ExprDiv
+	t.Run("case-2", func(t *testing.T) {
+		updateMap := map[string]interface{}{}
+		key1, expr1 := columnPrice.KeSub(10.0) // price = price - 10
+		key2, expr2 := columnAmount.KeDiv(4)   // quantity = quantity / 4
+		updateMap[key1] = expr1
+		updateMap[key2] = expr2
 
-			var updated Example
-			require.NoError(t, db.First(&updated, 1).Error)
-			require.Equal(t, 100.0, updated.Price) // 110 - 10
-			require.Equal(t, 5, updated.Amount)    // 20 / 4
-			t.Log("updated result:", neatjsons.S(updated))
-		}
+		result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
+		require.NoError(t, result.Error)
+		require.Equal(t, int64(1), result.RowsAffected)
+
+		var updated Example
+		require.NoError(t, db.First(&updated, 1).Error)
+		require.Equal(t, 100.0, updated.Price) // 110 - 10
+		require.Equal(t, 5, updated.Amount)    // 20 / 4
+		t.Log("updated result:", neatjsons.S(updated))
 	})
 }
 
@@ -171,44 +174,103 @@ func TestColumnName_StringExprOperations(t *testing.T) {
 		columnEmail = ColumnName[string]("email")
 	)
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Create(&Example{
-			ID:    1,
-			Title: "Product",
-			Email: "user@company.com",
-		}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		// Test ExprConcat
-		{
-			updateMap := map[string]interface{}{}
-			key1, expr1 := columnTitle.KeConcat(" [Hot]") // title = CONCAT(title, ' [Hot]')
-			updateMap[key1] = expr1
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Create(&Example{
+		ID:    1,
+		Title: "Product",
+		Email: "user@company.com",
+	}).Error)
 
-			result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
-			require.NoError(t, result.Error)
-			require.Equal(t, int64(1), result.RowsAffected)
+	// Test ExprConcat
+	t.Run("case-1", func(t *testing.T) {
+		updateMap := map[string]interface{}{}
+		key1, expr1 := columnTitle.KeConcat(" [Hot]") // title = CONCAT(title, ' [Hot]')
+		updateMap[key1] = expr1
 
-			var updated Example
-			require.NoError(t, db.First(&updated, 1).Error)
-			require.Equal(t, "Product [Hot]", updated.Title)
-			t.Log("updated result:", neatjsons.S(updated))
+		result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
+		require.NoError(t, result.Error)
+		require.Equal(t, int64(1), result.RowsAffected)
+
+		var updated Example
+		require.NoError(t, db.First(&updated, 1).Error)
+		require.Equal(t, "Product [Hot]", updated.Title)
+		t.Log("updated result:", neatjsons.S(updated))
+	})
+
+	// Test ExprReplace
+	t.Run("case-2", func(t *testing.T) {
+		updateMap := map[string]interface{}{}
+		key1, expr1 := columnEmail.KeReplace("@company.com", "@newcompany.com") // email = REPLACE(email, '@company.com', '@newcompany.com')
+		updateMap[key1] = expr1
+
+		result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
+		require.NoError(t, result.Error)
+		require.Equal(t, int64(1), result.RowsAffected)
+
+		var updated Example
+		require.NoError(t, db.First(&updated, 1).Error)
+		require.Equal(t, "user@newcompany.com", updated.Email)
+		t.Log("updated result:", neatjsons.S(updated))
+	})
+}
+
+func TestColumnName_AggregateOperations(t *testing.T) {
+	type Example struct {
+		ID    int     `gorm:"primarykey"`
+		Name  string  `gorm:"type:varchar(100)"`
+		Score float64 `gorm:"column:score"`
+	}
+
+	const columnScore = ColumnName[float64]("score")
+
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
+
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Create(&Example{ID: 1, Name: "a", Score: 80}).Error)
+	require.NoError(t, db.Create(&Example{ID: 2, Name: "b", Score: 90}).Error)
+	require.NoError(t, db.Create(&Example{ID: 3, Name: "c", Score: 100}).Error)
+
+	t.Run("Sum", func(t *testing.T) {
+		type resType struct {
+			Total float64
 		}
+		var res resType
+		require.NoError(t, db.Model(&Example{}).Select(columnScore.Sum("total")).Scan(&res).Error)
+		require.Equal(t, 270.0, res.Total)
+		t.Log("sum:", res.Total)
+	})
 
-		// Test ExprReplace
-		{
-			updateMap := map[string]interface{}{}
-			key1, expr1 := columnEmail.KeReplace("@company.com", "@newcompany.com") // email = REPLACE(email, '@company.com', '@newcompany.com')
-			updateMap[key1] = expr1
-
-			result := db.Model(&Example{}).Where("id = ?", 1).UpdateColumns(updateMap)
-			require.NoError(t, result.Error)
-			require.Equal(t, int64(1), result.RowsAffected)
-
-			var updated Example
-			require.NoError(t, db.First(&updated, 1).Error)
-			require.Equal(t, "user@newcompany.com", updated.Email)
-			t.Log("updated result:", neatjsons.S(updated))
+	t.Run("Avg", func(t *testing.T) {
+		type resType struct {
+			Average float64
 		}
+		var res resType
+		require.NoError(t, db.Model(&Example{}).Select(columnScore.Avg("average")).Scan(&res).Error)
+		require.Equal(t, 90.0, res.Average)
+		t.Log("avg:", res.Average)
+	})
+
+	t.Run("Max", func(t *testing.T) {
+		type resType struct {
+			Maximum float64
+		}
+		var res resType
+		require.NoError(t, db.Model(&Example{}).Select(columnScore.Max("maximum")).Scan(&res).Error)
+		require.Equal(t, 100.0, res.Maximum)
+		t.Log("max:", res.Maximum)
+	})
+
+	t.Run("Min", func(t *testing.T) {
+		type resType struct {
+			Minimum float64
+		}
+		var res resType
+		require.NoError(t, db.Model(&Example{}).Select(columnScore.Min("minimum")).Scan(&res).Error)
+		require.Equal(t, 80.0, res.Minimum)
+		t.Log("min:", res.Minimum)
 	})
 }

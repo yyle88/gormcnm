@@ -1,6 +1,6 @@
 // Package gormcnm_test provides comprehensive integration tests with gormcnm features
 // Auto validates column operations, where generation, and GORM integration patterns
-// Tests demonstrate real-world usage scenarios with an SQLite memory-based database
+// Tests demonstrate usage scenarios with an SQLite IN-MEMORY database
 //
 // gormcnm_test 包为 gormcnm 功能提供全面的集成测试
 // 自动验证列操作、查询生成和 GORM 集成模式
@@ -15,6 +15,7 @@ import (
 	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
+	"github.com/yyle88/rese"
 	"gorm.io/gorm"
 )
 
@@ -33,62 +34,66 @@ func TestExample000(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		done.Done(db.AutoMigrate(&Example{}))
-		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
-		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		{
-			result := db.Model(&Example{}).Where(
-				operation.NewQx(
-					columnName.Eq("abc"),
-				).AND1(
-					columnType.Eq("xyz"),
-				).AND1(
-					columnRank.Eq(123),
-				).Qx3(),
-			).UpdateColumns(columnRank.Kw(200).Kw(columnType.Kv("www")).Map())
-			require.NoError(t, result.Error)
-			require.Equal(t, int64(1), result.RowsAffected)
-		}
-		{
-			stmt := db.Model(&Example{})
-			stmt = operation.Where(stmt, operation.Qx(columnName.Eq("aaa")).
-				AND(
-					operation.Qx(columnType.Eq("xxx")),
-					operation.Qx(columnRank.Eq(456)),
-				).
-				OR1(columnName.Eq("abc")),
-			)
-			var results []*Example
-			require.NoError(t, stmt.Find(&results).Error)
-			t.Log(neatjsons.S(results))
-		}
-		{
-			stmt := db.Model(&Example{})
-			stmt = operation.Where(stmt, operation.Qx(columnName.Eq("aaa")).
-				AND(
-					operation.Qx(columnType.Eq("xxx")),
-					operation.Qx(columnRank.Eq(456)),
-				),
-			)
-			result := operation.UpdateColumns(stmt, operation.NewKw().Kw(columnRank.Kv(100)).Kw(columnType.Kv("uvw")))
-			require.NoError(t, result.Error)
-			require.Equal(t, int64(1), result.RowsAffected)
-		}
-		{
-			stmt := db.Model(&Example{})
-			stmt = operation.Where(stmt, operation.Qx(columnName.Eq("abc")).OR(operation.Qx(columnName.Eq("aaa"))))
-			stmt = operation.OrderByColumns(stmt, columnRank.Ob("asc"))
+	done.Done(db.AutoMigrate(&Example{}))
+	done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
-			var examples []*Example
-			result := stmt.Find(&examples)
-			require.NoError(t, result.Error)
-			require.Equal(t, 2, len(examples))
-			require.Equal(t, 100, examples[0].Rank)
-			require.Equal(t, 200, examples[1].Rank)
-			t.Log(neatjsons.S(examples))
-		}
+	t.Run("case-1", func(t *testing.T) {
+		result := db.Model(&Example{}).Where(
+			operation.NewQx(
+				columnName.Eq("abc"),
+			).AND1(
+				columnType.Eq("xyz"),
+			).AND1(
+				columnRank.Eq(123),
+			).Qx3(),
+		).UpdateColumns(columnRank.Kw(200).Kw(columnType.Kv("www")).Map())
+		require.NoError(t, result.Error)
+		require.Equal(t, int64(1), result.RowsAffected)
+	})
+
+	t.Run("case-2", func(t *testing.T) {
+		stmt := db.Model(&Example{})
+		stmt = operation.Where(stmt, operation.Qx(columnName.Eq("aaa")).
+			AND(
+				operation.Qx(columnType.Eq("xxx")),
+				operation.Qx(columnRank.Eq(456)),
+			).
+			OR1(columnName.Eq("abc")),
+		)
+		var results []*Example
+		require.NoError(t, stmt.Find(&results).Error)
+		t.Log(neatjsons.S(results))
+	})
+
+	t.Run("case-3", func(t *testing.T) {
+		stmt := db.Model(&Example{})
+		stmt = operation.Where(stmt, operation.Qx(columnName.Eq("aaa")).
+			AND(
+				operation.Qx(columnType.Eq("xxx")),
+				operation.Qx(columnRank.Eq(456)),
+			),
+		)
+		result := operation.UpdateColumns(stmt, operation.NewKw().Kw(columnRank.Kv(100)).Kw(columnType.Kv("uvw")))
+		require.NoError(t, result.Error)
+		require.Equal(t, int64(1), result.RowsAffected)
+	})
+
+	t.Run("case-4", func(t *testing.T) {
+		stmt := db.Model(&Example{})
+		stmt = operation.Where(stmt, operation.Qx(columnName.Eq("abc")).OR(operation.Qx(columnName.Eq("aaa"))))
+		stmt = operation.OrderByColumns(stmt, columnRank.Ob("asc"))
+
+		var examples []*Example
+		result := stmt.Find(&examples)
+		require.NoError(t, result.Error)
+		require.Equal(t, 2, len(examples))
+		require.Equal(t, 100, examples[0].Rank)
+		require.Equal(t, 200, examples[1].Rank)
+		t.Log(neatjsons.S(examples))
 	})
 }
 
@@ -103,63 +108,66 @@ func TestExample001(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		done.Done(db.AutoMigrate(&Example{}))
-		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
-		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		type resType struct {
-			Who string
-			Cnt int64
-		}
+	done.Done(db.AutoMigrate(&Example{}))
+	done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
-		{
-			var results []resType
-			require.NoError(t, db.Model(&Example{}).
-				Group(columnName.Name()).
-				Select(operation.MergeStmts(
-					columnName.AsAlias("who"),
-					operation.CountStmt("cnt"),
-				)).
-				Find(&results).Error)
-			require.Equal(t, 2, len(results))
-			for _, one := range results {
-				t.Log(one.Who, one.Cnt)
-				require.NotEmpty(t, one.Who)
-				require.Positive(t, one.Cnt)
-			}
+	type resType struct {
+		Who string
+		Cnt int64
+	}
+
+	t.Run("case-1", func(t *testing.T) {
+		var results []resType
+		require.NoError(t, db.Model(&Example{}).
+			Group(columnName.Name()).
+			Select(operation.MergeStmts(
+				columnName.AsAlias("who"),
+				operation.CountStmt("cnt"),
+			)).
+			Find(&results).Error)
+		require.Equal(t, 2, len(results))
+		for _, one := range results {
+			t.Log(one.Who, one.Cnt)
+			require.NotEmpty(t, one.Who)
+			require.Positive(t, one.Cnt)
 		}
-		{
-			var results []resType
-			require.NoError(t, db.Model(&Example{}).
-				Group(columnName.Name()).
-				Select(operation.MergeStmts(
-					columnName.AsAlias("who"),
-					columnName.Count("cnt"),
-				)).
-				Find(&results).Error)
-			require.Equal(t, 2, len(results))
-			for _, one := range results {
-				t.Log(one.Who, one.Cnt)
-				require.NotEmpty(t, one.Who)
-				require.Positive(t, one.Cnt)
-			}
+	})
+
+	t.Run("case-2", func(t *testing.T) {
+		var results []resType
+		require.NoError(t, db.Model(&Example{}).
+			Group(columnName.Name()).
+			Select(operation.MergeStmts(
+				columnName.AsAlias("who"),
+				columnName.Count("cnt"),
+			)).
+			Find(&results).Error)
+		require.Equal(t, 2, len(results))
+		for _, one := range results {
+			t.Log(one.Who, one.Cnt)
+			require.NotEmpty(t, one.Who)
+			require.Positive(t, one.Cnt)
 		}
-		{
-			var results []resType
-			require.NoError(t, db.Model(&Example{}).
-				Group(columnName.Name()).
-				Select(operation.MergeStmts(
-					columnName.AsAlias("who"),
-					columnName.CountDistinct("cnt"),
-				)).
-				Find(&results).Error)
-			require.Equal(t, 2, len(results))
-			for _, one := range results {
-				t.Log(one.Who, one.Cnt)
-				require.NotEmpty(t, one.Who)
-				require.Positive(t, one.Cnt)
-			}
+	})
+
+	t.Run("case-3", func(t *testing.T) {
+		var results []resType
+		require.NoError(t, db.Model(&Example{}).
+			Group(columnName.Name()).
+			Select(operation.MergeStmts(
+				columnName.AsAlias("who"),
+				columnName.CountDistinct("cnt"),
+			)).
+			Find(&results).Error)
+		require.Equal(t, 2, len(results))
+		for _, one := range results {
+			t.Log(one.Who, one.Cnt)
+			require.NotEmpty(t, one.Who)
+			require.Positive(t, one.Cnt)
 		}
 	})
 }
@@ -202,60 +210,61 @@ func TestExample003(t *testing.T) {
 
 	operation := &gormcnm.ColumnOperationClass{}
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		done.Done(db.AutoMigrate(&Example{}))
-		done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
-		done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		type resType struct {
-			Cnt int64
-		}
+	done.Done(db.AutoMigrate(&Example{}))
+	done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
-		{
-			var res resType
-			stmt := operation.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'", "cnt")
-			t.Log(stmt)
-			require.NoError(t, db.Model(&Example{}).Select(stmt).Find(&res).Error)
-			require.Equal(t, int64(1), res.Cnt)
-		}
+	type resType struct {
+		Cnt int64
+	}
 
-		{
-			var res resType
-			stmt := operation.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'"+" AND "+columnType.Name()+"="+"'xxx'", "cnt")
-			t.Log(stmt)
-			require.NoError(t, db.Model(&Example{}).Select(stmt).Find(&res).Error)
-			require.Equal(t, int64(1), res.Cnt)
-		}
+	t.Run("case-1", func(t *testing.T) {
+		var res resType
+		stmt := operation.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'", "cnt")
+		t.Log(stmt)
+		require.NoError(t, db.Model(&Example{}).Select(stmt).Find(&res).Error)
+		require.Equal(t, int64(1), res.Cnt)
+	})
 
-		{
-			var results []*Example
-			var qx = operation.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
-			t.Log(qx.Qs())
-			require.NoError(t, db.Model(&Example{}).Where(qx.Qx2()).Find(&results).Error)
-			t.Log(len(results))
-		}
+	t.Run("case-2", func(t *testing.T) {
+		var res resType
+		stmt := operation.CountCaseWhenStmt(columnName.Name()+"="+"'aaa'"+" AND "+columnType.Name()+"="+"'xxx'", "cnt")
+		t.Log(stmt)
+		require.NoError(t, db.Model(&Example{}).Select(stmt).Find(&res).Error)
+		require.Equal(t, int64(1), res.Cnt)
+	})
 
-		{
-			var res resType
-			var qx = operation.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
-			t.Log(qx.Qs())
-			var sx = operation.CountCaseWhenQxSx(qx, "cnt")
-			t.Log(sx.Qs())
-			require.NoError(t, db.Model(&Example{}).Select(sx.Qx2()).Find(&res).Error)
-			require.Equal(t, int64(1), res.Cnt)
-		}
+	t.Run("case-3", func(t *testing.T) {
+		var results []*Example
+		var qx = operation.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+		t.Log(qx.Qs())
+		require.NoError(t, db.Model(&Example{}).Where(qx.Qx2()).Find(&results).Error)
+		t.Log(len(results))
+	})
 
-		{
-			var res resType
-			var qx = operation.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
-			t.Log(qx.Qs())
-			var sx = operation.CountCaseWhenQxSx(qx, "cnt")
-			t.Log(sx.Qs())
-			db = db.Model(&Example{})
-			db = operation.Select(db, sx)
-			require.NoError(t, db.Find(&res).Error)
-			require.Equal(t, int64(1), res.Cnt)
-		}
+	t.Run("case-4", func(t *testing.T) {
+		var res resType
+		var qx = operation.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+		t.Log(qx.Qs())
+		var sx = operation.CountCaseWhenQxSx(qx, "cnt")
+		t.Log(sx.Qs())
+		require.NoError(t, db.Model(&Example{}).Select(sx.Qx2()).Find(&res).Error)
+		require.Equal(t, int64(1), res.Cnt)
+	})
+
+	t.Run("case-5", func(t *testing.T) {
+		var res resType
+		var qx = operation.NewQx(columnName.Eq("aaa")).AND1(columnType.Eq("xxx"))
+		t.Log(qx.Qs())
+		var sx = operation.CountCaseWhenQxSx(qx, "cnt")
+		t.Log(sx.Qs())
+		dbx := db.Model(&Example{})
+		dbx = operation.Select(dbx, sx)
+		require.NoError(t, dbx.Find(&res).Error)
+		require.Equal(t, int64(1), res.Cnt)
 	})
 }
 

@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
+	"github.com/yyle88/rese"
 	"gorm.io/gorm"
 )
 
@@ -27,39 +28,40 @@ func TestColumnQx_AND(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		{
-			var one Example
-			qx := columnName.Qx("=?", "abc").AND(columnType.Qx("=?", "xyz"))
-			t.Log(qx.Qs())
-			t.Log(qx.Args())
-			require.NoError(t, db.Where(qx.Qs(), qx.Args()...).First(&one).Error)
-			require.Equal(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
-		{
-			var res []*Example
-			qx := columnName.Qx("=?", "abc").OR(columnName.Qx("=?", "aaa"))
-			t.Log(qx.Qs())
-			t.Log(qx.Args())
-			require.NoError(t, db.Where(qx.Qs(), qx.Args()...).Find(&res).Error)
-			require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
-			require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
-			t.Log(neatjsons.S(res))
-		}
-		{
-			var one Example
-			qx := columnName.Qx("=?", "abc").NOT()
-			t.Log(qx.Qs())
-			t.Log(qx.Args())
-			require.NoError(t, db.Where(qx.Qs(), qx.Args()).First(&one).Error)
-			require.NotEqual(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+
+	t.Run("case-1", func(t *testing.T) {
+		var one Example
+		qx := columnName.Qx("=?", "abc").AND(columnType.Qx("=?", "xyz"))
+		t.Log(qx.Qs())
+		t.Log(qx.Args())
+		require.NoError(t, db.Where(qx.Qs(), qx.Args()...).First(&one).Error)
+		require.Equal(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
+	})
+	t.Run("case-2", func(t *testing.T) {
+		var res []*Example
+		qx := columnName.Qx("=?", "abc").OR(columnName.Qx("=?", "aaa"))
+		t.Log(qx.Qs())
+		t.Log(qx.Args())
+		require.NoError(t, db.Where(qx.Qs(), qx.Args()...).Find(&res).Error)
+		require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
+		require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
+		t.Log(neatjsons.S(res))
+	})
+	t.Run("case-3", func(t *testing.T) {
+		var one Example
+		qx := columnName.Qx("=?", "abc").NOT()
+		t.Log(qx.Qs())
+		t.Log(qx.Args())
+		require.NoError(t, db.Where(qx.Qs(), qx.Args()).First(&one).Error)
+		require.NotEqual(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
 	})
 }
 
@@ -74,30 +76,31 @@ func TestColumnQx_AND_2(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		{
-			var one Example
-			require.NoError(t, db.Where(columnName.Qx("=?", "abc").AND(columnType.Qx("=?", "xyz")).Qx2()).First(&one).Error)
-			require.Equal(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
-		{
-			var res []*Example
-			require.NoError(t, db.Where(columnName.Qx("=?", "abc").OR(columnName.Qx("=?", "aaa")).Qx2()).Find(&res).Error)
-			require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
-			require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
-			t.Log(neatjsons.S(res))
-		}
-		{
-			var one Example
-			require.NoError(t, db.Where(columnName.Qx("=?", "abc").NOT().Qx1()).First(&one).Error)
-			require.NotEqual(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+
+	t.Run("case-1", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(columnName.Qx("=?", "abc").AND(columnType.Qx("=?", "xyz")).Qx2()).First(&one).Error)
+		require.Equal(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
+	})
+	t.Run("case-2", func(t *testing.T) {
+		var res []*Example
+		require.NoError(t, db.Where(columnName.Qx("=?", "abc").OR(columnName.Qx("=?", "aaa")).Qx2()).Find(&res).Error)
+		require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
+		require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
+		t.Log(neatjsons.S(res))
+	})
+	t.Run("case-3", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(columnName.Qx("=?", "abc").NOT().Qx1()).First(&one).Error)
+		require.NotEqual(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
 	})
 }
 
@@ -112,30 +115,31 @@ func TestColumnQx_AND_3(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		{
-			var one Example
-			require.NoError(t, db.Where(NewQx(columnName.Eq("abc")).AND(NewQx(columnType.Eq("xyz"))).Qx2()).First(&one).Error)
-			require.Equal(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
-		{
-			var res []*Example
-			require.NoError(t, db.Where(NewQx(columnName.Eq("abc")).OR(NewQx(columnName.Eq("aaa"))).Qx2()).Find(&res).Error)
-			require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
-			require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
-			t.Log(neatjsons.S(res))
-		}
-		{
-			var one Example
-			require.NoError(t, db.Where(NewQx(columnName.Eq("abc")).NOT().Qx1()).First(&one).Error)
-			require.NotEqual(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+
+	t.Run("case-1", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(NewQx(columnName.Eq("abc")).AND(NewQx(columnType.Eq("xyz"))).Qx2()).First(&one).Error)
+		require.Equal(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
+	})
+	t.Run("case-2", func(t *testing.T) {
+		var res []*Example
+		require.NoError(t, db.Where(NewQx(columnName.Eq("abc")).OR(NewQx(columnName.Eq("aaa"))).Qx2()).Find(&res).Error)
+		require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
+		require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
+		t.Log(neatjsons.S(res))
+	})
+	t.Run("case-3", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(NewQx(columnName.Eq("abc")).NOT().Qx1()).First(&one).Error)
+		require.NotEqual(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
 	})
 }
 
@@ -150,30 +154,31 @@ func TestColumnQx_AND_4(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		{
-			var one Example
-			require.NoError(t, db.Where(Qx(columnName.Eq("abc")).AND(Qx(columnType.Eq("xyz"))).Qx2()).First(&one).Error)
-			require.Equal(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
-		{
-			var res []*Example
-			require.NoError(t, db.Where(Qx(columnName.Eq("abc")).OR(Qx(columnName.Eq("aaa"))).Qx2()).Find(&res).Error)
-			require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
-			require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
-			t.Log(neatjsons.S(res))
-		}
-		{
-			var one Example
-			require.NoError(t, db.Where(Qx(columnName.Eq("abc")).NOT().Qx1()).First(&one).Error)
-			require.NotEqual(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+
+	t.Run("case-1", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(Qx(columnName.Eq("abc")).AND(Qx(columnType.Eq("xyz"))).Qx2()).First(&one).Error)
+		require.Equal(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
+	})
+	t.Run("case-2", func(t *testing.T) {
+		var res []*Example
+		require.NoError(t, db.Where(Qx(columnName.Eq("abc")).OR(Qx(columnName.Eq("aaa"))).Qx2()).Find(&res).Error)
+		require.Contains(t, []string{"abc", "aaa"}, res[0].Name)
+		require.Contains(t, []string{"abc", "aaa"}, res[1].Name)
+		t.Log(neatjsons.S(res))
+	})
+	t.Run("case-3", func(t *testing.T) {
+		var one Example
+		require.NoError(t, db.Where(Qx(columnName.Eq("abc")).NOT().Qx1()).First(&one).Error)
+		require.NotEqual(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
 	})
 }
 
@@ -193,13 +198,11 @@ func TestColumnQx_AND_5(t *testing.T) {
 		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
 		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
 
-		{
-			var one Example
-			require.NoError(t, db.Where(Qx(columnName.BetweenAND("aba", "abd")).
-				AND(Qx(columnType.IsNotNULL())).Qx2()).
-				First(&one).Error)
-			require.Equal(t, "abc", one.Name)
-			t.Log(neatjsons.S(one))
-		}
+		var one Example
+		require.NoError(t, db.Where(Qx(columnName.BetweenAND("aba", "abd")).
+			AND(Qx(columnType.IsNotNULL())).Qx2()).
+			First(&one).Error)
+		require.Equal(t, "abc", one.Name)
+		t.Log(neatjsons.S(one))
 	})
 }

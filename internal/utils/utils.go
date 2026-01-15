@@ -1,6 +1,6 @@
 // Package utils provides utility functions and helpers used across GORM column operations
 // Auto handles pointer operations, alias application, and test database setup
-// Supports testing with SQLite in-memory databases and column alias formatting
+// Supports testing with SQLite IN-MEMORY databases and column alias formatting
 //
 // utils 包提供跨 GORM 列操作使用的实用函数和辅助工具
 // 自动处理指针操作、别名应用和测试数据库设置

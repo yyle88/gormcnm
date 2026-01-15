@@ -235,3 +235,27 @@ func (columnName ColumnName[TYPE]) Count(alias string) string {
 func (columnName ColumnName[TYPE]) CountDistinct(alias string) string {
 	return utils.ApplyAliasToColumn("COUNT(DISTINCT("+string(columnName)+"))", alias)
 }
+
+// Sum creates a SUM aggregate statement on the column.
+// Sum: 创建一个 SUM 聚合查询，计算列值的总和。
+func (columnName ColumnName[TYPE]) Sum(alias string) string {
+	return utils.ApplyAliasToColumn("SUM("+string(columnName)+")", alias)
+}
+
+// Avg creates an AVG aggregate statement on the column.
+// Avg: 创建一个 AVG 聚合查询，计算列值的平均值。
+func (columnName ColumnName[TYPE]) Avg(alias string) string {
+	return utils.ApplyAliasToColumn("AVG("+string(columnName)+")", alias)
+}
+
+// Max creates a MAX aggregate statement on the column.
+// Max: 创建一个 MAX 聚合查询，获取列的最大值。
+func (columnName ColumnName[TYPE]) Max(alias string) string {
+	return utils.ApplyAliasToColumn("MAX("+string(columnName)+")", alias)
+}
+
+// Min creates a MIN aggregate statement on the column.
+// Min: 创建一个 MIN 聚合查询，获取列的最小值。
+func (columnName ColumnName[TYPE]) Min(alias string) string {
+	return utils.ApplyAliasToColumn("MIN("+string(columnName)+")", alias)
+}

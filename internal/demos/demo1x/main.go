@@ -1,6 +1,6 @@
 // Package main demonstrates basic gormcnm usage with Account CRUD operations
 // Auto shows column definitions, WHERE queries, UPDATE operations, and expression updates
-// Runs with SQLite in-memory database to showcase type-safe column operations
+// Runs with SQLite IN-MEMORY database to showcase type-safe column operations
 //
 // main 包演示 gormcnm 与 Account 增删改查操作的基本用法
 // 自动展示列定义、WHERE 查询、UPDATE 操作和表达式更新

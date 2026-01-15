@@ -22,6 +22,7 @@
 ## CHINESE README
 
 [中文说明](README.zh.md)
+
 <!-- TEMPLATE (EN) END: LANGUAGE NAVIGATION -->
 
 ---
@@ -29,7 +30,7 @@
 ## Language Ecosystem Comparison
 
 | Language   | ORM          | Type-Safe Columns  | Example                                 |
-|------------|--------------|--------------------|-----------------------------------------|
+| ---------- | ------------ | ------------------ | --------------------------------------- |
 | **Java**   | MyBatis Plus | `Example::getName` | `wrapper.eq(Example::getName, "alice")` |
 | **Python** | SQLAlchemy   | `Example.name`     | `query.filter(Example.name == "alice")` |
 | **Go**     | **GORMCNM**  | `cls.Name.Eq()`    | `db.Where(cls.Name.Eq("alice"))`        |
@@ -135,6 +136,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/yyle88/done"
 	"github.com/yyle88/gormcnm"
 	"github.com/yyle88/must"
 	"github.com/yyle88/rese"
@@ -166,9 +168,9 @@ func main() {
 	defer rese.F0(rese.P1(db.DB()).Close)
 
 	//create example data
-	must.Done(db.AutoMigrate(&Example{}).Error)
-	must.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
-	must.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
+	done.Done(db.AutoMigrate(&Example{}))
+	done.Done(db.Save(&Example{Name: "abc", Type: "xyz", Rank: 123}).Error)
+	done.Done(db.Save(&Example{Name: "aaa", Type: "xxx", Rank: 456}).Error)
 
 	{
 		//SELECT * FROM `examples` WHERE name="abc" ORDER BY `examples`.`name` LIMIT 1
@@ -215,7 +217,7 @@ db.Where(columnAge.Lte(65))      // <=
 ### Range and Pattern Operations
 
 | Method          | SQL               | Example                   |
-|-----------------|-------------------|---------------------------|
+| --------------- | ----------------- | ------------------------- |
 | `Between(a, b)` | `BETWEEN a AND b` | `cls.Age.Between(18, 65)` |
 | `In(values)`    | `IN (...)`        | `cls.ID.In([]int{1,2,3})` |
 | `Like(pattern)` | `LIKE pattern`    | `cls.Name.Like("A%")`     |
@@ -225,7 +227,7 @@ db.Where(columnAge.Lte(65))      // <=
 ### Update Operations
 
 | Method      | Description          | Example                                                      |
-|-------------|----------------------|--------------------------------------------------------------|
+| ----------- | -------------------- | ------------------------------------------------------------ |
 | `Kv(value)` | Single field update  | `db.Model(&user).Update(cls.Age.Kv(26))`                     |
 | `Kw(value)` | Build update map     | `cls.Age.Kw(26).Kw(cls.Email.Kv("new@example.com")).AsMap()` |
 | `KeAdd(n)`  | Expression: add      | `db.Model(&user).Update(cls.Age.KeAdd(1))`                   |
@@ -270,7 +272,7 @@ db.Model(&account).Updates(
 ### Aggregates and Ordering
 
 | Method          | SQL                      | Example                            |
-|-----------------|--------------------------|------------------------------------|
+| --------------- | ------------------------ | ---------------------------------- |
 | `Count(alias)`  | `COUNT(column) AS alias` | `db.Select(cls.ID.Count("total"))` |
 | `Ob(direction)` | `ORDER BY`               | `db.Order(cls.Age.Ob("asc").Ox())` |
 
@@ -322,11 +324,11 @@ This package includes extension sub-packages for specialized database operations
 
 **Future Extensions** (planned):
 
-| Package        | Purpose                | Status  |
-|----------------|------------------------|---------|
-| gormcnmtext    | Text search operations | Planned |
-| gormcnmdate    | Date/time operations   | Planned |
-| gormcnmmath    | Math operations        | Planned |
+| Package     | Purpose                | Status  |
+| ----------- | ---------------------- | ------- |
+| gormcnmtext | Text search operations | Planned |
+| gormcnmdate | Date/time operations   | Planned |
+| gormcnmmath | Math operations        | Planned |
 
 ---
 

@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/gormcnm/internal/tests"
 	"github.com/yyle88/neatjson/neatjsons"
-	"gorm.io/gorm"
+	"github.com/yyle88/rese"
 )
 
 func TestOrderByBottle_Ob(t *testing.T) {
@@ -27,32 +27,33 @@ func TestOrderByBottle_Ob(t *testing.T) {
 		columnType = ColumnName[string]("type")
 	)
 
-	tests.NewDBRun(t, func(db *gorm.DB) {
-		require.NoError(t, db.AutoMigrate(&Example{}))
-		require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
-		require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+	db := tests.NewMemDB(t)
+	defer rese.F0(rese.P1(db.DB()).Close)
 
-		{
-			var res []*Example
-			require.NoError(t, db.Where(columnName.In([]string{"abc", "aaa"})).
-				Order(columnName.OrderByBottle("asc").
-					Ob(columnType.Ob("desc")).
-					Ox()).
-				Find(&res).Error)
-			require.Equal(t, "aaa", res[0].Name)
-			require.Equal(t, "abc", res[1].Name)
-			t.Log(neatjsons.S(res))
-		}
-		{
-			var res []*Example
-			require.NoError(t, db.Where(columnName.In([]string{"abc", "aaa"})).
-				Order(columnName.Ob("desc").
-					OrderByBottle(columnType.Ob("asc")).
-					Orders()).
-				Find(&res).Error)
-			require.Equal(t, "abc", res[0].Name)
-			require.Equal(t, "aaa", res[1].Name)
-			t.Log(neatjsons.S(res))
-		}
+	require.NoError(t, db.AutoMigrate(&Example{}))
+	require.NoError(t, db.Save(&Example{Name: "abc", Type: "xyz"}).Error)
+	require.NoError(t, db.Save(&Example{Name: "aaa", Type: "xxx"}).Error)
+
+	t.Run("case-1", func(t *testing.T) {
+		var res []*Example
+		require.NoError(t, db.Where(columnName.In([]string{"abc", "aaa"})).
+			Order(columnName.OrderByBottle("asc").
+				Ob(columnType.Ob("desc")).
+				Ox()).
+			Find(&res).Error)
+		require.Equal(t, "aaa", res[0].Name)
+		require.Equal(t, "abc", res[1].Name)
+		t.Log(neatjsons.S(res))
+	})
+	t.Run("case-2", func(t *testing.T) {
+		var res []*Example
+		require.NoError(t, db.Where(columnName.In([]string{"abc", "aaa"})).
+			Order(columnName.Ob("desc").
+				OrderByBottle(columnType.Ob("asc")).
+				Orders()).
+			Find(&res).Error)
+		require.Equal(t, "abc", res[0].Name)
+		require.Equal(t, "aaa", res[1].Name)
+		t.Log(neatjsons.S(res))
 	})
 }

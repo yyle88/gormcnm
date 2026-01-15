@@ -63,8 +63,8 @@ func (qsConjunction QsConjunction) NOT() QsConjunction {
 	return QsConjunction(fmt.Sprintf("NOT(%s)", qsConjunction))
 }
 
-// Value prevents GORM from directly using QsConjunction by causing a panic.
-// Value 阻止 GORM 直接使用 QsConjunction，通过触发 panic 实现。
+// Value prevents GORM from using QsConjunction as value by causing a panic.
+// Value 阻止 GORM 把 QsConjunction 当值使用，通过触发 panic 实现。
 // 当你定义了一个类型为 type xxx string 的自定义类型，并尝试将其用作查询条件时，GORM 会将整个自定义类型作为一个值来处理，而不是将其展开为 SQL 语句中的占位符。
 // 因此也就是说 db.Where(xxx("name = ? AND type = ?")) 这个是不行的
 // 基本的结论是：
